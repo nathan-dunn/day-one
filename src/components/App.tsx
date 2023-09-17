@@ -1,14 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  ScrollView,
   Animated,
   Dimensions,
-  View,
-  StyleSheet,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   SafeAreaView,
+  ScrollView,
   StyleProp,
+  StyleSheet,
   TextStyle,
+  View,
+  ViewToken,
 } from 'react-native';
 import data from '../data/data';
 
@@ -17,7 +20,7 @@ enum Mode {
   light = 'light',
 }
 
-const MODE = 'light';
+const MODE = Mode.light;
 
 const DARK_BLACK = '#222';
 const LIGHT_BLACK = '#444';
@@ -43,6 +46,11 @@ function AniLine({ style, opacity, translateX }: AniLineProps) {
 }
 
 const { width, height } = Dimensions.get('window');
+
+type OnViewableItemsChangedType = {
+  viewableItems: ViewToken[];
+  changed: ViewToken[];
+};
 
 type AniTextProps = {
   text: string;
@@ -219,6 +227,27 @@ const Session = ({
 export default function App() {
   const _scrollX = React.useRef(new Animated.Value(0)).current;
 
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+
+  const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const contentOffset = e.nativeEvent.contentOffset;
+    const viewSize = e.nativeEvent.layoutMeasurement;
+
+    // Divide the horizontal offset by the width of the view to see which page is visible
+    const pageNum = Math.floor(contentOffset.x / viewSize.width);
+    return { contentOffset, viewSize, pageNum };
+  };
+
+  const onViewableItemsChanged = ({
+    viewableItems,
+    changed,
+  }: OnViewableItemsChangedType) => {
+    console.log('onViewableItemsChanged:', { viewableItems, changed });
+    const { index } = viewableItems[0];
+
+    return { viewableItems, changed };
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
@@ -237,6 +266,8 @@ export default function App() {
         renderItem={({ item, index }) => {
           return <Session {...item} index={index} scrollX={_scrollX} />;
         }}
+        onMomentumScrollEnd={onScrollEnd}
+        onViewableItemsChanged={onViewableItemsChanged}
       />
     </SafeAreaView>
   );
