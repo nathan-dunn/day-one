@@ -11,7 +11,7 @@ import {
   ARMS,
 } from './constants';
 
-export const program = new Program('GGW2', 'program notes');
+const program = new Program('GGW2', 'program notes');
 
 // Week 1
 program
@@ -129,4 +129,4 @@ program
     new Lift(ARMS, 'notes', new Rx(3, 5, 0.75))
   );
 
-console.log(JSON.stringify(program, null, 2));
+export default program;
