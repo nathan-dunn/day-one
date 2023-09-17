@@ -6,71 +6,35 @@ import {
   View,
   StyleSheet,
   SafeAreaView,
+  StyleProp,
+  TextStyle,
   Text,
 } from 'react-native';
-import headphones from '../data/_index';
 import data from '../data/data';
 
 // console.log(data);
 
-const { width, height } = Dimensions.get('window');
-
-type _ItemProps = {
-  heading: string;
-  description: string;
-  index: number;
-  scrollX: Animated.Value;
+type HorizontalLineProps = {
+  style: StyleProp<TextStyle>;
+  opacity: Animated.AnimatedInterpolation<number>;
+  translateX: Animated.AnimatedInterpolation<number>;
 };
 
-const _Item = ({ heading, description, scrollX, index }: _ItemProps) => {
-  const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
-  const opacityInputRange = [
-    (index - 0.4) * width,
-    index * width,
-    (index + 0.4) * width,
-  ];
-  const translateXHeading = scrollX.interpolate({
-    inputRange,
-    outputRange: [width * 0.1, 0, -width * 0.1],
-  });
-  const translateXDescription = scrollX.interpolate({
-    inputRange,
-    outputRange: [width, 0, -width],
-  });
-  const opacity = scrollX.interpolate({
-    inputRange: opacityInputRange,
-    outputRange: [0, 1, 0],
-  });
-
+function Line({ style, opacity, translateX }: LineProps) {
   return (
-    <View style={styles.itemStyle}>
-      <View style={styles.textContainer}>
-        <Animated.Text
-          style={[
-            styles.heading,
-            {
-              opacity,
-              transform: [{ translateX: translateXHeading }],
-            },
-          ]}
-        >
-          {heading}
-        </Animated.Text>
-        <Animated.Text
-          style={[
-            styles.description,
-            {
-              opacity,
-              transform: [{ translateX: translateXDescription }],
-            },
-          ]}
-        >
-          {description}
-        </Animated.Text>
-      </View>
-    </View>
+    <Animated.View
+      style={[
+        style,
+        {
+          opacity,
+          transform: [{ translateX }],
+        },
+      ]}
+    />
   );
-};
+}
+
+const { width, height } = Dimensions.get('window');
 
 type LiftType = {
   name: string;
@@ -83,57 +47,88 @@ type SessionProps = {
   week: number | string;
   day: number | string;
   notes: string;
-  lifts: LiftType[];
+  // lifts: LiftType[];
 
   index: number;
   scrollX: Animated.Value;
 };
 
-const Session = ({ week, day, scrollX, index }: SessionProps) => {
+type AniTextProps = {
+  text: string;
+  style: StyleProp<TextStyle>;
+  opacity: Animated.AnimatedInterpolation<number>;
+  translateX: Animated.AnimatedInterpolation<number>;
+};
+
+const AniText = ({ text, style, opacity, translateX }: AniTextProps) => {
+  return (
+    <Animated.Text
+      style={[
+        style,
+        {
+          opacity,
+          transform: [{ translateX }],
+        },
+      ]}
+    >
+      {text}
+    </Animated.Text>
+  );
+};
+
+const Session = ({ week, day, notes, scrollX, index }: SessionProps) => {
   const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
   const opacityInputRange = [
     (index - 0.4) * width,
     index * width,
     (index + 0.4) * width,
   ];
-  const translateXHeading = scrollX.interpolate({
-    inputRange,
-    outputRange: [width * 0.1, 0, -width * 0.1],
-  });
-  const translateXDescription = scrollX.interpolate({
-    inputRange,
-    outputRange: [width, 0, -width],
-  });
-  const opacity = scrollX.interpolate({
+  const opacity: Animated.AnimatedInterpolation<number> = scrollX.interpolate({
     inputRange: opacityInputRange,
     outputRange: [0, 1, 0],
   });
+  const translateXWeek: Animated.AnimatedInterpolation<number> =
+    scrollX.interpolate({
+      inputRange,
+      outputRange: [width * 0.1, 0, -width * 0.1],
+    });
+  const translateXDay: Animated.AnimatedInterpolation<number> =
+    scrollX.interpolate({
+      inputRange,
+      outputRange: [width, 0, -width],
+    });
+  const translateXNotes: Animated.AnimatedInterpolation<number> = translateXDay;
+  const translateXLine: Animated.AnimatedInterpolation<number> = translateXDay;
 
   return (
     <View style={styles.sessionStyle}>
       <View style={styles.textContainer}>
-        <Animated.Text
-          style={[
-            styles.week,
-            {
-              opacity,
-              transform: [{ translateX: translateXHeading }],
-            },
-          ]}
-        >
-          {`Week ${week}`}
-        </Animated.Text>
-        <Animated.Text
-          style={[
-            styles.day,
-            {
-              opacity,
-              transform: [{ translateX: translateXDescription }],
-            },
-          ]}
-        >
-          {`Day ${day}`}
-        </Animated.Text>
+        <AniText
+          text={`Week ${week}`}
+          style={styles.week}
+          opacity={opacity}
+          translateX={translateXWeek}
+        />
+
+        <AniText
+          text={`Day ${day}`}
+          style={styles.day}
+          opacity={opacity}
+          translateX={translateXDay}
+        />
+
+        <AniText
+          text={notes}
+          style={styles.day}
+          opacity={opacity}
+          translateX={translateXNotes}
+        />
+
+        <Line
+          style={styles.line}
+          opacity={opacity}
+          translateX={translateXLine}
+        />
       </View>
     </View>
   );
@@ -145,28 +140,13 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
-      {/* <Animated.FlatList
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        scrollEventThrottle={16}
-        horizontal
-        keyExtractor={item => item.key}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: _scrollX } } }],
-          { useNativeDriver: true }
-        )}
-        data={headphones}
-        renderItem={({ item, index }) => (
-          <_Item {...item} index={index} scrollX={_scrollX} />
-        )}
-      /> */}
 
       <Animated.FlatList
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={16}
         horizontal
-        keyExtractor={item => item.key}
+        keyExtractor={item => `${item.week}${item.day}`}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: _scrollX } } }],
           { useNativeDriver: true }
@@ -186,12 +166,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  itemStyle: {
-    width,
-    height,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+
   sessionStyle: {
     width,
     height,
@@ -201,24 +176,6 @@ const styles = StyleSheet.create({
   textContainer: {
     alignItems: 'flex-start',
     flex: 0.85,
-  },
-  heading: {
-    color: '#444',
-    textTransform: 'uppercase',
-    textAlign: 'left',
-    fontSize: 24,
-    fontWeight: '800',
-    letterSpacing: 2,
-    marginBottom: 10,
-  },
-  description: {
-    color: '#ccc',
-    fontWeight: '600',
-    textAlign: 'left',
-    width: width * 0.75,
-    marginRight: 10,
-    fontSize: 16,
-    lineHeight: 16 * 1.5,
   },
 
   week: {
@@ -231,12 +188,26 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   day: {
-    color: '#ccc',
+    color: '#bbb',
     fontWeight: '600',
     textAlign: 'left',
     width: width * 0.75,
     marginRight: 10,
     fontSize: 16,
     lineHeight: 16 * 1.5,
+  },
+  sessionNotes: {
+    color: '#444',
+    fontWeight: '600',
+    textAlign: 'left',
+    width: width * 0.75,
+    marginRight: 10,
+    fontSize: 16,
+    lineHeight: 16 * 1.5,
+  },
+  line: {
+    height: 1, // height of the line
+    width: width * 0.66, // make it span the full width of its container
+    backgroundColor: '#bbb', // change color as needed
   },
 });
