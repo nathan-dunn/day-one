@@ -1,21 +1,9 @@
-import {
-  SQUAT,
-  BENCH,
-  ROWS,
-  DIPS,
-  PRESS,
-  DEADLIFT,
-  SLDL,
-  CHINS,
-  ARMS,
-} from './constants';
-
 export class Rx {
-  sets: number | string;
+  sets?: number | string;
   reps: number | string;
-  perc: number;
+  perc?: number;
 
-  constructor(sets: number | string, reps: number | string, perc: number) {
+  constructor(sets: number | string, reps: number | string, perc?: number) {
     this.sets = sets;
     this.reps = reps;
     this.perc = perc;
