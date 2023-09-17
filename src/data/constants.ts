@@ -1,0 +1,9 @@
+export const SQUAT: string = 'squat';
+export const BENCH: string = 'bench';
+export const PRESS: string = 'press';
+export const DEADLIFT: string = 'deadlift';
+export const ROWS: string = 'rows';
+export const SLDL: string = 'sldl';
+export const DIPS: string = 'dips';
+export const CHINS: string = 'chins';
+export const ARMS: string = 'arms';
