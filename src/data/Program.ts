@@ -12,25 +12,25 @@ export class Rx {
 
 export class Lift {
   name: string;
-  notes: string;
+  notes: string[];
   rxs: Rx[] = [];
 
-  constructor(name: string, notes: string, ...rxs: Rx[]) {
+  constructor(name: string, notes: string[], rxs: Rx[]) {
     this.name = name;
     this.notes = notes;
     this.rxs = rxs;
   }
 }
 
+type WeekDayTuple = [number, number];
+
 class Session {
-  week: number;
-  day: number;
-  notes: string;
+  date: WeekDayTuple;
+  notes: string[];
   lifts: Lift[];
 
-  constructor(week: number, day: number, notes: string, ...lifts: Lift[]) {
-    this.week = week;
-    this.day = day;
+  constructor(date: WeekDayTuple, notes: string[], lifts: Lift[]) {
+    this.date = date;
     this.notes = notes;
     this.lifts = lifts;
   }
@@ -38,21 +38,16 @@ class Session {
 
 export class Program {
   name: string;
-  notes: string;
+  notes: string[];
   sessions: Session[] = [];
 
-  constructor(name: string, notes: string) {
+  constructor(name: string, notes: string[]) {
     this.name = name;
     this.notes = notes;
   }
 
-  addSession(
-    week: number,
-    day: number,
-    notes: string,
-    ...lifts: Lift[]
-  ): Program {
-    const session = new Session(week, day, notes, ...lifts);
+  addSession(date: WeekDayTuple, notes: string[], lifts: Lift[]): Program {
+    const session = new Session(date, notes, lifts);
     this.sessions.push(session);
     return this;
   }

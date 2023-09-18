@@ -12,6 +12,7 @@
     "build": "eas build -p ios"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.19.3",
     "expo": "~49.0.11",
     "expo-status-bar": "~1.6.0",
     "react": "18.2.0",

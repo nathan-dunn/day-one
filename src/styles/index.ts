@@ -7,13 +7,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   sessionContainer: {
-    paddingTop: 50,
+    paddingTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
   textContainer: {
-    alignItems: 'flex-start',
-    flex: 0.85,
+    // alignItems: 'flex-start',
+    // flex: 0.85,
   },
   week: {
     textTransform: 'uppercase',

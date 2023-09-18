@@ -42,14 +42,13 @@ type RxType = {
 
 type LiftType = {
   name: string;
-  notes: string;
+  notes: string[];
   rxs: RxType[];
 };
 
 type SessionProps = {
-  week: number | string;
-  day: number | string;
-  notes: string;
+  date: [number, number];
+  notes: string[];
   lifts: LiftType[];
   index: number;
   scrollX: Animated.Value;
@@ -58,8 +57,7 @@ type SessionProps = {
 };
 
 export default function Session({
-  week,
-  day,
+  date,
   notes,
   lifts,
   scrollX,
@@ -67,6 +65,7 @@ export default function Session({
   mode,
   handleLongPress,
 }: SessionProps) {
+  const [week, day] = date;
   const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
   const SECONDARY_TEXT = mode === Mode.light ? GRAY : GRAY;
 
@@ -138,15 +137,24 @@ export default function Session({
                 <View style={[styles.rxContainer]}>
                   {rxs.map(({ sets, reps, perc }, rxIndex) => {
                     const max: number = maxes[name];
+                    const setsText =
+                      (typeof sets === 'number' && sets > 1) ||
+                      typeof sets === 'string'
+                        ? 'sets'
+                        : 'set';
+                    const repsText = reps === 'AMRAP' ? '' : 'reps';
+
                     const rxText =
                       max && perc
-                        ? `${roundTo(
+                        ? `${sets} ${setsText} x ${reps} ${repsText} @ ${roundTo(
                             max * perc,
                             5
-                          )} x ${reps} reps x ${sets} sets`
+                          )} lbs`
                         : perc
-                        ? `${perc * 100}% x ${reps} reps x ${sets} sets`
-                        : `${sets} sets x ${reps} reps`;
+                        ? `${sets} ${setsText} x ${reps} ${repsText} @ ${
+                            perc * 100
+                          }%`
+                        : `${sets} ${setsText} x ${reps} ${repsText}`;
 
                     return (
                       <AnimatedText
@@ -164,31 +172,28 @@ export default function Session({
                 </View>
 
                 <View style={styles.notesContainer}>
-                  {notes
-                    .split('.')
-                    .filter(note => note)
-                    .map((note, noteIndex) => {
-                      return (
-                        <View key={noteIndex} style={styles.subNotesContainer}>
-                          <AnimatedText
-                            text={'•'}
-                            style={[styles.bullet, { color: SECONDARY_TEXT }]}
-                            opacity={opacity}
-                            translateX={trasnlateFast}
-                          />
+                  {notes.map((note, noteIndex) => {
+                    return (
+                      <View key={noteIndex} style={styles.subNotesContainer}>
+                        <AnimatedText
+                          text={'•'}
+                          style={[styles.bullet, { color: SECONDARY_TEXT }]}
+                          opacity={opacity}
+                          translateX={trasnlateFast}
+                        />
 
-                          <AnimatedText
-                            text={note.trim()}
-                            style={[
-                              styles.note,
-                              { width: width * 0.75, color: SECONDARY_TEXT },
-                            ]}
-                            opacity={opacity}
-                            translateX={trasnlateFast}
-                          />
-                        </View>
-                      );
-                    })}
+                        <AnimatedText
+                          text={note.trim()}
+                          style={[
+                            styles.note,
+                            { width: width * 0.75, color: SECONDARY_TEXT },
+                          ]}
+                          opacity={opacity}
+                          translateX={trasnlateFast}
+                        />
+                      </View>
+                    );
+                  })}
                 </View>
               </View>
             );
@@ -202,24 +207,21 @@ export default function Session({
         />
 
         <View style={styles.notesContainer}>
-          {notes
-            .split('.')
-            .filter(note => note)
-            .map((note, noteIndex) => {
-              return (
-                <View key={noteIndex} style={styles.sessionNotesContainer}>
-                  <AnimatedText
-                    text={note.trim()}
-                    style={[
-                      styles.note,
-                      { width: width * 0.75, color: SECONDARY_TEXT },
-                    ]}
-                    opacity={opacity}
-                    translateX={trasnlateFast}
-                  />
-                </View>
-              );
-            })}
+          {notes.map((note, noteIndex) => {
+            return (
+              <View key={noteIndex} style={styles.sessionNotesContainer}>
+                <AnimatedText
+                  text={note.trim()}
+                  style={[
+                    styles.note,
+                    { width: width * 0.75, color: SECONDARY_TEXT },
+                  ]}
+                  opacity={opacity}
+                  translateX={trasnlateFast}
+                />
+              </View>
+            );
+          })}
         </View>
       </View>
     </ScrollView>

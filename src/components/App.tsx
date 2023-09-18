@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Animated,
   Dimensions,
@@ -9,6 +9,7 @@ import {
   FlatList,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Session from './Session';
 import data from '../data';
 import { WHITE, LIGHT_BLACK, DARK_BLACK } from '../constants';
@@ -21,7 +22,7 @@ enum Mode {
   light = 'light',
 }
 
-// console.log(JSON.stringify(data, null, 2));
+console.log(JSON.stringify(data, null, 2));
 
 export default function App() {
   const flatListRef = useRef<FlatList>(null);
@@ -29,6 +30,33 @@ export default function App() {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const len = data.sessions.length;
   const [mode, setMode] = useState<Mode>(Mode.light);
+
+  const storeData = async (value: string) => {
+    try {
+      await AsyncStorage.setItem('@day_one', value);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@day_one');
+      if (value !== null) {
+        return value;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const removeValue = async () => {
+    try {
+      await AsyncStorage.removeItem('@day_one');
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const contentOffset = e.nativeEvent.contentOffset;
@@ -50,6 +78,11 @@ export default function App() {
       animated: true,
     });
   };
+
+  useEffect(() => {
+    const stored = getData();
+    console.log('stored:', stored);
+  }, []);
 
   const BACKGROUND_COLOR = mode === Mode.light ? WHITE : DARK_BLACK;
 
@@ -77,23 +110,21 @@ export default function App() {
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={16}
         horizontal
-        keyExtractor={item => `${item.week}${item.day}`}
+        keyExtractor={item => item.date.toString()}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: _scrollX } } }],
           { useNativeDriver: true }
         )}
         data={data.sessions}
-        renderItem={({ item, index }) => {
-          return (
-            <Session
-              {...item}
-              index={index}
-              scrollX={_scrollX}
-              mode={mode}
-              handleLongPress={handleLongPress}
-            />
-          );
-        }}
+        renderItem={({ item, index }) => (
+          <Session
+            {...item}
+            index={index}
+            scrollX={_scrollX}
+            mode={mode}
+            handleLongPress={handleLongPress}
+          />
+        )}
         onMomentumScrollEnd={onScrollEnd}
         getItemLayout={(data, index) => ({
           length: width,
