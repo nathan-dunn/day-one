@@ -22,7 +22,7 @@ enum Mode {
   light = 'light',
 }
 
-console.log(JSON.stringify(data, null, 2));
+// console.log(JSON.stringify(data, null, 2));
 
 export default function App() {
   const flatListRef = useRef<FlatList>(null);
