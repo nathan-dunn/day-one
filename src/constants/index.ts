@@ -5,7 +5,9 @@ export const DEADLIFT: string = 'deadlift';
 export const ROWS: string = 'rows';
 export const SLDL: string = 'sldl';
 export const DIPS: string = 'dips';
+export const PUSHUPS: string = 'pushups';
 export const CHINS: string = 'chins';
+export const PULLUPS: string = 'pullups';
 export const ARMS: string = 'arms';
 
 export const DARK_BLACK = '#222';

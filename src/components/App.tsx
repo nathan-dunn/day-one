@@ -11,7 +11,7 @@ import {
 import { Feather } from '@expo/vector-icons';
 import Session from './Session';
 import data from '../data';
-import { WHITE, LIGHT_BLACK, DARK_BLACK, GRAY } from '../data/constants';
+import { WHITE, LIGHT_BLACK, DARK_BLACK, GRAY } from '../constants';
 import styles from '../styles';
 
 const { width, height } = Dimensions.get('window');

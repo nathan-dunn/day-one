@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   },
   line: {
     height: 1,
-    marginVertical: 20,
+    marginVertical: 30,
   },
   liftSubContainer: {
     //
@@ -54,6 +54,9 @@ const styles = StyleSheet.create({
   },
   notesContainer: {
     //
+  },
+  sessionNotesContainer: {
+    paddingBottom: 10,
   },
   liftContainer: {
     //

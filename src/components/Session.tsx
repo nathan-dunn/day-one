@@ -3,7 +3,7 @@ import { Animated, Dimensions, ScrollView, View } from 'react-native';
 import AnimatedText from './AnimatedText';
 import AnimatedLine from './AnimatedLine';
 
-import { WHITE, LIGHT_BLACK, DARK_BLACK, GRAY } from '../data/constants';
+import { WHITE, LIGHT_BLACK, DARK_BLACK, GRAY } from '../constants';
 import styles from '../styles';
 
 const { width, height } = Dimensions.get('window');
@@ -52,27 +52,29 @@ export default function Session({
     sessionIndex * width,
     (sessionIndex + 1) * width,
   ];
+
   const opacityInputRange = [
     (sessionIndex - 0.4) * width,
     sessionIndex * width,
     (sessionIndex + 0.4) * width,
   ];
+
   const opacity: Animated.AnimatedInterpolation<number> = scrollX.interpolate({
     inputRange: opacityInputRange,
     outputRange: [0, 1, 0],
   });
-  const translateXWeek: Animated.AnimatedInterpolation<number> =
+
+  const translateSlow: Animated.AnimatedInterpolation<number> =
     scrollX.interpolate({
       inputRange,
       outputRange: [width * 0.1, 0, -width * 0.1],
     });
-  const translateXDay: Animated.AnimatedInterpolation<number> =
+
+  const trasnlateFast: Animated.AnimatedInterpolation<number> =
     scrollX.interpolate({
       inputRange,
       outputRange: [width, 0, -width],
     });
-  const translateXNotes: Animated.AnimatedInterpolation<number> = translateXDay;
-  const translateXLine: Animated.AnimatedInterpolation<number> = translateXDay;
 
   return (
     <ScrollView contentContainerStyle={[styles.sessionContainer, { width }]}>
@@ -81,35 +83,32 @@ export default function Session({
           text={`Week ${week}`}
           style={[styles.week, { color: PRIMARY_TEXT }]}
           opacity={opacity}
-          translateX={translateXWeek}
+          translateX={translateSlow}
         />
         <AnimatedText
           text={`Day ${day}`}
           style={[styles.day, { width: width * 0.75, color: SECONDARY_TEXT }]}
           opacity={opacity}
-          translateX={translateXDay}
+          translateX={trasnlateFast}
         />
         <AnimatedLine
-          style={[styles.line, { width: width * 0.8 }]}
+          style={[styles.line, { width: width * 0.8, backgroundColor: GRAY }]}
           opacity={opacity}
-          translateX={translateXLine}
+          translateX={trasnlateFast}
         />
 
         <View style={styles.liftContainer}>
           {lifts.map(({ name, notes, rxs }, liftIndex) => {
             return (
               <View
-                style={[
-                  styles.liftSubContainer,
-                  { paddingBottom: liftIndex === lifts.length - 1 ? 0 : 50 },
-                ]}
+                style={[styles.liftSubContainer, { paddingBottom: 50 }]}
                 key={liftIndex}
               >
                 <AnimatedText
                   text={name}
                   style={[styles.lift, { color: PRIMARY_TEXT }]}
                   opacity={opacity}
-                  translateX={translateXWeek}
+                  translateX={translateSlow}
                 />
                 <View style={[styles.rxContainer]}>
                   {rxs.map(({ sets, reps, perc }, rxIndex) => {
@@ -126,7 +125,7 @@ export default function Session({
                           { width: width * 0.75, color: SECONDARY_TEXT },
                         ]}
                         opacity={opacity}
-                        translateX={translateXDay}
+                        translateX={trasnlateFast}
                       />
                     );
                   })}
@@ -143,7 +142,7 @@ export default function Session({
                             text={'•'}
                             style={[styles.bullet, { color: SECONDARY_TEXT }]}
                             opacity={opacity}
-                            translateX={translateXNotes}
+                            translateX={trasnlateFast}
                           />
 
                           <AnimatedText
@@ -153,7 +152,7 @@ export default function Session({
                               { width: width * 0.75, color: SECONDARY_TEXT },
                             ]}
                             opacity={opacity}
-                            translateX={translateXNotes}
+                            translateX={trasnlateFast}
                           />
                         </View>
                       );
@@ -165,17 +164,34 @@ export default function Session({
         </View>
 
         <AnimatedLine
-          style={[styles.line, { backgroundColor: GRAY }]}
+          style={[styles.line, { width: width * 0.8, backgroundColor: GRAY }]}
           opacity={opacity}
-          translateX={translateXLine}
+          translateX={translateSlow}
         />
 
-        <AnimatedText
-          text={notes}
-          style={styles.day}
-          opacity={opacity}
-          translateX={translateXNotes}
-        />
+        <View style={styles.notesContainer}>
+          {notes
+            .split('.')
+            .filter(note => note)
+            .map((note, noteIndex) => {
+              return (
+                <View key={noteIndex} style={styles.sessionNotesContainer}>
+                  <AnimatedText
+                    text={note.trim()}
+                    style={[
+                      styles.note,
+                      {
+                        width: width * 0.75,
+                        color: SECONDARY_TEXT,
+                      },
+                    ]}
+                    opacity={opacity}
+                    translateX={trasnlateFast}
+                  />
+                </View>
+              );
+            })}
+        </View>
       </View>
     </ScrollView>
   );
