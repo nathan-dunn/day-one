@@ -84,6 +84,21 @@ const styles = StyleSheet.create({
   rxContainer: {
     paddingBottom: 10,
   },
+
+  controlPanelContainer: {
+    flex: 1,
+    padding: 20,
+  },
+  controlPanelTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  controlPanelOption: {
+    fontSize: 20,
+    paddingVertical: 10,
+  },
 });
 
 export default styles;

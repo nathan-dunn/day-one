@@ -15,19 +15,19 @@ import styles from '../styles';
 
 const { width } = Dimensions.get('window');
 
-interface Maxes {
+type MaxesType = {
   squat: number;
   bench: number;
   deadlift: number;
   press: number;
-}
-
-const maxes: Maxes = {
-  squat: 335,
-  bench: 285,
-  deadlift: 385,
-  press: 160,
 };
+
+// const maxes: MaxesType = {
+//   squat: 335,
+//   bench: 285,
+//   deadlift: 385,
+//   press: 160,
+// };
 
 enum Mode {
   dark = 'dark',
@@ -54,6 +54,7 @@ type SessionProps = {
   scrollX: Animated.Value;
   mode: Mode;
   handleLongPress: () => void;
+  maxes: MaxesType;
 };
 
 export default function Session({
@@ -64,6 +65,7 @@ export default function Session({
   index: sessionIndex,
   mode,
   handleLongPress,
+  maxes,
 }: SessionProps) {
   const [week, day] = date;
   const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
