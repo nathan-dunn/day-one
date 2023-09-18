@@ -11,10 +11,10 @@ import {
 import { Feather } from '@expo/vector-icons';
 import Session from './Session';
 import data from '../data';
-import { WHITE, LIGHT_BLACK, DARK_BLACK, GRAY } from '../constants';
+import { WHITE, LIGHT_BLACK, DARK_BLACK } from '../constants';
 import styles from '../styles';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 enum Mode {
   dark = 'dark',
@@ -40,27 +40,16 @@ export default function App() {
     return { contentOffset, viewSize, pageNum };
   };
 
-  // const handlePrevItem = () => {
-  //   // Increment the index
-  //   const prevIndex = currentIndex === 0 ? len - 1 : currentIndex - 1;
-  //   setCurrentIndex(prevIndex);
+  const handleLongPress = () => {
+    // Increment the index
+    const nextIndex = currentIndex === len - 1 ? 0 : currentIndex + 1;
+    setCurrentIndex(nextIndex);
 
-  //   flatListRef.current?.scrollToOffset({
-  //     offset: prevIndex * width,
-  //     animated: true,
-  //   });
-  // };
-
-  // const handleNextItem = () => {
-  //   // Increment the index
-  //   const nextIndex = currentIndex === len - 1 ? 0 : currentIndex + 1;
-  //   setCurrentIndex(nextIndex);
-
-  //   flatListRef.current?.scrollToOffset({
-  //     offset: nextIndex * width,
-  //     animated: true,
-  //   });
-  // };
+    flatListRef.current?.scrollToOffset({
+      offset: nextIndex * width,
+      animated: true,
+    });
+  };
 
   const BACKGROUND_COLOR = mode === Mode.light ? WHITE : DARK_BLACK;
 
@@ -96,7 +85,13 @@ export default function App() {
         data={data.sessions}
         renderItem={({ item, index }) => {
           return (
-            <Session {...item} index={index} scrollX={_scrollX} mode={mode} />
+            <Session
+              {...item}
+              index={index}
+              scrollX={_scrollX}
+              mode={mode}
+              handleLongPress={handleLongPress}
+            />
           );
         }}
         onMomentumScrollEnd={onScrollEnd}

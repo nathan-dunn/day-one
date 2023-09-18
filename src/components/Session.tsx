@@ -1,12 +1,33 @@
 import React from 'react';
-import { Animated, Dimensions, ScrollView, View } from 'react-native';
+import {
+  Animated,
+  Dimensions,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import AnimatedText from './AnimatedText';
 import AnimatedLine from './AnimatedLine';
 
-import { WHITE, LIGHT_BLACK, DARK_BLACK, GRAY } from '../constants';
+import { WHITE, LIGHT_BLACK, GRAY } from '../constants';
+import { roundTo } from '../utils';
 import styles from '../styles';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
+
+interface Maxes {
+  squat: number;
+  bench: number;
+  deadlift: number;
+  press: number;
+}
+
+const maxes: Maxes = {
+  squat: 335,
+  bench: 285,
+  deadlift: 385,
+  press: 160,
+};
 
 enum Mode {
   dark = 'dark',
@@ -33,6 +54,7 @@ type SessionProps = {
   index: number;
   scrollX: Animated.Value;
   mode: Mode;
+  handleLongPress: () => void;
 };
 
 export default function Session({
@@ -43,6 +65,7 @@ export default function Session({
   scrollX,
   index: sessionIndex,
   mode,
+  handleLongPress,
 }: SessionProps) {
   const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
   const SECONDARY_TEXT = mode === Mode.light ? GRAY : GRAY;
@@ -79,12 +102,14 @@ export default function Session({
   return (
     <ScrollView contentContainerStyle={[styles.sessionContainer, { width }]}>
       <View style={styles.textContainer}>
-        <AnimatedText
-          text={`Week ${week}`}
-          style={[styles.week, { color: PRIMARY_TEXT }]}
-          opacity={opacity}
-          translateX={translateSlow}
-        />
+        <TouchableOpacity onLongPress={handleLongPress}>
+          <AnimatedText
+            text={`Week ${week}`}
+            style={[styles.week, { color: PRIMARY_TEXT }]}
+            opacity={opacity}
+            translateX={translateSlow}
+          />
+        </TouchableOpacity>
         <AnimatedText
           text={`Day ${day}`}
           style={[styles.day, { width: width * 0.75, color: SECONDARY_TEXT }]}
@@ -112,9 +137,13 @@ export default function Session({
                 />
                 <View style={[styles.rxContainer]}>
                   {rxs.map(({ sets, reps, perc }, rxIndex) => {
-                    const rxText = perc
-                      ? `${perc * 100}% x ${sets} x ${reps}`
-                      : `${sets} x ${reps}`;
+                    const max: number = maxes[name];
+                    const rxText =
+                      max && perc
+                        ? `${roundTo(max * perc, 5)} x ${sets} x ${reps}`
+                        : perc
+                        ? `${perc * 100}% x ${sets} x ${reps}`
+                        : `${sets} x ${reps}`;
 
                     return (
                       <AnimatedText
@@ -180,10 +209,7 @@ export default function Session({
                     text={note.trim()}
                     style={[
                       styles.note,
-                      {
-                        width: width * 0.75,
-                        color: SECONDARY_TEXT,
-                      },
+                      { width: width * 0.75, color: SECONDARY_TEXT },
                     ]}
                     opacity={opacity}
                     translateX={trasnlateFast}
