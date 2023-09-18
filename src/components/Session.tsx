@@ -13,11 +13,6 @@ enum Mode {
   light = 'light',
 }
 
-const MODE = Mode.light;
-
-const PRIMARY_TEXT = MODE === Mode.light ? LIGHT_BLACK : WHITE;
-const SECONDARY_TEXT = MODE === Mode.light ? GRAY : GRAY;
-
 type RxType = {
   sets?: number | string;
   reps: number | string;
@@ -37,6 +32,7 @@ type SessionProps = {
   lifts: LiftType[];
   index: number;
   scrollX: Animated.Value;
+  mode: Mode;
 };
 
 export default function Session({
@@ -46,7 +42,11 @@ export default function Session({
   lifts,
   scrollX,
   index: sessionIndex,
+  mode,
 }: SessionProps) {
+  const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
+  const SECONDARY_TEXT = mode === Mode.light ? GRAY : GRAY;
+
   const inputRange = [
     (sessionIndex - 1) * width,
     sessionIndex * width,

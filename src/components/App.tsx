@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   FlatList,
 } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import Session from './Session';
 import data from '../data';
 import { WHITE, LIGHT_BLACK, DARK_BLACK, GRAY } from '../data/constants';
@@ -21,10 +21,6 @@ enum Mode {
   light = 'light',
 }
 
-const MODE = Mode.light;
-
-const BACKGROUND_COLOR = MODE === Mode.light ? WHITE : DARK_BLACK;
-
 // console.log(JSON.stringify(data, null, 2));
 
 export default function App() {
@@ -32,7 +28,7 @@ export default function App() {
   const _scrollX = useRef(new Animated.Value(0)).current;
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const len = data.sessions.length;
-  const currentSession = data.sessions[currentIndex];
+  const [mode, setMode] = useState<Mode>(Mode.light);
 
   const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const contentOffset = e.nativeEvent.contentOffset;
@@ -66,32 +62,23 @@ export default function App() {
   //   });
   // };
 
+  const BACKGROUND_COLOR = mode === Mode.light ? WHITE : DARK_BLACK;
+
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: BACKGROUND_COLOR }]}
     >
       <StatusBar style="auto" />
 
-      {/* <View
-        style={{
-          paddingTop: 50,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          width: '100%',
-          paddingHorizontal: 20,
-        }}
-      >
-        <Button title="PREV" onPress={handlePrevItem} color={PRIMARY_TEXT} />
-        <Button title="NEXT" onPress={handleNextItem} color={PRIMARY_TEXT} />
-      </View> */}
-
-      <FontAwesome
-        name="gear"
+      <Feather
+        name={mode === Mode.light ? 'sun' : 'moon'}
         size={24}
-        color="black"
+        color={mode === Mode.light ? LIGHT_BLACK : WHITE}
         alignSelf="flex-end"
         padding={20}
+        onPress={() => {
+          setMode(p => (p === Mode.light ? Mode.dark : Mode.light));
+        }}
       />
 
       <Animated.FlatList
@@ -108,7 +95,9 @@ export default function App() {
         )}
         data={data.sessions}
         renderItem={({ item, index }) => {
-          return <Session {...item} index={index} scrollX={_scrollX} />;
+          return (
+            <Session {...item} index={index} scrollX={_scrollX} mode={mode} />
+          );
         }}
         onMomentumScrollEnd={onScrollEnd}
         getItemLayout={(data, index) => ({
