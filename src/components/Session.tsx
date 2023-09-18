@@ -140,10 +140,13 @@ export default function Session({
                     const max: number = maxes[name];
                     const rxText =
                       max && perc
-                        ? `${roundTo(max * perc, 5)} x ${sets} x ${reps}`
+                        ? `${roundTo(
+                            max * perc,
+                            5
+                          )} x ${reps} reps x ${sets} sets`
                         : perc
-                        ? `${perc * 100}% x ${sets} x ${reps}`
-                        : `${sets} x ${reps}`;
+                        ? `${perc * 100}% x ${reps} reps x ${sets} sets`
+                        : `${sets} sets x ${reps} reps`;
 
                     return (
                       <AnimatedText
