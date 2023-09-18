@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Animated,
+  Button,
   Dimensions,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -225,9 +226,13 @@ const Session = ({
 };
 
 export default function App() {
-  const _scrollX = React.useRef(new Animated.Value(0)).current;
-
+  const flatListRef = useRef<FlatList>(null);
+  const _scrollX = useRef(new Animated.Value(0)).current;
   const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const len = data.sessions.length;
+  const currentSession = data.sessions[currentIndex];
+
+  console.log('currentSession:', currentSession);
 
   const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const contentOffset = e.nativeEvent.contentOffset;
@@ -235,24 +240,51 @@ export default function App() {
 
     // Divide the horizontal offset by the width of the view to see which page is visible
     const pageNum = Math.floor(contentOffset.x / viewSize.width);
+    setCurrentIndex(pageNum);
     return { contentOffset, viewSize, pageNum };
   };
 
-  const onViewableItemsChanged = ({
-    viewableItems,
-    changed,
-  }: OnViewableItemsChangedType) => {
-    console.log('onViewableItemsChanged:', { viewableItems, changed });
-    const { index } = viewableItems[0];
+  const handlePrevItem = () => {
+    // Increment the index
+    const prevIndex = currentIndex === 0 ? len - 1 : currentIndex - 1;
+    setCurrentIndex(prevIndex);
 
-    return { viewableItems, changed };
+    flatListRef.current?.scrollToOffset({
+      offset: prevIndex * width,
+      animated: true,
+    });
+  };
+
+  const handleNextItem = () => {
+    // Increment the index
+    const nextIndex = currentIndex === len - 1 ? 0 : currentIndex + 1;
+    setCurrentIndex(nextIndex);
+
+    flatListRef.current?.scrollToOffset({
+      offset: nextIndex * width,
+      animated: true,
+    });
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
 
+      <View
+        style={{
+          paddingTop: 50,
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+          width: '100%',
+        }}
+      >
+        <Button title="PREV" onPress={handlePrevItem} color={PRIMARY_TEXT} />
+        <Button title="NEXT" onPress={handleNextItem} color={PRIMARY_TEXT} />
+      </View>
+
       <Animated.FlatList
+        initialScrollIndex={currentIndex}
+        ref={flatListRef}
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={16}
@@ -267,7 +299,11 @@ export default function App() {
           return <Session {...item} index={index} scrollX={_scrollX} />;
         }}
         onMomentumScrollEnd={onScrollEnd}
-        onViewableItemsChanged={onViewableItemsChanged}
+        getItemLayout={(data, index) => ({
+          length: width,
+          offset: width * index,
+          index,
+        })}
       />
     </SafeAreaView>
   );
