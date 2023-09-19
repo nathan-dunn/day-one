@@ -1,6 +1,7 @@
 import React from 'react';
 import { SafeAreaView, View, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import NumericInput from './NumericInput';
 import { getStorage, setStorage } from '../utils';
 import { WHITE, LIGHT_BLACK } from '../constants';
 import styles from '../styles';
@@ -22,6 +23,7 @@ export default function Panel({
   maxes,
   programName,
 }: PanelProps) {
+  const color = mode === Mode.light ? LIGHT_BLACK : WHITE;
   return (
     <SafeAreaView
       style={[
@@ -42,14 +44,7 @@ export default function Panel({
 
       <View style={styles.panelRowsContainer}>
         <View style={[styles.panelRow]}>
-          <Text
-            style={[
-              styles.panelOption,
-              { color: mode === Mode.light ? LIGHT_BLACK : WHITE },
-            ]}
-          >
-            MODE
-          </Text>
+          <Text style={[styles.panelOption, { color }]}>MODE</Text>
           <Feather
             name={mode === Mode.light ? 'sun' : 'moon'}
             size={24}
@@ -64,26 +59,11 @@ export default function Panel({
 
         <View style={[styles.panelRow]}>
           <Text
-            style={[
-              styles.panelOption,
-              {
-                color: mode === Mode.light ? LIGHT_BLACK : WHITE,
-                textTransform: 'uppercase',
-              },
-            ]}
+            style={[styles.panelOption, { color, textTransform: 'uppercase' }]}
           >
             PROGRAM
           </Text>
-          <Text
-            style={[
-              styles.panelOption,
-              {
-                color: mode === Mode.light ? LIGHT_BLACK : WHITE,
-              },
-            ]}
-          >
-            {programName}
-          </Text>
+          <Text style={[styles.panelOption, { color }]}>{programName}</Text>
         </View>
 
         {Object.entries(maxes).map(([lift, max]) => {
@@ -92,24 +72,26 @@ export default function Panel({
               <Text
                 style={[
                   styles.panelOption,
-                  {
-                    color: mode === Mode.light ? LIGHT_BLACK : WHITE,
-                    textTransform: 'uppercase',
-                  },
+                  { color, textTransform: 'uppercase' },
                 ]}
               >
                 {lift}
               </Text>
-              <Text
+              <NumericInput
+                value={max}
+                onChange={val => {
+                  console.log(`${lift} val:`, val);
+                }}
                 style={[
-                  styles.panelOption,
+                  styles.input,
                   {
-                    color: mode === Mode.light ? LIGHT_BLACK : WHITE,
+                    color,
+                    // borderColor: 'transparent',
+                    borderColor: color,
+                    borderWidth: 1,
                   },
                 ]}
-              >
-                {max}
-              </Text>
+              />
             </View>
           );
         })}

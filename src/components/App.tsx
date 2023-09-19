@@ -70,13 +70,13 @@ export default function App() {
   };
 
   useEffect(() => {
-    const fetchStoredMode = async () => {
-      const storedMode = await getStorage('@day_one_mode');
+    const setStoredMode = async () => {
+      const storedMode = (await getStorage('@day_one_mode')) || Mode.light;
       console.log('storedMode:', storedMode);
       if (storedMode) setMode(storedMode);
     };
 
-    fetchStoredMode();
+    setStoredMode();
   }, []);
 
   useEffect(() => {

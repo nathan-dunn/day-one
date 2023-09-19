@@ -121,6 +121,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
+    paddingVertical: 5,
+  },
+  input: {
+    height: 40,
+    borderWidth: 1,
+    padding: 10,
+    width: '33%',
+    textAlign: 'center',
+    fontSize: 20,
   },
 });
 

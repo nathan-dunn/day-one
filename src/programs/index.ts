@@ -203,29 +203,29 @@ GARAGE_GYM_WARRIOR_2.addSession(
   [4, 1],
   [''],
   [
-    new Lift(SQUAT, ['notes'], [new Rx(3, 5, 0.75)]),
-    new Lift(BENCH, ['notes'], [new Rx(3, 5, 0.75)]),
-    new Lift(ROWS, ['notes'], [new Rx(3, '10-15')]),
-    new Lift(DIPS_OR_PUSHUPS, ['notes'], [new Rx(3, 'AMRAP')]),
+    new Lift(SQUAT, [''], [new Rx(3, 5, 0.75)]),
+    new Lift(BENCH, [''], [new Rx(3, 5, 0.75)]),
+    new Lift(ROWS, [''], [new Rx(3, '10-15')]),
+    new Lift(DIPS_OR_PUSHUPS, [''], [new Rx(3, 'AMRAP')]),
   ]
 )
   .addSession(
     [4, 2],
     [''],
     [
-      new Lift(PRESS, ['notes'], [new Rx(3, 5, 0.75)]),
-      new Lift(DEADLIFT, ['notes'], [new Rx(3, 5, 0.75)]),
-      new Lift(SLDL, ['notes'], [new Rx(3, 5)]),
+      new Lift(PRESS, [''], [new Rx(3, 5, 0.75)]),
+      new Lift(DEADLIFT, [''], [new Rx(3, 5, 0.75)]),
+      new Lift(SLDL, [''], [new Rx(3, 5)]),
     ]
   )
   .addSession(
     [4, 3],
     [''],
     [
-      new Lift(SQUAT, ['notes'], [new Rx(3, 5, 0.75)]),
-      new Lift(BENCH, ['notes'], [new Rx(3, 5, 0.75)]),
-      new Lift(CHINS_OR_PULLUPS, ['notes'], [new Rx(3, 'AMRAP')]),
-      new Lift(ARMS, ['notes'], [new Rx(3, 5)]),
+      new Lift(SQUAT, [''], [new Rx(3, 5, 0.75)]),
+      new Lift(BENCH, [''], [new Rx(3, 5, 0.75)]),
+      new Lift(CHINS_OR_PULLUPS, [''], [new Rx(3, 'AMRAP')]),
+      new Lift(ARMS, [''], [new Rx(3, 5)]),
     ]
   );
 
