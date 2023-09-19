@@ -84,7 +84,6 @@ const styles = StyleSheet.create({
   rxContainer: {
     paddingBottom: 10,
   },
-
   panelContainer: {
     flex: 1,
   },
@@ -98,14 +97,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     paddingVertical: 10,
   },
-
   headerContainer: {
     flexDirection: 'row',
     alignSelf: 'flex-start',
     width: '100%',
     paddingLeft: 16,
   },
-
+  panelHeaderContainer: {
+    justifyContent: 'flex-start',
+    alignSelf: 'flex-start',
+    paddingTop: 0,
+  },
   panelRowsContainer: {
     justifyContent: 'flex-start',
     alignSelf: 'flex-start',

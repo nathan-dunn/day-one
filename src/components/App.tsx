@@ -16,19 +16,11 @@ import Panel from './Panel';
 import programs from '../programs';
 import { WHITE, LIGHT_BLACK, DARK_BLACK } from '../constants';
 import { findMaxesNeeded, getStorage } from '../utils';
+import { Mode, MaxesType } from '../types';
 import styles from '../styles';
 import { drawerStyles } from '../styles/misc';
 
 const { width } = Dimensions.get('window');
-
-enum Mode {
-  dark = 'dark',
-  light = 'light',
-}
-
-type MaxesType = {
-  [key: string]: number;
-};
 
 export default function App() {
   const [program, setProgram] = useState(programs[0]);
@@ -38,7 +30,7 @@ export default function App() {
   const [maxes, setMaxes] = useState(maxesNeeded);
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [mode, setMode] = useState<Mode>(Mode.light);
+  const [mode, setMode] = useState<Mode | undefined>(undefined);
 
   const flatListRef = useRef<FlatList>(null);
   const _scrollX = useRef(new Animated.Value(0)).current;
@@ -78,8 +70,13 @@ export default function App() {
   };
 
   useEffect(() => {
-    const stored = getStorage();
-    console.log('stored:', stored);
+    const fetchStoredMode = async () => {
+      const storedMode = await getStorage('@day_one_mode');
+      console.log('storedMode:', storedMode);
+      if (storedMode) setMode(storedMode);
+    };
+
+    fetchStoredMode();
   }, []);
 
   useEffect(() => {
@@ -98,67 +95,69 @@ export default function App() {
   const BACKGROUND_COLOR = mode === Mode.light ? WHITE : DARK_BLACK;
 
   return (
-    <Drawer
-      ref={drawerRef}
-      type="static"
-      content={
-        <Panel
-          onClose={closePanel}
-          mode={mode}
-          setMode={setMode}
-          maxes={maxes}
-          programName={program.name}
-        />
-      }
-      openDrawerOffset={100}
-      styles={drawerStyles}
-    >
-      <SafeAreaView
-        style={[styles.container, { backgroundColor: BACKGROUND_COLOR }]}
-      >
-        <StatusBar style="auto" />
-
-        <View style={styles.headerContainer}>
-          <Feather
-            name={'settings'}
-            size={24}
-            color={mode === Mode.light ? LIGHT_BLACK : WHITE}
-            padding={20}
-            onPress={openPanel}
+    mode && (
+      <Drawer
+        ref={drawerRef}
+        type="static"
+        content={
+          <Panel
+            onClose={closePanel}
+            mode={mode}
+            setMode={setMode}
+            maxes={maxes}
+            programName={program.name}
           />
-        </View>
+        }
+        openDrawerOffset={100}
+        styles={drawerStyles}
+      >
+        <SafeAreaView
+          style={[styles.container, { backgroundColor: BACKGROUND_COLOR }]}
+        >
+          <StatusBar style="auto" />
 
-        <Animated.FlatList
-          initialScrollIndex={currentIndex}
-          ref={flatListRef}
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          scrollEventThrottle={16}
-          horizontal
-          keyExtractor={item => item.date.toString()}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { x: _scrollX } } }],
-            { useNativeDriver: true }
-          )}
-          data={program.sessions}
-          renderItem={({ item, index }) => (
-            <Session
-              {...item}
-              index={index}
-              scrollX={_scrollX}
-              mode={mode}
-              handleLongPress={handleLongPress}
-              maxes={maxes}
+          <View style={styles.headerContainer}>
+            <Feather
+              name={'settings'}
+              size={24}
+              color={mode === Mode.light ? LIGHT_BLACK : WHITE}
+              padding={20}
+              onPress={openPanel}
             />
-          )}
-          onMomentumScrollEnd={onScrollEnd}
-          getItemLayout={(data, index) => ({
-            length: width,
-            offset: width * index,
-            index,
-          })}
-        />
-      </SafeAreaView>
-    </Drawer>
+          </View>
+
+          <Animated.FlatList
+            initialScrollIndex={currentIndex}
+            ref={flatListRef}
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            scrollEventThrottle={16}
+            horizontal
+            keyExtractor={item => item.date.toString()}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { x: _scrollX } } }],
+              { useNativeDriver: true }
+            )}
+            data={program.sessions}
+            renderItem={({ item, index }) => (
+              <Session
+                {...item}
+                index={index}
+                scrollX={_scrollX}
+                mode={mode}
+                handleLongPress={handleLongPress}
+                maxes={maxes}
+              />
+            )}
+            onMomentumScrollEnd={onScrollEnd}
+            getItemLayout={(data, index) => ({
+              length: width,
+              offset: width * index,
+              index,
+            })}
+          />
+        </SafeAreaView>
+      </Drawer>
+    )
   );
 }

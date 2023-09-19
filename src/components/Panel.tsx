@@ -1,23 +1,16 @@
 import React from 'react';
 import { SafeAreaView, View, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { getStorage, setStorage } from '../utils';
 import { WHITE, LIGHT_BLACK } from '../constants';
 import styles from '../styles';
-
-enum Mode {
-  dark = 'dark',
-  light = 'light',
-}
-
-type MaxesType = {
-  [key: string]: number;
-};
+import { Mode, MaxesType } from '../types';
 
 type PanelProps = {
   onOptionSelected?: (option: string) => void;
   onClose: () => void;
   mode: Mode;
-  setMode: React.Dispatch<React.SetStateAction<Mode>>;
+  setMode: React.Dispatch<React.SetStateAction<Mode | undefined>>;
   maxes: MaxesType;
   programName: string;
 };
@@ -36,13 +29,7 @@ export default function Panel({
         { backgroundColor: mode === Mode.light ? WHITE : LIGHT_BLACK },
       ]}
     >
-      <View
-        style={{
-          justifyContent: 'flex-start',
-          alignSelf: 'flex-start',
-          paddingTop: 0,
-        }}
-      >
+      <View style={styles.panelHeaderContainer}>
         <Feather
           name={'x'}
           size={24}
@@ -68,7 +55,9 @@ export default function Panel({
             size={24}
             color={mode === Mode.light ? LIGHT_BLACK : WHITE}
             onPress={() => {
-              setMode(p => (p === Mode.light ? Mode.dark : Mode.light));
+              const updated = mode === Mode.light ? Mode.dark : Mode.light;
+              setStorage('@day_one_mode', updated);
+              setMode(updated);
             }}
           />
         </View>
