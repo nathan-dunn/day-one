@@ -85,19 +85,40 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
 
-  controlPanelContainer: {
+  panelContainer: {
     flex: 1,
-    padding: 20,
   },
-  controlPanelTitle: {
+  panelTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
   },
-  controlPanelOption: {
+  panelOption: {
     fontSize: 20,
     paddingVertical: 10,
+  },
+
+  headerContainer: {
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    width: '100%',
+    paddingLeft: 16,
+  },
+
+  panelRowsContainer: {
+    justifyContent: 'flex-start',
+    alignSelf: 'flex-start',
+    paddingLeft: 20,
+    paddingRight: 40,
+    paddingVertical: 10,
+    width: '100%',
+  },
+  panelRow: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
   },
 });
 

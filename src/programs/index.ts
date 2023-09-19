@@ -15,54 +15,53 @@ import {
 const DIPS_OR_PUSHUPS = `${DIPS} or ${PUSHUPS}`;
 const CHINS_OR_PULLUPS = `${CHINS} or ${PULLUPS}`;
 
-const program = new Program('GGW2', ['program notes']);
+const GARAGE_GYM_WARRIOR_2 = new Program('GGW2', ['program notes']);
 
 // Week 1
-program
-  .addSession(
-    [1, 1],
-    [
-      'Volumes and Intensities are starting out very moderate.',
-      'Use this as an opportunity to build your work capacity and endurance by pushing the rest times to be as minimal as possible. 2-3 minutes is allowed, but if you can shorten rest periods to 60-90 seconds this is permissible provided (1) your form does not degrade (2) you do not have massive losses in bar speed.',
-      'As the weeks get heavier you can of course extend the rest periods as needed, but better endurance now will lead to shorter rest periods (and workouts) later',
-    ],
-    [
-      new Lift(
-        SQUAT,
-        [
-          'Rest 2-3 mins between sets.',
-          'Keep rest minimal while preserving form and focusing on bar speed.',
-        ],
-        [new Rx(4, 3, 0.75)]
-      ),
+GARAGE_GYM_WARRIOR_2.addSession(
+  [1, 1],
+  [
+    'Volumes and Intensities are starting out very moderate.',
+    'Use this as an opportunity to build your work capacity and endurance by pushing the rest times to be as minimal as possible. 2-3 minutes is allowed, but if you can shorten rest periods to 60-90 seconds this is permissible provided (1) your form does not degrade (2) you do not have massive losses in bar speed.',
+    'As the weeks get heavier you can of course extend the rest periods as needed, but better endurance now will lead to shorter rest periods (and workouts) later',
+  ],
+  [
+    new Lift(
+      SQUAT,
+      [
+        'Rest 2-3 mins between sets.',
+        'Keep rest minimal while preserving form and focusing on bar speed.',
+      ],
+      [new Rx(4, 3, 0.75)]
+    ),
 
-      new Lift(
-        BENCH,
-        [
-          'Rest 2-3 mins between sets.',
-          'Keep rest minimal while preserving form and focusing on bar speed.',
-        ],
-        [new Rx(4, 3, 0.75)]
-      ),
-      new Lift(
-        ROWS,
-        [
-          'Keep form strict and maintain 2-3 minute rest periods.',
-          'Perform from the hang or from the floor.',
-          'Use straps.',
-        ],
-        [new Rx(3, '8-10')]
-      ),
-      new Lift(
-        DIPS_OR_PUSHUPS,
-        [
-          '2-3 mins rest between sets.',
-          'Add weight to Dips if performing more than 15 reps per set.',
-        ],
-        [new Rx(3, 'AMRAP')]
-      ),
-    ]
-  )
+    new Lift(
+      BENCH,
+      [
+        'Rest 2-3 mins between sets.',
+        'Keep rest minimal while preserving form and focusing on bar speed.',
+      ],
+      [new Rx(4, 3, 0.75)]
+    ),
+    new Lift(
+      ROWS,
+      [
+        'Keep form strict and maintain 2-3 minute rest periods.',
+        'Perform from the hang or from the floor.',
+        'Use straps.',
+      ],
+      [new Rx(3, '8-10')]
+    ),
+    new Lift(
+      DIPS_OR_PUSHUPS,
+      [
+        '2-3 mins rest between sets.',
+        'Add weight to Dips if performing more than 15 reps per set.',
+      ],
+      [new Rx(3, 'AMRAP')]
+    ),
+  ]
+)
   .addSession(
     [1, 2],
     [''],
@@ -138,17 +137,16 @@ program
   );
 
 // Week 2
-program
-  .addSession(
-    [2, 1],
-    [''],
-    [
-      new Lift(SQUAT, [''], [new Rx(5, 3, 0.75)]),
-      new Lift(BENCH, [''], [new Rx(5, 3, 0.75)]),
-      new Lift(ROWS, [''], [new Rx(4, '8-10')]),
-      new Lift(DIPS_OR_PUSHUPS, [''], [new Rx(4, 'AMRAP')]),
-    ]
-  )
+GARAGE_GYM_WARRIOR_2.addSession(
+  [2, 1],
+  [''],
+  [
+    new Lift(SQUAT, [''], [new Rx(5, 3, 0.75)]),
+    new Lift(BENCH, [''], [new Rx(5, 3, 0.75)]),
+    new Lift(ROWS, [''], [new Rx(4, '8-10')]),
+    new Lift(DIPS_OR_PUSHUPS, [''], [new Rx(4, 'AMRAP')]),
+  ]
+)
   .addSession(
     [2, 2],
     [''],
@@ -170,17 +168,16 @@ program
   );
 
 // Week 3
-program
-  .addSession(
-    [3, 1],
-    [''],
-    [
-      new Lift(SQUAT, [''], [new Rx(6, 3, 0.75)]),
-      new Lift(BENCH, [''], [new Rx(6, 3, 0.75)]),
-      new Lift(ROWS, [''], [new Rx(5, '8-10')]),
-      new Lift(DIPS_OR_PUSHUPS, [''], [new Rx(5, 'AMRAP')]),
-    ]
-  )
+GARAGE_GYM_WARRIOR_2.addSession(
+  [3, 1],
+  [''],
+  [
+    new Lift(SQUAT, [''], [new Rx(6, 3, 0.75)]),
+    new Lift(BENCH, [''], [new Rx(6, 3, 0.75)]),
+    new Lift(ROWS, [''], [new Rx(5, '8-10')]),
+    new Lift(DIPS_OR_PUSHUPS, [''], [new Rx(5, 'AMRAP')]),
+  ]
+)
   .addSession(
     [3, 2],
     [''],
@@ -202,17 +199,16 @@ program
   );
 
 // Week 4
-program
-  .addSession(
-    [4, 1],
-    [''],
-    [
-      new Lift(SQUAT, ['notes'], [new Rx(3, 5, 0.75)]),
-      new Lift(BENCH, ['notes'], [new Rx(3, 5, 0.75)]),
-      new Lift(ROWS, ['notes'], [new Rx(3, '10-15')]),
-      new Lift(DIPS_OR_PUSHUPS, ['notes'], [new Rx(3, 'AMRAP')]),
-    ]
-  )
+GARAGE_GYM_WARRIOR_2.addSession(
+  [4, 1],
+  [''],
+  [
+    new Lift(SQUAT, ['notes'], [new Rx(3, 5, 0.75)]),
+    new Lift(BENCH, ['notes'], [new Rx(3, 5, 0.75)]),
+    new Lift(ROWS, ['notes'], [new Rx(3, '10-15')]),
+    new Lift(DIPS_OR_PUSHUPS, ['notes'], [new Rx(3, 'AMRAP')]),
+  ]
+)
   .addSession(
     [4, 2],
     [''],
@@ -233,4 +229,4 @@ program
     ]
   );
 
-export default program;
+export default [GARAGE_GYM_WARRIOR_2];

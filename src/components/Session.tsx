@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import AnimatedText from './AnimatedText';
 import AnimatedLine from './AnimatedLine';
-
 import { WHITE, LIGHT_BLACK, GRAY } from '../constants';
 import { roundTo } from '../utils';
 import styles from '../styles';
@@ -16,18 +15,8 @@ import styles from '../styles';
 const { width } = Dimensions.get('window');
 
 type MaxesType = {
-  squat: number;
-  bench: number;
-  deadlift: number;
-  press: number;
+  [key: string]: number;
 };
-
-// const maxes: MaxesType = {
-//   squat: 335,
-//   bench: 285,
-//   deadlift: 385,
-//   press: 160,
-// };
 
 enum Mode {
   dark = 'dark',
