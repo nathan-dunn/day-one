@@ -24,12 +24,19 @@ export class Lift {
 
 type WeekDayTuple = [number, number];
 
-class Session {
+export class Session {
+  program: Program;
   date: WeekDayTuple;
   notes: string[];
   lifts: Lift[];
 
-  constructor(date: WeekDayTuple, notes: string[], lifts: Lift[]) {
+  constructor(
+    program: Program,
+    date: WeekDayTuple,
+    notes: string[],
+    lifts: Lift[]
+  ) {
+    this.program = program;
     this.date = date;
     this.notes = notes;
     this.lifts = lifts;
@@ -47,7 +54,7 @@ export class Program {
   }
 
   addSession(date: WeekDayTuple, notes: string[], lifts: Lift[]): Program {
-    const session = new Session(date, notes, lifts);
+    const session = new Session(this, date, notes, lifts);
     this.sessions.push(session);
     return this;
   }

@@ -29,7 +29,7 @@ export default function App() {
 
   const [maxes, setMaxes] = useState(maxesNeeded);
 
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [page, setPage] = useState<number>(0);
   const [mode, setMode] = useState<Mode | undefined>(undefined);
 
   const flatListRef = useRef<FlatList>(null);
@@ -42,14 +42,14 @@ export default function App() {
 
     // Divide the horizontal offset by the width of the view to see which page is visible
     const pageNum = Math.floor(contentOffset.x / viewSize.width);
-    setCurrentIndex(pageNum);
+    setPage(pageNum);
     return { contentOffset, viewSize, pageNum };
   };
 
   const handleLongPress = () => {
     // Increment the index
-    const nextIndex = currentIndex === sessionsLen - 1 ? 0 : currentIndex + 1;
-    setCurrentIndex(nextIndex);
+    const nextIndex = page === sessionsLen - 1 ? 0 : page + 1;
+    setPage(nextIndex);
 
     flatListRef.current?.scrollToOffset({
       offset: nextIndex * width,
@@ -69,14 +69,29 @@ export default function App() {
     }
   };
 
-  useEffect(() => {
-    const setStoredMode = async () => {
-      const storedMode = (await getStorage('@day_one_mode')) || Mode.light;
-      console.log('storedMode:', storedMode);
-      if (storedMode) setMode(storedMode);
+  const setStoredPage = async () => {
+    const storedPage = (await getStorage('@day_one_page')) || 0;
+    console.log('storedPage:', storedPage);
+    if (storedPage) setPage(parseInt(storedPage, 10));
+  };
+
+  const setStoredMode = async () => {
+    const isMode = (value: any): value is Mode => {
+      return Object.values(Mode).includes(value);
     };
 
+    const storedMode = await getStorage('@day_one_mode');
+    if (isMode(storedMode)) {
+      setMode(storedMode);
+    } else {
+      setMode(Mode.light);
+    }
+  };
+
+  // init
+  useEffect(() => {
     setStoredMode();
+    setStoredPage();
   }, []);
 
   useEffect(() => {
@@ -127,7 +142,7 @@ export default function App() {
           </View>
 
           <Animated.FlatList
-            initialScrollIndex={currentIndex}
+            initialScrollIndex={page}
             ref={flatListRef}
             pagingEnabled
             showsHorizontalScrollIndicator={false}

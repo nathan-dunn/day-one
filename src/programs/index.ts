@@ -1,4 +1,4 @@
-import { Program, Lift, Rx } from './Program';
+import { Program, Lift, Rx } from './ProgramCreator';
 import {
   SQUAT,
   BENCH,

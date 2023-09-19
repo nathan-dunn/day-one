@@ -163,28 +163,30 @@ export default function Session({
                 </View>
 
                 <View style={styles.notesContainer}>
-                  {notes.map((note, noteIndex) => {
-                    return (
-                      <View key={noteIndex} style={styles.subNotesContainer}>
-                        <AnimatedText
-                          text={'•'}
-                          style={[styles.bullet, { color: SECONDARY_TEXT }]}
-                          opacity={opacity}
-                          translateX={trasnlateFast}
-                        />
+                  {notes
+                    .filter(note => note)
+                    .map((note, noteIndex) => {
+                      return (
+                        <View key={noteIndex} style={styles.subNotesContainer}>
+                          <AnimatedText
+                            text={'•'}
+                            style={[styles.bullet, { color: SECONDARY_TEXT }]}
+                            opacity={opacity}
+                            translateX={trasnlateFast}
+                          />
 
-                        <AnimatedText
-                          text={note.trim()}
-                          style={[
-                            styles.note,
-                            { width: width * 0.75, color: SECONDARY_TEXT },
-                          ]}
-                          opacity={opacity}
-                          translateX={trasnlateFast}
-                        />
-                      </View>
-                    );
-                  })}
+                          <AnimatedText
+                            text={note.trim()}
+                            style={[
+                              styles.note,
+                              { width: width * 0.75, color: SECONDARY_TEXT },
+                            ]}
+                            opacity={opacity}
+                            translateX={trasnlateFast}
+                          />
+                        </View>
+                      );
+                    })}
                 </View>
               </View>
             );
@@ -198,21 +200,23 @@ export default function Session({
         />
 
         <View style={styles.notesContainer}>
-          {notes.map((note, noteIndex) => {
-            return (
-              <View key={noteIndex} style={styles.sessionNotesContainer}>
-                <AnimatedText
-                  text={note.trim()}
-                  style={[
-                    styles.note,
-                    { width: width * 0.75, color: SECONDARY_TEXT },
-                  ]}
-                  opacity={opacity}
-                  translateX={trasnlateFast}
-                />
-              </View>
-            );
-          })}
+          {notes
+            .filter(note => note)
+            .map((note, noteIndex) => {
+              return (
+                <View key={noteIndex} style={styles.sessionNotesContainer}>
+                  <AnimatedText
+                    text={note.trim()}
+                    style={[
+                      styles.note,
+                      { width: width * 0.75, color: SECONDARY_TEXT },
+                    ]}
+                    opacity={opacity}
+                    translateX={trasnlateFast}
+                  />
+                </View>
+              );
+            })}
         </View>
       </View>
     </ScrollView>
