@@ -30,6 +30,7 @@ const { width } = Dimensions.get('window');
 
 export default function App() {
   const [program, setProgram] = useState(programs[0]);
+  const sessionsLen = program.sessions.length;
 
   const [mode, setMode] = useState<Mode | undefined>(undefined);
   const backgroundColor = mode === Mode.light ? WHITE : DARK_BLACK;
@@ -48,6 +49,7 @@ export default function App() {
     const viewSize = e.nativeEvent.layoutMeasurement;
     const pageNum = Math.floor(contentOffset.x / viewSize.width);
     setPage(pageNum);
+    setStorage('@day_one_page', String(pageNum));
     return { contentOffset, viewSize, pageNum };
   };
 
@@ -68,8 +70,15 @@ export default function App() {
   const loadStoredPage = async () => {
     const storedPage = await getStorage('@day_one_page');
     const parsed = storedPage ? parseInt(storedPage, 10) : null;
+
+    console.log('parsed:', parsed);
     if (parsed) {
       setPage(parsed);
+
+      flatListRef.current?.scrollToOffset({
+        offset: parsed * width,
+        animated: true,
+      });
     } else {
       setPage(0);
       await setStorage('@day_one_page', String(0));
