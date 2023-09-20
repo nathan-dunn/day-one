@@ -18,7 +18,7 @@ import {
   BENCH,
   PRESS,
 } from '../constants';
-import { Mode, MaxesType, LiftType } from '../types';
+import { Mode, MaxesType, LiftType, Day } from '../types';
 import { roundTo } from '../utils';
 
 const { width } = Dimensions.get('window');
@@ -95,6 +95,15 @@ export default function Session({
     }
   }, [page]);
 
+  const dayText: Day | null =
+    day === 1
+      ? Day.monday
+      : day === 2
+      ? Day.wednesday
+      : day === 3
+      ? Day.friday
+      : null;
+
   return (
     <ScrollView
       ref={scrollViewRef}
@@ -112,7 +121,7 @@ export default function Session({
             translateX={translateSlow}
           />
           <AnimatedText
-            text={`Day ${day}`}
+            text={dayText || `Day ${day}`}
             style={[styles.day, { color: SECONDARY_TEXT }]}
             opacity={opacity}
             translateX={translateFast}

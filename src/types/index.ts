@@ -3,6 +3,16 @@ export enum Mode {
   light = 'light',
 }
 
+export enum Day {
+  monday = 'Monday',
+  tuesday = 'Tuesday',
+  wednesday = 'Wednesday',
+  thursday = 'Thursday',
+  friday = 'Friday',
+  saturday = 'Saturday',
+  sunday = 'Sunday',
+}
+
 export type MaxesType = {
   [key: string]: number;
 };
