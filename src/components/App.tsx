@@ -88,22 +88,33 @@ export default function App() {
     }
   };
 
+  const getMaxes = async () => {
+    const maxes = (await getStorage('@day_one_maxes')) || JSON.stringify({});
+    return JSON.parse(maxes);
+  };
+
+  const loadMaxes = async () => {
+    const maxes = await getMaxes();
+    setMaxes(maxes);
+  };
+
   // init
   useEffect(() => {
     setStoredMode();
     setStoredPage();
+    loadMaxes();
   }, []);
 
   useEffect(() => {
     maxesNeeded = findMaxesNeeded(program.sessions);
     sessionsLen = program.sessions.length;
     setMaxes(maxesNeeded);
-    setMaxes({
-      squat: 335,
-      bench: 285,
-      deadlift: 385,
-      press: 160,
-    });
+    // setMaxes({
+    //   squat: 335,
+    //   bench: 285,
+    //   deadlift: 385,
+    //   press: 160,
+    // });
     // console.log(JSON.stringify(program, null, 2));
   }, [program]);
 

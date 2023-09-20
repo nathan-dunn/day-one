@@ -78,10 +78,7 @@ export default function Panel({
                 {lift}
               </Text>
               <NumericInput
-                value={max}
-                onChange={val => {
-                  console.log(`${lift} val:`, val);
-                }}
+                lift={lift}
                 style={[
                   styles.input,
                   {
