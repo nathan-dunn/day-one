@@ -16,8 +16,13 @@ import Session from './Session';
 import Panel from './Panel';
 import programs from '../programs';
 import { WHITE, LIGHT_BLACK, DARK_BLACK } from '../constants';
-import { findMaxesNeeded, getStorage, removeStorage } from '../utils';
-import { Mode, MaxesType } from '../types';
+import {
+  findMaxesNeeded,
+  getStorage,
+  setStorage,
+  removeStorage,
+} from '../utils';
+import { Mode, MaxesType, isMode, isMaxesType } from '../types';
 import styles from '../styles';
 import { drawerStyles } from '../styles/misc';
 
@@ -61,32 +66,36 @@ export default function App() {
   };
 
   const loadStoredPage = async () => {
-    const storedPage = (await getStorage('@day_one_page')) || 0;
-    if (storedPage) setPage(parseInt(storedPage, 10));
+    const storedPage = await getStorage('@day_one_page');
+    const parsed = storedPage ? parseInt(storedPage, 10) : null;
+    if (parsed) {
+      setPage(parsed);
+    } else {
+      setPage(0);
+      await setStorage('@day_one_page', String(0));
+    }
   };
 
   const loadStoredMode = async () => {
-    const isMode = (value: any): value is Mode => {
-      return Object.values(Mode).includes(value);
-    };
-
     const storedMode = await getStorage('@day_one_mode');
     if (isMode(storedMode)) {
       setMode(storedMode);
     } else {
       setMode(Mode.light);
+      await setStorage('@day_one_mode', Mode.light);
     }
   };
 
-  const getMaxes = async () => {
-    const startingMaxes =
-      (await getStorage('@day_one_maxes')) || JSON.stringify(maxes);
-    return JSON.parse(startingMaxes);
-  };
-
   const loadMaxes = async () => {
-    const maxes = await getMaxes();
-    setMaxes(maxes);
+    const storedMaxes = await getStorage('@day_one_maxes');
+    const parsed = storedMaxes ? JSON.parse(storedMaxes) : null;
+
+    if (isMaxesType(parsed)) {
+      setMaxes({ ...maxesNeeded, ...parsed });
+    } else {
+      setMaxes(maxesNeeded);
+      await setStorage('@day_one_maxes', JSON.stringify(maxesNeeded));
+    }
   };
 
   const reset = async () => {
@@ -115,9 +124,7 @@ export default function App() {
         type="static"
         content={
           <Panel
-            onClose={() => {
-              closePanel();
-            }}
+            onClose={closePanel}
             mode={mode}
             setMode={setMode}
             maxes={maxes}

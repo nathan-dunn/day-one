@@ -52,11 +52,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 16 * 1.5,
   },
-  notesContainer: {
-    //
-  },
+
   sessionNotesContainer: {
     paddingBottom: 10,
+    paddingHorizontal: 8,
   },
   liftContainer: {
     //
@@ -102,6 +101,7 @@ const styles = StyleSheet.create({
   panelKey: {
     fontSize: 20,
     paddingVertical: 10,
+    textTransform: 'uppercase',
   },
   panelValue: {
     fontSize: 20,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, View, Text } from 'react-native';
+import { SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import NumericInput from './NumericInput';
 import { setStorage } from '../utils';
@@ -46,52 +46,38 @@ export default function Panel({
       </View>
 
       <View style={styles.panelRowsContainer}>
-        <View style={[styles.panelRow]}>
-          <Text
-            style={[styles.panelKey, { color }]}
-            onPress={() => {
-              const updated = mode === Mode.light ? Mode.dark : Mode.light;
-              setStorage('@day_one_mode', updated);
-              setMode(updated);
-            }}
-          >
-            MODE
-          </Text>
+        <TouchableOpacity
+          style={[styles.panelRow]}
+          onPress={() => {
+            const updated = mode === Mode.light ? Mode.dark : Mode.light;
+            setStorage('@day_one_mode', updated);
+            setMode(updated);
+          }}
+        >
+          <Text style={[styles.panelKey, { color }]}>MODE</Text>
           <View
-            style={[styles.panelValue, { width: '33%', alignItems: 'center' }]}
+            style={[
+              styles.panelRow,
+              { justifyContent: 'center', width: '33%' },
+            ]}
           >
             <Feather
               name={mode === Mode.light ? 'sun' : 'moon'}
               size={24}
               color={mode === Mode.light ? LIGHT_BLACK : WHITE}
-              onPress={() => {
-                const updated = mode === Mode.light ? Mode.dark : Mode.light;
-                setStorage('@day_one_mode', updated);
-                setMode(updated);
-              }}
             />
           </View>
-        </View>
+        </TouchableOpacity>
 
         <View style={[styles.panelRow]}>
-          <Text
-            style={[styles.panelKey, { color, textTransform: 'uppercase' }]}
-          >
-            PROGRAM
-          </Text>
-          <Text style={[styles.panelValue, { color, width: '33%' }]}>
-            {programName}
-          </Text>
+          <Text style={[styles.panelKey, { color }]}>PROGRAM</Text>
+          <Text style={[styles.panelValue, { color }]}>{programName}</Text>
         </View>
 
         {Object.entries(maxes).map(([lift]) => {
           return (
             <View key={lift} style={[styles.panelRow]}>
-              <Text
-                style={[styles.panelKey, { color, textTransform: 'uppercase' }]}
-              >
-                {lift}
-              </Text>
+              <Text style={[styles.panelKey, { color }]}>{lift}</Text>
               <NumericInput
                 maxes={maxes}
                 lift={lift}
