@@ -1,5 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { TextInput, StyleProp, TextStyle } from 'react-native';
+import {
+  TextInput,
+  StyleProp,
+  TouchableWithoutFeedback,
+  TextStyle,
+  Keyboard,
+} from 'react-native';
 import { MaxesType } from '../types';
 import { getStorage, setStorage } from '../utils';
 
@@ -74,13 +80,15 @@ export default function NumericInput({
   }, []);
 
   return (
-    <TextInput
-      ref={inputRef}
-      style={style}
-      onFocus={handleFocus}
-      onChangeText={handleTextChange}
-      value={max > 0 ? max.toString() : ''}
-      keyboardType="numeric"
-    />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <TextInput
+        ref={inputRef}
+        style={style}
+        onFocus={handleFocus}
+        onChangeText={handleTextChange}
+        value={max > 0 ? max.toString() : ''}
+        keyboardType="numeric"
+      />
+    </TouchableWithoutFeedback>
   );
 }

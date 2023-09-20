@@ -47,7 +47,16 @@ export default function Panel({
 
       <View style={styles.panelRowsContainer}>
         <View style={[styles.panelRow]}>
-          <Text style={[styles.panelKey, { color }]}>MODE</Text>
+          <Text
+            style={[styles.panelKey, { color }]}
+            onPress={() => {
+              const updated = mode === Mode.light ? Mode.dark : Mode.light;
+              setStorage('@day_one_mode', updated);
+              setMode(updated);
+            }}
+          >
+            MODE
+          </Text>
           <View
             style={[styles.panelValue, { width: '33%', alignItems: 'center' }]}
           >
@@ -88,11 +97,7 @@ export default function Panel({
                 lift={lift}
                 style={[
                   styles.input,
-                  {
-                    color,
-                    borderColor: color,
-                    borderWidth: 1,
-                  },
+                  { color, borderColor: color, borderWidth: 1 },
                 ]}
               />
             </View>

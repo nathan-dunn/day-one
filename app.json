@@ -4,12 +4,12 @@
     "slug": "day-one",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/day_one.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#fff"
+      "backgroundColor": "#242424"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -26,7 +26,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#fff"
+        "backgroundColor": "#242424"
       },
       "config": {
         "package": "com.tru36rit.dayone"

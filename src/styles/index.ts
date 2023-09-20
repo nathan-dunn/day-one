@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     padding: 10,
     width: '33%',
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 16,
     borderRadius: 2,
   },
 });

@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   FlatList,
   View,
+  Keyboard,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
@@ -56,6 +57,7 @@ export default function App() {
       drawerRef.current.close();
     }
     loadMaxes();
+    Keyboard.dismiss();
   };
 
   const loadStoredPage = async () => {
