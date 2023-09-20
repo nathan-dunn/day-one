@@ -11,8 +11,7 @@
     "ts:check": "tsc",
     "build": "eas build -p ios",
     "beta": "eas submit --platform ios",
-    "submit": "npm run build && npm run beta",
-    "sims": "xcrun simctl list devices && emulator -list-avds"
+    "deploy": "npm run build && npm run beta"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.19.3",
