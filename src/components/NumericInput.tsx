@@ -41,10 +41,13 @@ export default function NumericInput({
 
   const handleFocus = () => {
     const endPosition = String(max).length;
-    inputRef.current &&
-      inputRef.current.setNativeProps({
-        selection: { start: 0, end: endPosition },
-      });
+    inputRef.current?.setNativeProps({
+      selection: { start: 0, end: endPosition },
+    });
+  };
+
+  const handleBlur = () => {
+    inputRef.current?.blur();
   };
 
   const handleTextChange = async (text: string) => {
@@ -53,13 +56,14 @@ export default function NumericInput({
       return;
     }
 
-    const updatedMax = parseFloat(text.slice(0, 3));
+    const pattern = /^(?:\d{1,3}(?:\.\d)?)?$/;
 
-    if (!isNaN(updatedMax)) {
-      const maxes = await getMaxes();
+    if (pattern.test(text)) {
+      const updatedMax = parseFloat(text);
 
       setMax(updatedMax);
 
+      const maxes = await getMaxes();
       await setStorage(
         '@day_one_maxes',
         JSON.stringify({ ...maxes, [lift]: updatedMax })
@@ -81,8 +85,9 @@ export default function NumericInput({
         ref={inputRef}
         style={style}
         onFocus={handleFocus}
+        onBlur={handleBlur}
         onChangeText={handleTextChange}
-        value={max > 0 ? max.toString() : ''}
+        value={String(max)}
         keyboardType="numeric"
       />
     </TouchableWithoutFeedback>

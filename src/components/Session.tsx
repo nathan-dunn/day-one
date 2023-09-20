@@ -10,7 +10,14 @@ import {
 } from 'react-native';
 import AnimatedText from './AnimatedText';
 import AnimatedLine from './AnimatedLine';
-import { WHITE, LIGHT_BLACK, LIGHT_GRAY, DARK_GRAY } from '../constants';
+import {
+  WHITE,
+  LIGHT_BLACK,
+  LIGHT_GRAY,
+  DARK_GRAY,
+  BENCH,
+  PRESS,
+} from '../constants';
 import { Mode, MaxesType, LiftType } from '../types';
 import { roundTo } from '../utils';
 
@@ -146,12 +153,13 @@ export default function Session({
                         ? 'sets'
                         : 'set';
                     const repsText = reps === 'AMRAP' ? '' : 'reps';
+                    const rounded = [BENCH, PRESS].includes(name) ? 2.5 : 5;
 
                     const rxText =
                       max && perc
                         ? `${sets} ${setsText} x ${reps} ${repsText} @ ${roundTo(
                             max * perc,
-                            5
+                            rounded
                           )} lbs`
                         : perc
                         ? `${sets} ${setsText} x ${reps} ${repsText} @ ${
