@@ -11,7 +11,6 @@ import AnimatedLine from './AnimatedLine';
 import { WHITE, LIGHT_BLACK, LIGHT_GRAY, DARK_GRAY } from '../constants';
 import { Mode, MaxesType, LiftType } from '../types';
 import { roundTo } from '../utils';
-import styles from '../styles';
 
 const { width } = Dimensions.get('window');
 
@@ -68,8 +67,8 @@ export default function Session({
     });
 
   return (
-    <ScrollView contentContainerStyle={[styles.sessionContainer, { width }]}>
-      <View style={styles.sessionContent}>
+    <ScrollView contentContainerStyle={[styles.container, { width }]}>
+      <View style={styles.content}>
         <AnimatedText
           text={`Week ${week}`}
           style={[styles.week, { color: PRIMARY_TEXT }]}
@@ -201,6 +200,78 @@ export default function Session({
   );
 }
 
-const _styles = StyleSheet.create({
-  //
+const styles = StyleSheet.create({
+  bullet: {
+    fontWeight: '600',
+    marginRight: 10,
+    fontSize: 16,
+    lineHeight: 16 * 1.5,
+    width: 10,
+    textAlign: 'center',
+  },
+  container: {
+    paddingTop: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {},
+  day: {
+    fontWeight: '600',
+    textAlign: 'left',
+    marginRight: 10,
+    fontSize: 20,
+    lineHeight: 16 * 1.5,
+  },
+  lift: {
+    textTransform: 'uppercase',
+    textAlign: 'left',
+    fontSize: 20,
+    fontWeight: '800',
+    letterSpacing: 2,
+    marginBottom: 10,
+  },
+  liftContainer: {
+    //
+  },
+  liftSubContainer: {
+    //
+  },
+  line: {
+    height: 1,
+    marginVertical: 30,
+  },
+  note: {
+    fontWeight: '600',
+    textAlign: 'left',
+    marginRight: 10,
+    fontSize: 16,
+    lineHeight: 16 * 1.5,
+    marginLeft: -6,
+  },
+  rx: {
+    fontWeight: '600',
+    textAlign: 'left',
+    marginRight: 10,
+    fontSize: 16,
+    lineHeight: 16 * 1.5,
+  },
+  rxContainer: {
+    paddingBottom: 10,
+  },
+  sessionNotesContainer: {
+    paddingBottom: 10,
+    paddingHorizontal: 8,
+  },
+  subNotesContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  week: {
+    textTransform: 'uppercase',
+    textAlign: 'left',
+    fontSize: 24,
+    fontWeight: '800',
+    letterSpacing: 2,
+    marginBottom: 10,
+  },
 });

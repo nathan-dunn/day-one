@@ -9,6 +9,7 @@ import {
   FlatList,
   View,
   Keyboard,
+  StyleSheet,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
@@ -24,10 +25,13 @@ import {
   removeStorage,
 } from '../utils';
 import { Mode, MaxesType, isMode, isMaxesType } from '../types';
-import styles from '../styles';
-import { drawerStyles } from '../styles/misc';
 
 const { width } = Dimensions.get('window');
+
+const drawerStyles = {
+  drawer: { shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3 },
+  main: { paddingLeft: 3 },
+};
 
 export default function App() {
   const [program, setProgram] = useState(programs[0]);
@@ -210,3 +214,17 @@ export default function App() {
     )
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    width: '100%',
+    paddingLeft: 16,
+  },
+});
