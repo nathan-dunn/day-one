@@ -13,16 +13,22 @@ import { WHITE, LIGHT_BLACK, LIGHT_GRAY, DARK_GRAY } from '../constants';
 const { width } = Dimensions.get('window');
 
 type IntroProps = {
+  index: number;
   name: string;
   notes: string[];
   mode: Mode;
   scrollX: Animated.Value;
 };
 
-export default function Intro({ name, notes, mode, scrollX }: IntroProps) {
+export default function Intro({
+  name,
+  index: sessionIndex, // always 0
+  notes,
+  mode,
+  scrollX,
+}: IntroProps) {
   const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
   const SECONDARY_TEXT = mode === Mode.light ? DARK_GRAY : LIGHT_GRAY;
-  const sessionIndex = 0;
 
   const inputRange = [
     (sessionIndex - 1) * width,

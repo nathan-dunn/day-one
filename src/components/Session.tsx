@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   Animated,
   Dimensions,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   ScrollView,
   StyleSheet,
   View,
@@ -15,6 +17,7 @@ import { roundTo } from '../utils';
 const { width } = Dimensions.get('window');
 
 type SessionProps = {
+  page: number;
   date: [number, number];
   notes: string[];
   lifts: LiftType[];
@@ -25,6 +28,7 @@ type SessionProps = {
 };
 
 export default function Session({
+  page,
   date,
   notes,
   lifts,
@@ -34,6 +38,11 @@ export default function Session({
   maxes,
 }: SessionProps) {
   const _width = width * 0.85;
+
+  const [scrollPosition, setScrollPosition] = useState<number>(0);
+
+  const scrollViewRef = useRef<ScrollView | null>(null);
+
   const [week, day] = date;
   const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
   const SECONDARY_TEXT = mode === Mode.light ? DARK_GRAY : LIGHT_GRAY;
@@ -67,8 +76,25 @@ export default function Session({
       outputRange: [width, 0, -width],
     });
 
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const scrollPosition = event.nativeEvent.contentOffset.y;
+    setScrollPosition(scrollPosition);
+  };
+
+  useEffect(() => {
+    if (scrollPosition > 0) {
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+      console.log('paging...:', { page, scrollPosition });
+    }
+  }, [page]);
+
   return (
-    <ScrollView contentContainerStyle={[styles.container, { width }]}>
+    <ScrollView
+      ref={scrollViewRef}
+      onScroll={handleScroll}
+      scrollEventThrottle={16}
+      contentContainerStyle={[styles.container, { width }]}
+    >
       <View style={[styles.content, { width: _width }]}>
         {/* HEADER */}
         <View style={[styles.headerContainer]}>

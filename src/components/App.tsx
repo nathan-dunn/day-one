@@ -29,7 +29,6 @@ import { Mode, MaxesType, isMode, isMaxesType } from '../types';
 const { width } = Dimensions.get('window');
 
 const drawerStyles = {
-  drawer: { shadowColor: DARK_BLACK, shadowOpacity: 0.8, shadowRadius: 3 },
   main: { paddingLeft: 0 },
 };
 
@@ -195,6 +194,7 @@ export default function App() {
             renderItem={({ item, index }) => {
               return index === 0 ? (
                 <Intro
+                  index={index}
                   name={item.name}
                   notes={item.notes}
                   mode={mode}
@@ -204,6 +204,7 @@ export default function App() {
                 <Session
                   {...item}
                   index={index}
+                  page={page}
                   scrollX={_scrollX}
                   mode={mode}
                   maxes={maxes}
