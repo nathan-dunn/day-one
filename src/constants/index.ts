@@ -9,6 +9,8 @@ export const PUSHUPS: string = 'pushups';
 export const CHINS: string = 'chins';
 export const PULLUPS: string = 'pullups';
 export const ARMS: string = 'arms';
+export const DIPS_OR_PUSHUPS = `${DIPS} or ${PUSHUPS}`;
+export const CHINS_OR_PULLUPS = `${CHINS} or ${PULLUPS}`;
 
 export const DARK_BLACK = '#222';
 export const MED_BLACK = '#333';

@@ -25,38 +25,31 @@ export class Lift {
 type WeekDayTuple = [number, number];
 
 export class Session {
-  program: Program;
-  date: WeekDayTuple;
+  sessionId: WeekDayTuple;
   notes: string[];
   lifts: Lift[];
 
-  constructor(
-    program: Program,
-    date: WeekDayTuple,
-    notes: string[],
-    lifts: Lift[]
-  ) {
-    this.program = program;
-    this.date = date;
+  constructor(sessionId: WeekDayTuple, notes: string[], lifts: Lift[]) {
+    this.sessionId = sessionId;
     this.notes = notes;
     this.lifts = lifts;
   }
 }
 
 export class Program {
-  date: WeekDayTuple;
+  sessionId: WeekDayTuple;
   name: string;
   notes: string[];
   sessions: Session[] = [];
 
   constructor(name: string, notes: string[]) {
-    this.date = [0, 0];
+    this.sessionId = [0, 0];
     this.name = name;
     this.notes = notes;
   }
 
-  addSession(date: WeekDayTuple, notes: string[], lifts: Lift[]): Program {
-    const session = new Session(this, date, notes, lifts);
+  addSession(sessionId: WeekDayTuple, notes: string[], lifts: Lift[]): Program {
+    const session = new Session(sessionId, notes, lifts);
     this.sessions.push(session);
     return this;
   }

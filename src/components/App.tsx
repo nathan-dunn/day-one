@@ -34,8 +34,9 @@ const drawerStyles = {
 
 export default function App() {
   const [program, setProgram] = useState(programs[0]);
+
   const programData = [
-    { name: program.name, notes: program.notes, date: program.date },
+    { name: program.name, notes: program.notes, sessionId: program.sessionId },
     ...program.sessions,
   ];
 
@@ -185,7 +186,7 @@ export default function App() {
             scrollEventThrottle={16}
             horizontal
             pagingEnabled
-            keyExtractor={item => item.date.toString()}
+            keyExtractor={item => item.sessionId.toString()}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { x: _scrollX } } }],
               { useNativeDriver: true }

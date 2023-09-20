@@ -44,7 +44,7 @@ type Lift = {
 };
 
 type Session = {
-  date: [number, number];
+  sessionId: [number, number];
   notes: string[];
   lifts: Lift[];
 };

@@ -18,7 +18,7 @@ const { width } = Dimensions.get('window');
 
 type SessionProps = {
   page: number;
-  date: [number, number];
+  sessionId: [number, number];
   notes: string[];
   lifts: LiftType[];
   index: number;
@@ -29,7 +29,7 @@ type SessionProps = {
 
 export default function Session({
   page,
-  date,
+  sessionId,
   notes,
   lifts,
   scrollX,
@@ -43,7 +43,7 @@ export default function Session({
 
   const scrollViewRef = useRef<ScrollView | null>(null);
 
-  const [week, day] = date;
+  const [week, day] = sessionId;
   const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
   const SECONDARY_TEXT = mode === Mode.light ? DARK_GRAY : LIGHT_GRAY;
 
