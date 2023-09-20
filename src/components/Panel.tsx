@@ -33,6 +33,7 @@ export default function Panel({
         { backgroundColor: mode === Mode.light ? WHITE : LIGHT_BLACK },
       ]}
     >
+      {/* HEADER */}
       <View style={styles.panelHeaderContainer}>
         <Feather
           name={'x'}
@@ -46,6 +47,7 @@ export default function Panel({
       </View>
 
       <View style={styles.panelRowsContainer}>
+        {/* MODE */}
         <TouchableOpacity
           style={[styles.panelRow]}
           onPress={() => {
@@ -69,11 +71,13 @@ export default function Panel({
           </View>
         </TouchableOpacity>
 
-        <View style={[styles.panelRow]}>
+        {/* PROGRAM */}
+        {/* <View style={[styles.panelRow]}>
           <Text style={[styles.panelKey, { color }]}>PROGRAM</Text>
           <Text style={[styles.panelValue, { color }]}>{programName}</Text>
-        </View>
+        </View> */}
 
+        {/* MAXES */}
         {Object.entries(maxes).map(([lift]) => {
           return (
             <View key={lift} style={[styles.panelRow]}>

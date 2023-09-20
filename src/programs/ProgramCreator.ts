@@ -44,11 +44,13 @@ export class Session {
 }
 
 export class Program {
+  date: WeekDayTuple;
   name: string;
   notes: string[];
   sessions: Session[] = [];
 
   constructor(name: string, notes: string[]) {
+    this.date = [0, 0];
     this.name = name;
     this.notes = notes;
   }

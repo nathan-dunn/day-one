@@ -15,7 +15,20 @@ import {
 const DIPS_OR_PUSHUPS = `${DIPS} or ${PUSHUPS}`;
 const CHINS_OR_PULLUPS = `${CHINS} or ${PULLUPS}`;
 
-const GARAGE_GYM_WARRIOR_2 = new Program('GGW2', ['program notes']);
+const GARAGE_GYM_WARRIOR_2 = new Program('Garage Gym Warrior II', [
+  'This basic barbell program has a total duration of 15 weeks. The 15th week is a testing week where lifters can choose to test their 1-rep maxes if they so choose. If not, then after week 14, the lifter might conservatively “assume” an increase in 1-rep max strength of approximately 5% and restart the program based off of a new assumed maximum for each lift.',
+  'This program does not aggressively load weight every week. Instead week to week progression often comes in the form of increases in volume (more sets or reps) while weight is held constant.',
+  'In general, the weight will be increased every 3-4 weeks with a simultaneous reduction in volume to accommodate the weight increase. Then, with the new weight, volume will build again over another 3-4 week period.',
+  'There is a deload DAY in Week 7. Do not adjust this day.',
+  'Bar Speed is a very important component of this program. This program uses a lot sets in the 2-3 rep range at loads between 75-85% of 1RM. These are nowhere near limit sets. Moved slowly, these reps will be far less effective than if there is intentional acceleration of the barbell applied to each and every rep. There is ample evidence that in doing so we can recruit more of the high threshold motor units responsible for peak force production in a manner that minimizes overall systemic fatigue.',
+  'Moving every rep of every set with speed and acceleration will challenge your physical and mental capacity. You need to stay focused and concentrate on every set and every rep.',
+  'A fast bar speed does not mean wild and out of control. It also does not imply a fast eccentric phase of the lift. Lower the bar in a normal controlled fashion. You explode and accelerate the concentric phase of the lift. If this is very new to you, then add the speed in gradually. Start with just a little faster than what a normal rep might be. Over time you will get better and better at moving these loads faster and with more acceleration.',
+  'The speed element applies mainly to the primary work sets on the Squat, Bench, Press, and Deadlift.',
+  'There is some dedicated hypertrophy work in the program that comes in the form of assistance exercises (rows, dips, push ups, bicep curls, tricep extensions, stiff leg deadlifts, and the occasional back off set). In these cases a more normal rep tempo is used.',
+  'It is recommended that lifters do not skip the assistance exercises. If there is an exercise you cannot do for some reason then swap it out with an appropriate substitution. If you can’t do Barbell Rows you might swap them out for more Chins or Pull Ups. Dips are recommended but if you cannot do Dips, substitute with Push Ups. After Deadlifts, I recommend a top set of Stiff Leg Deadlifts. If you prefer, you could swap these out with perhaps Deficit Deadlifts or Snatch Grip Deadlifts.',
+  'Use common sense when progressing your assistance work. If possible, every week you should attempt to increase either weight, sets, or reps on a given exercise while maintaining good quality form.',
+  'Keep in mind I have everything here for a reason. This program has been tested with dozens of my online training clients and I know that it works. If you change the program up dramatically - it makes it not this program.',
+]);
 
 // Week 1
 GARAGE_GYM_WARRIOR_2.addSession(

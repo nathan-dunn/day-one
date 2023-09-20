@@ -12,5 +12,6 @@ export const ARMS: string = 'arms';
 
 export const DARK_BLACK = '#222';
 export const LIGHT_BLACK = '#444';
-export const WHITE = '#fff';
-export const GRAY = '#aaa';
+export const WHITE = '#F8F8F8';
+export const LIGHT_GRAY = '#aaa';
+export const DARK_GRAY = '#989898';

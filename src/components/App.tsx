@@ -13,6 +13,7 @@ import {
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
 import Session from './Session';
+import Intro from './Intro';
 import Panel from './Panel';
 import programs from '../programs';
 import { WHITE, LIGHT_BLACK, DARK_BLACK } from '../constants';
@@ -30,6 +31,10 @@ const { width } = Dimensions.get('window');
 
 export default function App() {
   const [program, setProgram] = useState(programs[0]);
+  const programData = [
+    { name: program.name, notes: program.notes, date: program.date },
+    ...program.sessions,
+  ];
 
   const [mode, setMode] = useState<Mode | undefined>(undefined);
   const backgroundColor = mode === Mode.light ? WHITE : DARK_BLACK;
@@ -163,27 +168,36 @@ export default function App() {
           </View>
 
           <Animated.FlatList
-            initialScrollIndex={page}
             ref={flatListRef}
-            pagingEnabled
+            initialScrollIndex={page}
             showsHorizontalScrollIndicator={false}
             scrollEventThrottle={16}
             horizontal
+            pagingEnabled
             keyExtractor={item => item.date.toString()}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { x: _scrollX } } }],
               { useNativeDriver: true }
             )}
-            data={program.sessions}
-            renderItem={({ item, index }) => (
-              <Session
-                {...item}
-                index={index}
-                scrollX={_scrollX}
-                mode={mode}
-                maxes={maxes}
-              />
-            )}
+            data={programData}
+            renderItem={({ item, index }) => {
+              return index === 0 ? (
+                <Intro
+                  name={item.name}
+                  notes={item.notes}
+                  mode={mode}
+                  scrollX={_scrollX}
+                />
+              ) : (
+                <Session
+                  {...item}
+                  index={index}
+                  scrollX={_scrollX}
+                  mode={mode}
+                  maxes={maxes}
+                />
+              );
+            }}
             onMomentumScrollEnd={onScrollEnd}
             getItemLayout={(data, index) => ({
               length: width,

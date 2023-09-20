@@ -11,10 +11,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  textContainer: {
-    // alignItems: 'flex-start',
-    // flex: 0.85,
-  },
+  sessionContent: {},
   week: {
     textTransform: 'uppercase',
     textAlign: 'left',

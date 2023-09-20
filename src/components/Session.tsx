@@ -3,37 +3,17 @@ import {
   Animated,
   Dimensions,
   ScrollView,
-  TouchableOpacity,
   View,
+  StyleSheet,
 } from 'react-native';
 import AnimatedText from './AnimatedText';
 import AnimatedLine from './AnimatedLine';
-import { WHITE, LIGHT_BLACK, GRAY } from '../constants';
+import { WHITE, LIGHT_BLACK, LIGHT_GRAY, DARK_GRAY } from '../constants';
+import { Mode, MaxesType, LiftType } from '../types';
 import { roundTo } from '../utils';
 import styles from '../styles';
 
 const { width } = Dimensions.get('window');
-
-type MaxesType = {
-  [key: string]: number;
-};
-
-enum Mode {
-  dark = 'dark',
-  light = 'light',
-}
-
-type RxType = {
-  sets?: number | string;
-  reps: number | string;
-  perc?: number;
-};
-
-type LiftType = {
-  name: string;
-  notes: string[];
-  rxs: RxType[];
-};
 
 type SessionProps = {
   date: [number, number];
@@ -56,7 +36,7 @@ export default function Session({
 }: SessionProps) {
   const [week, day] = date;
   const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
-  const SECONDARY_TEXT = mode === Mode.light ? GRAY : GRAY;
+  const SECONDARY_TEXT = mode === Mode.light ? DARK_GRAY : LIGHT_GRAY;
 
   const inputRange = [
     (sessionIndex - 1) * width,
@@ -81,7 +61,7 @@ export default function Session({
       outputRange: [width * 0.1, 0, -width * 0.1],
     });
 
-  const trasnlateFast: Animated.AnimatedInterpolation<number> =
+  const translateFast: Animated.AnimatedInterpolation<number> =
     scrollX.interpolate({
       inputRange,
       outputRange: [width, 0, -width],
@@ -89,25 +69,26 @@ export default function Session({
 
   return (
     <ScrollView contentContainerStyle={[styles.sessionContainer, { width }]}>
-      <View style={styles.textContainer}>
-        <TouchableOpacity>
-          <AnimatedText
-            text={`Week ${week}`}
-            style={[styles.week, { color: PRIMARY_TEXT }]}
-            opacity={opacity}
-            translateX={translateSlow}
-          />
-        </TouchableOpacity>
+      <View style={styles.sessionContent}>
+        <AnimatedText
+          text={`Week ${week}`}
+          style={[styles.week, { color: PRIMARY_TEXT }]}
+          opacity={opacity}
+          translateX={translateSlow}
+        />
         <AnimatedText
           text={`Day ${day}`}
           style={[styles.day, { width: width * 0.75, color: SECONDARY_TEXT }]}
           opacity={opacity}
-          translateX={trasnlateFast}
+          translateX={translateFast}
         />
         <AnimatedLine
-          style={[styles.line, { width: width * 0.8, backgroundColor: GRAY }]}
+          style={[
+            styles.line,
+            { width: width * 0.8, backgroundColor: LIGHT_GRAY },
+          ]}
           opacity={opacity}
-          translateX={trasnlateFast}
+          translateX={translateFast}
         />
 
         <View style={styles.liftContainer}>
@@ -154,7 +135,7 @@ export default function Session({
                           { width: width * 0.75, color: SECONDARY_TEXT },
                         ]}
                         opacity={opacity}
-                        translateX={trasnlateFast}
+                        translateX={translateFast}
                       />
                     );
                   })}
@@ -169,7 +150,7 @@ export default function Session({
                           text={'•'}
                           style={[styles.bullet, { color: SECONDARY_TEXT }]}
                           opacity={opacity}
-                          translateX={trasnlateFast}
+                          translateX={translateFast}
                         />
 
                         <AnimatedText
@@ -179,7 +160,7 @@ export default function Session({
                             { width: width * 0.75, color: SECONDARY_TEXT },
                           ]}
                           opacity={opacity}
-                          translateX={trasnlateFast}
+                          translateX={translateFast}
                         />
                       </View>
                     );
@@ -190,7 +171,10 @@ export default function Session({
         </View>
 
         <AnimatedLine
-          style={[styles.line, { width: width * 0.8, backgroundColor: GRAY }]}
+          style={[
+            styles.line,
+            { width: width * 0.8, backgroundColor: LIGHT_GRAY },
+          ]}
           opacity={opacity}
           translateX={translateSlow}
         />
@@ -207,7 +191,7 @@ export default function Session({
                     { width: width * 0.75, color: SECONDARY_TEXT },
                   ]}
                   opacity={opacity}
-                  translateX={trasnlateFast}
+                  translateX={translateFast}
                 />
               </View>
             );
@@ -216,3 +200,7 @@ export default function Session({
     </ScrollView>
   );
 }
+
+const _styles = StyleSheet.create({
+  //
+});
