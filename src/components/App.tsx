@@ -30,7 +30,6 @@ const { width } = Dimensions.get('window');
 
 export default function App() {
   const [program, setProgram] = useState(programs[0]);
-  const sessionsLen = program.sessions.length;
 
   const [mode, setMode] = useState<Mode | undefined>(undefined);
   const backgroundColor = mode === Mode.light ? WHITE : DARK_BLACK;
@@ -71,7 +70,6 @@ export default function App() {
     const storedPage = await getStorage('@day_one_page');
     const parsed = storedPage ? parseInt(storedPage, 10) : null;
 
-    console.log('parsed:', parsed);
     if (parsed) {
       setPage(parsed);
 
@@ -80,8 +78,13 @@ export default function App() {
         animated: true,
       });
     } else {
-      setPage(0);
-      await setStorage('@day_one_page', String(0));
+      const _page = 0;
+      setPage(_page);
+      await setStorage('@day_one_page', String(_page));
+      flatListRef.current?.scrollToOffset({
+        offset: _page * width,
+        animated: true,
+      });
     }
   };
 
@@ -112,9 +115,9 @@ export default function App() {
     await removeStorage('@day_one_page');
     await removeStorage('@day_one_maxes');
 
-    setMode(Mode.light);
-    setPage(0);
-    setMaxes(maxesNeeded);
+    loadStoredMode();
+    loadStoredPage();
+    loadMaxes();
 
     alert('Storage Cleared');
   };

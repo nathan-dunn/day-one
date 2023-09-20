@@ -40,7 +40,6 @@ export default function NumericInput({
   };
 
   const handleFocus = () => {
-    // Select all text when the input is focused
     const endPosition = String(max).length;
     inputRef.current &&
       inputRef.current.setNativeProps({
@@ -50,7 +49,7 @@ export default function NumericInput({
 
   const handleTextChange = async (text: string) => {
     if (text === '') {
-      setMax(0); // or any default value you prefer
+      setMax(0);
       return;
     }
 
@@ -63,10 +62,7 @@ export default function NumericInput({
 
       await setStorage(
         '@day_one_maxes',
-        JSON.stringify({
-          ...maxes,
-          [lift]: updatedMax,
-        })
+        JSON.stringify({ ...maxes, [lift]: updatedMax })
       );
     }
   };
