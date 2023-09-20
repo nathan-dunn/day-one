@@ -15,7 +15,7 @@ import Session from './Session';
 import Panel from './Panel';
 import programs from '../programs';
 import { WHITE, LIGHT_BLACK, DARK_BLACK } from '../constants';
-import { findMaxesNeeded, getStorage } from '../utils';
+import { findMaxesNeeded, getStorage, removeStorage } from '../utils';
 import { Mode, MaxesType } from '../types';
 import styles from '../styles';
 import { drawerStyles } from '../styles/misc';
@@ -24,13 +24,14 @@ const { width } = Dimensions.get('window');
 
 export default function App() {
   const [program, setProgram] = useState(programs[0]);
-  let sessionsLen: number;
-  let maxesNeeded: MaxesType = {};
 
-  const [maxes, setMaxes] = useState(maxesNeeded);
+  const [mode, setMode] = useState<Mode | undefined>(undefined);
+  const backgroundColor = mode === Mode.light ? WHITE : DARK_BLACK;
 
   const [page, setPage] = useState<number>(0);
-  const [mode, setMode] = useState<Mode | undefined>(undefined);
+  const maxesNeeded: MaxesType = findMaxesNeeded(program.sessions);
+
+  const [maxes, setMaxes] = useState<MaxesType>(maxesNeeded);
 
   const flatListRef = useRef<FlatList>(null);
   const _scrollX = useRef(new Animated.Value(0)).current;
@@ -39,28 +40,9 @@ export default function App() {
   const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const contentOffset = e.nativeEvent.contentOffset;
     const viewSize = e.nativeEvent.layoutMeasurement;
-
-    // Divide the horizontal offset by the width of the view to see which page is visible
     const pageNum = Math.floor(contentOffset.x / viewSize.width);
     setPage(pageNum);
     return { contentOffset, viewSize, pageNum };
-  };
-
-  const handleLongPress = () => {
-    // Increment the index
-    const nextIndex = page === sessionsLen - 1 ? 0 : page + 1;
-    setPage(nextIndex);
-
-    flatListRef.current?.scrollToOffset({
-      offset: nextIndex * width,
-      animated: true,
-    });
-  };
-
-  const closePanel = () => {
-    if (drawerRef.current) {
-      drawerRef.current.close();
-    }
   };
 
   const openPanel = () => {
@@ -69,13 +51,19 @@ export default function App() {
     }
   };
 
-  const setStoredPage = async () => {
+  const closePanel = () => {
+    if (drawerRef.current) {
+      drawerRef.current.close();
+    }
+    loadMaxes();
+  };
+
+  const loadStoredPage = async () => {
     const storedPage = (await getStorage('@day_one_page')) || 0;
-    console.log('storedPage:', storedPage);
     if (storedPage) setPage(parseInt(storedPage, 10));
   };
 
-  const setStoredMode = async () => {
+  const loadStoredMode = async () => {
     const isMode = (value: any): value is Mode => {
       return Object.values(Mode).includes(value);
     };
@@ -89,9 +77,9 @@ export default function App() {
   };
 
   const getMaxes = async () => {
-    const _maxes =
+    const startingMaxes =
       (await getStorage('@day_one_maxes')) || JSON.stringify(maxes);
-    return JSON.parse(_maxes);
+    return JSON.parse(startingMaxes);
   };
 
   const loadMaxes = async () => {
@@ -99,20 +87,24 @@ export default function App() {
     setMaxes(maxes);
   };
 
+  const reset = async () => {
+    await removeStorage('@day_one_mode');
+    await removeStorage('@day_one_page');
+    await removeStorage('@day_one_maxes');
+
+    setMode(Mode.light);
+    setPage(0);
+    setMaxes(maxesNeeded);
+
+    alert('Storage Cleared');
+  };
+
   // init
   useEffect(() => {
-    setStoredMode();
-    setStoredPage();
+    loadStoredMode();
+    loadStoredPage();
     loadMaxes();
   }, []);
-
-  useEffect(() => {
-    maxesNeeded = findMaxesNeeded(program.sessions);
-    sessionsLen = program.sessions.length;
-    setMaxes(maxesNeeded);
-  }, [program]);
-
-  const BACKGROUND_COLOR = mode === Mode.light ? WHITE : DARK_BLACK;
 
   return (
     mode && (
@@ -121,18 +113,21 @@ export default function App() {
         type="static"
         content={
           <Panel
-            onClose={closePanel}
+            onClose={() => {
+              closePanel();
+            }}
             mode={mode}
             setMode={setMode}
             maxes={maxes}
             programName={program.name}
+            reset={reset}
           />
         }
         openDrawerOffset={100}
         styles={drawerStyles}
       >
         <SafeAreaView
-          style={[styles.container, { backgroundColor: BACKGROUND_COLOR }]}
+          style={[styles.container, { backgroundColor: backgroundColor }]}
         >
           <StatusBar style="auto" />
 
@@ -165,7 +160,6 @@ export default function App() {
                 index={index}
                 scrollX={_scrollX}
                 mode={mode}
-                handleLongPress={handleLongPress}
                 maxes={maxes}
               />
             )}

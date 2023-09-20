@@ -42,7 +42,6 @@ type SessionProps = {
   index: number;
   scrollX: Animated.Value;
   mode: Mode;
-  handleLongPress: () => void;
   maxes: MaxesType;
 };
 
@@ -53,7 +52,6 @@ export default function Session({
   scrollX,
   index: sessionIndex,
   mode,
-  handleLongPress,
   maxes,
 }: SessionProps) {
   const [week, day] = date;
@@ -92,7 +90,7 @@ export default function Session({
   return (
     <ScrollView contentContainerStyle={[styles.sessionContainer, { width }]}>
       <View style={styles.textContainer}>
-        <TouchableOpacity onLongPress={handleLongPress}>
+        <TouchableOpacity>
           <AnimatedText
             text={`Week ${week}`}
             style={[styles.week, { color: PRIMARY_TEXT }]}

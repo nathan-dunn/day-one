@@ -84,6 +84,12 @@ const styles = StyleSheet.create({
   rxContainer: {
     paddingBottom: 10,
   },
+  headerContainer: {
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    width: '100%',
+    paddingLeft: 16,
+  },
   panelContainer: {
     flex: 1,
   },
@@ -93,15 +99,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
-  panelOption: {
+  panelKey: {
     fontSize: 20,
     paddingVertical: 10,
   },
-  headerContainer: {
-    flexDirection: 'row',
-    alignSelf: 'flex-start',
-    width: '100%',
-    paddingLeft: 16,
+  panelValue: {
+    fontSize: 20,
+    paddingVertical: 10,
+    textAlign: 'center',
   },
   panelHeaderContainer: {
     justifyContent: 'flex-start',
@@ -120,7 +125,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%',
     paddingVertical: 5,
   },
   input: {
