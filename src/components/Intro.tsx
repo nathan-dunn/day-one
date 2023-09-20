@@ -3,8 +3,8 @@ import {
   Animated,
   Dimensions,
   ScrollView,
-  View,
   StyleSheet,
+  View,
 } from 'react-native';
 import AnimatedText from './AnimatedText';
 import { Mode } from '../types';
@@ -75,7 +75,7 @@ export default function Intro({ name, notes, mode, scrollX }: IntroProps) {
             text={note.trim()}
             style={[
               styles.note,
-              { width: width * 0.75, color: SECONDARY_TEXT },
+              { width: width * 0.85, color: SECONDARY_TEXT },
             ]}
             opacity={opacity}
             translateX={translateFast}
@@ -88,6 +88,7 @@ export default function Intro({ name, notes, mode, scrollX }: IntroProps) {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
+    paddingBottom: 20,
   },
   header: {
     alignItems: 'center',
@@ -106,7 +107,7 @@ const styles = StyleSheet.create({
 
   note: {
     fontWeight: '600',
-    textAlign: 'left',
+    textAlign: 'justify',
     marginRight: 10,
     fontSize: 16,
     lineHeight: 16 * 1.5,

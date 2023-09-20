@@ -3,8 +3,8 @@ import {
   Animated,
   Dimensions,
   ScrollView,
-  View,
   StyleSheet,
+  View,
 } from 'react-native';
 import AnimatedText from './AnimatedText';
 import AnimatedLine from './AnimatedLine';
@@ -33,6 +33,7 @@ export default function Session({
   mode,
   maxes,
 }: SessionProps) {
+  const _width = width * 0.85;
   const [week, day] = date;
   const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
   const SECONDARY_TEXT = mode === Mode.light ? DARK_GRAY : LIGHT_GRAY;
@@ -68,19 +69,23 @@ export default function Session({
 
   return (
     <ScrollView contentContainerStyle={[styles.container, { width }]}>
-      <View style={styles.content}>
-        <AnimatedText
-          text={`Week ${week}`}
-          style={[styles.week, { color: PRIMARY_TEXT }]}
-          opacity={opacity}
-          translateX={translateSlow}
-        />
-        <AnimatedText
-          text={`Day ${day}`}
-          style={[styles.day, { width: width * 0.75, color: SECONDARY_TEXT }]}
-          opacity={opacity}
-          translateX={translateFast}
-        />
+      <View style={[styles.content, { width: _width }]}>
+        {/* HEADER */}
+        <View style={[styles.headerContainer]}>
+          <AnimatedText
+            text={`Week ${week}`}
+            style={[styles.week, { color: PRIMARY_TEXT }]}
+            opacity={opacity}
+            translateX={translateSlow}
+          />
+          <AnimatedText
+            text={`Day ${day}`}
+            style={[styles.day, { color: SECONDARY_TEXT }]}
+            opacity={opacity}
+            translateX={translateFast}
+          />
+        </View>
+
         <AnimatedLine
           style={[
             styles.line,
@@ -90,11 +95,14 @@ export default function Session({
           translateX={translateFast}
         />
 
-        <View style={styles.liftContainer}>
-          {lifts.map(({ name, notes, rxs }, liftIndex) => {
+        <View style={[styles.liftsContainer]}>
+          {lifts.map(({ name, notes: liftNotes, rxs }, liftIndex) => {
             return (
               <View
-                style={[styles.liftSubContainer, { paddingBottom: 50 }]}
+                style={[
+                  styles.liftSubContainer,
+                  { paddingBottom: liftIndex === lifts.length - 1 ? 10 : 50 },
+                ]}
                 key={liftIndex}
               >
                 <AnimatedText
@@ -129,10 +137,7 @@ export default function Session({
                       <AnimatedText
                         key={rxIndex}
                         text={rxText}
-                        style={[
-                          styles.rx,
-                          { width: width * 0.75, color: SECONDARY_TEXT },
-                        ]}
+                        style={[styles.rx, { color: SECONDARY_TEXT }]}
                         opacity={opacity}
                         translateX={translateFast}
                       />
@@ -140,11 +145,11 @@ export default function Session({
                   })}
                 </View>
 
-                {notes
+                {liftNotes
                   .filter(note => note)
                   .map((note, noteIndex) => {
                     return (
-                      <View key={noteIndex} style={styles.subNotesContainer}>
+                      <View key={noteIndex} style={[styles.liftNoteContainer]}>
                         <AnimatedText
                           text={'•'}
                           style={[styles.bullet, { color: SECONDARY_TEXT }]}
@@ -154,10 +159,7 @@ export default function Session({
 
                         <AnimatedText
                           text={note.trim()}
-                          style={[
-                            styles.note,
-                            { width: width * 0.75, color: SECONDARY_TEXT },
-                          ]}
+                          style={[styles.liftNote, { color: SECONDARY_TEXT }]}
                           opacity={opacity}
                           translateX={translateFast}
                         />
@@ -178,23 +180,22 @@ export default function Session({
           translateX={translateSlow}
         />
 
-        {notes
-          .filter(note => note)
-          .map((note, noteIndex) => {
-            return (
-              <View key={noteIndex} style={styles.sessionNotesContainer}>
-                <AnimatedText
-                  text={note.trim()}
-                  style={[
-                    styles.note,
-                    { width: width * 0.75, color: SECONDARY_TEXT },
-                  ]}
-                  opacity={opacity}
-                  translateX={translateFast}
-                />
-              </View>
-            );
-          })}
+        <View style={[styles.notesContainer]}>
+          {notes
+            .filter(note => note)
+            .map((note, noteIndex) => {
+              return (
+                <View key={noteIndex} style={[styles.noteContainer]}>
+                  <AnimatedText
+                    text={note.trim()}
+                    style={[styles.note, { color: SECONDARY_TEXT }]}
+                    opacity={opacity}
+                    translateX={translateFast}
+                  />
+                </View>
+              );
+            })}
+        </View>
       </View>
     </ScrollView>
   );
@@ -222,6 +223,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 16 * 1.5,
   },
+  headerContainer: {
+    //
+  },
   lift: {
     textTransform: 'uppercase',
     textAlign: 'left',
@@ -230,19 +234,30 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     marginBottom: 10,
   },
-  liftContainer: {
-    //
+  liftsContainer: {
+    // paddingHorizontal: 20,
   },
   liftSubContainer: {
-    //
+    // paddingHorizontal: 20,
   },
   line: {
     height: 1,
     marginVertical: 30,
   },
-  note: {
+  notesContainer: {
+    //
+  },
+  liftNote: {
     fontWeight: '600',
     textAlign: 'left',
+    marginRight: 10,
+    fontSize: 16,
+    lineHeight: 16 * 1.5,
+    marginLeft: -6,
+  },
+  note: {
+    fontWeight: '600',
+    textAlign: 'justify',
     marginRight: 10,
     fontSize: 16,
     lineHeight: 16 * 1.5,
@@ -258,11 +273,11 @@ const styles = StyleSheet.create({
   rxContainer: {
     paddingBottom: 10,
   },
-  sessionNotesContainer: {
+  noteContainer: {
     paddingBottom: 10,
     paddingHorizontal: 8,
   },
-  subNotesContainer: {
+  liftNoteContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
   },

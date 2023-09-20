@@ -9,7 +9,7 @@ import {
 import { Feather } from '@expo/vector-icons';
 import NumericInput from './NumericInput';
 import { setStorage } from '../utils';
-import { WHITE, LIGHT_BLACK } from '../constants';
+import { WHITE, LIGHT_BLACK, MED_BLACK } from '../constants';
 import { Mode, MaxesType } from '../types';
 
 type PanelProps = {
@@ -29,21 +29,19 @@ export default function Panel({
   maxes,
   reset,
 }: PanelProps) {
-  const color = mode === Mode.light ? LIGHT_BLACK : WHITE;
+  const backgroundColor = mode === Mode.light ? WHITE : MED_BLACK;
+  const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
 
   return (
     <SafeAreaView
-      style={[
-        styles.container,
-        { backgroundColor: mode === Mode.light ? WHITE : LIGHT_BLACK },
-      ]}
+      style={[styles.container, { backgroundColor: backgroundColor }]}
     >
       {/* HEADER */}
       <View style={styles.headerContainer}>
         <Feather
           name={'x'}
           size={24}
-          color={mode === Mode.light ? LIGHT_BLACK : WHITE}
+          color={PRIMARY_TEXT}
           alignSelf="flex-end"
           padding={20}
           onPress={onClose}
@@ -61,14 +59,14 @@ export default function Panel({
             setMode(updated);
           }}
         >
-          <Text style={[styles.rowKey, { color }]}>MODE</Text>
+          <Text style={[styles.rowKey, { color: PRIMARY_TEXT }]}>MODE</Text>
           <View
             style={[styles.row, { justifyContent: 'center', width: '33%' }]}
           >
             <Feather
               name={mode === Mode.light ? 'sun' : 'moon'}
               size={24}
-              color={mode === Mode.light ? LIGHT_BLACK : WHITE}
+              color={PRIMARY_TEXT}
             />
           </View>
         </TouchableOpacity>
@@ -83,13 +81,19 @@ export default function Panel({
         {Object.entries(maxes).map(([lift]) => {
           return (
             <View key={lift} style={[styles.row]}>
-              <Text style={[styles.rowKey, { color }]}>{lift}</Text>
+              <Text style={[styles.rowKey, { color: PRIMARY_TEXT }]}>
+                {lift}
+              </Text>
               <NumericInput
                 maxes={maxes}
                 lift={lift}
                 style={[
                   styles.input,
-                  { color, borderColor: color, borderWidth: 1 },
+                  {
+                    color: PRIMARY_TEXT,
+                    borderColor: PRIMARY_TEXT,
+                    borderWidth: 1,
+                  },
                 ]}
               />
             </View>

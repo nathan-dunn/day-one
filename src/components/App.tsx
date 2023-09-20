@@ -3,13 +3,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   Animated,
   Dimensions,
+  FlatList,
+  Keyboard,
   NativeScrollEvent,
   NativeSyntheticEvent,
   SafeAreaView,
-  FlatList,
-  View,
-  Keyboard,
   StyleSheet,
+  View,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
@@ -21,16 +21,16 @@ import { WHITE, LIGHT_BLACK, DARK_BLACK } from '../constants';
 import {
   findMaxesNeeded,
   getStorage,
-  setStorage,
   removeStorage,
+  setStorage,
 } from '../utils';
 import { Mode, MaxesType, isMode, isMaxesType } from '../types';
 
 const { width } = Dimensions.get('window');
 
 const drawerStyles = {
-  drawer: { shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3 },
-  main: { paddingLeft: 3 },
+  drawer: { shadowColor: DARK_BLACK, shadowOpacity: 0.8, shadowRadius: 3 },
+  main: { paddingLeft: 0 },
 };
 
 export default function App() {
@@ -41,7 +41,8 @@ export default function App() {
   ];
 
   const [mode, setMode] = useState<Mode | undefined>(undefined);
-  const backgroundColor = mode === Mode.light ? WHITE : DARK_BLACK;
+  const BACKGROUND_COLOR = mode === Mode.light ? WHITE : DARK_BLACK;
+  const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
 
   const [page, setPage] = useState<number>(0);
   const maxesNeeded: MaxesType = findMaxesNeeded(program.sessions);
@@ -71,8 +72,6 @@ export default function App() {
     if (drawerRef.current) {
       drawerRef.current.close();
     }
-    loadMaxes();
-    Keyboard.dismiss();
   };
 
   const loadStoredPage = async () => {
@@ -102,8 +101,8 @@ export default function App() {
     if (isMode(storedMode)) {
       setMode(storedMode);
     } else {
-      setMode(Mode.light);
-      await setStorage('@day_one_mode', Mode.light);
+      setMode(Mode.dark);
+      await setStorage('@day_one_mode', Mode.dark);
     }
   };
 
@@ -128,7 +127,7 @@ export default function App() {
     loadStoredPage();
     loadMaxes();
 
-    alert('Storage Cleared');
+    alert('App Reset');
   };
 
   // init
@@ -141,8 +140,19 @@ export default function App() {
   return (
     mode && (
       <Drawer
-        ref={drawerRef}
         type="static"
+        ref={drawerRef}
+        styles={drawerStyles}
+        tapToClose={true}
+        panCloseMask={0.2}
+        openDrawerOffset={0.2}
+        tweenHandler={ratio => ({
+          main: { transform: [{ translateX: ratio * 0 }] },
+        })}
+        onClose={() => {
+          loadMaxes();
+          Keyboard.dismiss();
+        }}
         content={
           <Panel
             onClose={closePanel}
@@ -153,11 +163,9 @@ export default function App() {
             reset={reset}
           />
         }
-        openDrawerOffset={100}
-        styles={drawerStyles}
       >
         <SafeAreaView
-          style={[styles.container, { backgroundColor: backgroundColor }]}
+          style={[styles.container, { backgroundColor: BACKGROUND_COLOR }]}
         >
           <StatusBar style="auto" />
 
@@ -165,7 +173,7 @@ export default function App() {
             <Feather
               name={'settings'}
               size={24}
-              color={mode === Mode.light ? LIGHT_BLACK : WHITE}
+              color={PRIMARY_TEXT}
               padding={20}
               onPress={openPanel}
             />
@@ -225,6 +233,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'flex-start',
     width: '100%',
-    paddingLeft: 16,
+    paddingLeft: 10,
   },
 });
