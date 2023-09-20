@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#242424"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.tru36rit.dayone",
@@ -30,7 +32,8 @@
       },
       "config": {
         "package": "com.tru36rit.dayone"
-      }
+      },
+      "package": "com.tru36rit.dayone"
     },
     "web": {
       "favicon": "./assets/favicon.png"
