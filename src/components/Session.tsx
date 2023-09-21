@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import AnimatedText from './AnimatedText';
 import AnimatedLine from './AnimatedLine';
-import Checkbox from './Checkbox';
+import AnimatedCheckbox from './AnimatedCheckbox';
 import {
   WHITE,
   LIGHT_BLACK,
@@ -130,13 +130,15 @@ export default function Session({
               opacity={opacity}
               translateX={translateSlow}
             />
-            <Checkbox
-              mode={mode}
+            <AnimatedCheckbox
               isChecked={isBlueSelected}
               onPress={() => {
                 setIsBlueSelected(!isBlueSelected);
               }}
-              // style={styles.checkbox}
+              style={[styles.checkbox, { color: PRIMARY_TEXT }]}
+              opacity={opacity}
+              translateX={translateSlow}
+              color={PRIMARY_TEXT}
             />
           </View>
           <AnimatedText
@@ -148,10 +150,7 @@ export default function Session({
         </View>
 
         <AnimatedLine
-          style={[
-            styles.line,
-            { width: width * 0.8, backgroundColor: LIGHT_GRAY },
-          ]}
+          style={[styles.line, { width: _width, backgroundColor: LIGHT_GRAY }]}
           opacity={opacity}
           translateX={translateFast}
         />
@@ -182,7 +181,6 @@ export default function Session({
                         : 'set';
                     const repsText = reps === 'AMRAP' ? '' : 'reps';
                     const rounded = [BENCH, PRESS].includes(name) ? 2.5 : 5;
-
                     const rxText =
                       max && perc
                         ? `${sets} ${setsText} x ${reps} ${repsText} @ ${roundTo(
@@ -234,10 +232,7 @@ export default function Session({
         </View>
 
         <AnimatedLine
-          style={[
-            styles.line,
-            { width: width * 0.8, backgroundColor: LIGHT_GRAY },
-          ]}
+          style={[styles.line, { width: _width, backgroundColor: LIGHT_GRAY }]}
           opacity={opacity}
           translateX={translateSlow}
         />
@@ -353,7 +348,6 @@ const styles = StyleSheet.create({
   },
 
   checkbox: {
-    marginHorizontal: 10,
-    marginVertical: 5,
+    //
   },
 });
