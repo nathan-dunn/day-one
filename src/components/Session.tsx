@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import AnimatedText from './AnimatedText';
 import AnimatedLine from './AnimatedLine';
+import Checkbox from './Checkbox';
 import {
   WHITE,
   LIGHT_BLACK,
@@ -104,6 +105,8 @@ export default function Session({
       ? Day.friday
       : null;
 
+  const [isBlueSelected, setIsBlueSelected] = useState(false);
+
   return (
     <ScrollView
       ref={scrollViewRef}
@@ -114,12 +117,28 @@ export default function Session({
       <View style={[styles.content, { width: _width }]}>
         {/* HEADER */}
         <View style={[styles.headerContainer]}>
-          <AnimatedText
-            text={`Week ${week}`}
-            style={[styles.week, { color: PRIMARY_TEXT }]}
-            opacity={opacity}
-            translateX={translateSlow}
-          />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <AnimatedText
+              text={`Week ${week}`}
+              style={[styles.week, { color: PRIMARY_TEXT }]}
+              opacity={opacity}
+              translateX={translateSlow}
+            />
+            <Checkbox
+              mode={mode}
+              isChecked={isBlueSelected}
+              onPress={() => {
+                setIsBlueSelected(!isBlueSelected);
+              }}
+              // style={styles.checkbox}
+            />
+          </View>
           <AnimatedText
             text={dayText || `Day ${day}`}
             style={[styles.day, { color: SECONDARY_TEXT }]}
@@ -331,5 +350,10 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 2,
     marginBottom: 10,
+  },
+
+  checkbox: {
+    marginHorizontal: 10,
+    marginVertical: 5,
   },
 });
