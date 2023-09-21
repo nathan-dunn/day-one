@@ -20,6 +20,7 @@ import programs from '../programs';
 import { WHITE, LIGHT_BLACK, DARK_BLACK } from '../constants';
 import {
   findMaxesNeeded,
+  findSession,
   getStorage,
   removeStorage,
   setStorage,
@@ -75,25 +76,48 @@ export default function App() {
     }
   };
 
+  const handlePageChange = (index: number) => {
+    flatListRef.current?.scrollToOffset({
+      offset: index * width,
+      animated: true,
+    });
+  };
+
+  const handleCheck = async (index: number) => {
+    const storedChecks = await getStorage('@day_one_checks');
+    const parsed = storedChecks ? JSON.parse(storedChecks) : null;
+    if (parsed) {
+      const newChecks = [...parsed];
+      newChecks[index] = !newChecks[index];
+      setChecks(newChecks);
+      setStorage('@day_one_checks', JSON.stringify(newChecks));
+    }
+  };
+
+  const handleReset = async () => {
+    await removeStorage('@day_one_checks');
+    await removeStorage('@day_one_mode');
+    await removeStorage('@day_one_page');
+    await removeStorage('@day_one_maxes');
+
+    loadStoredMode();
+    loadStoredPage();
+    loadChecks();
+    loadMaxes();
+
+    alert('App Reset');
+  };
+
   const loadStoredPage = async () => {
     const storedPage = await getStorage('@day_one_page');
     const parsed = storedPage ? parseInt(storedPage, 10) : null;
 
     if (parsed) {
       setPage(parsed);
-
-      flatListRef.current?.scrollToOffset({
-        offset: parsed * width,
-        animated: true,
-      });
     } else {
       const _page = 0;
       setPage(_page);
       await setStorage('@day_one_page', String(_page));
-      flatListRef.current?.scrollToOffset({
-        offset: _page * width,
-        animated: true,
-      });
     }
   };
 
@@ -101,13 +125,15 @@ export default function App() {
     const storedChecks = await getStorage('@day_one_checks');
     const parsed = storedChecks ? JSON.parse(storedChecks) : null;
 
-    console.log('parsed:', parsed);
-
     if (parsed) {
       setChecks(parsed);
+      const currentSession = findSession(parsed);
+      handlePageChange(currentSession);
     } else {
-      setChecks(new Array(program.sessions.length + 1).fill(false));
-      await setStorage('@day_one_checks', JSON.stringify(checks));
+      const _checks = new Array(program.sessions.length + 1).fill(false);
+      setChecks(_checks);
+      await setStorage('@day_one_checks', JSON.stringify(_checks));
+      handlePageChange(1);
     }
   };
 
@@ -133,36 +159,11 @@ export default function App() {
     }
   };
 
-  const handleCheck = async (index: number) => {
-    const storedChecks = await getStorage('@day_one_checks');
-    const parsed = storedChecks ? JSON.parse(storedChecks) : null;
-    if (parsed) {
-      const newChecks = [...parsed];
-      newChecks[index] = !newChecks[index];
-      setChecks(newChecks);
-      setStorage('@day_one_checks', JSON.stringify(newChecks));
-    }
-  };
-
-  const reset = async () => {
-    await removeStorage('@day_one_mode');
-    await removeStorage('@day_one_page');
-    await removeStorage('@day_one_checks');
-    await removeStorage('@day_one_maxes');
-
-    loadStoredMode();
-    loadStoredPage();
-    loadChecks();
-    loadMaxes();
-
-    alert('App Reset');
-  };
-
   // init
   useEffect(() => {
     loadStoredMode();
-    loadStoredPage();
     loadChecks();
+    loadStoredPage();
     loadMaxes();
   }, []);
 
@@ -189,7 +190,7 @@ export default function App() {
             setMode={setMode}
             maxes={maxes}
             programName={program.name}
-            reset={reset}
+            handleReset={handleReset}
           />
         }
       >
@@ -210,7 +211,6 @@ export default function App() {
 
           <Animated.FlatList
             ref={flatListRef}
-            initialScrollIndex={page}
             showsHorizontalScrollIndicator={false}
             scrollEventThrottle={16}
             horizontal

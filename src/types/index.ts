@@ -29,6 +29,12 @@ export type LiftType = {
   rxs: RxType[];
 };
 
+export type SessionType = {
+  sessionId: [number, number];
+  notes: string[];
+  lifts: LiftType[];
+};
+
 export function isMode(value: any): value is Mode {
   return Object.values(Mode).includes(value);
 }

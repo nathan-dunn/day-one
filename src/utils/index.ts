@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SessionType, MaxesType } from '../types';
 
 export const getStorage = async (key: string) => {
   try {
@@ -31,29 +32,7 @@ export function roundTo(num: number, nearest: number): number {
   return Math.round(num / nearest) * nearest;
 }
 
-type Rx = {
-  sets: number | string;
-  reps: number | string;
-  perc?: number;
-};
-
-type Lift = {
-  rxs: Rx[];
-  name: string;
-  notes: string[];
-};
-
-type Session = {
-  sessionId: [number, number];
-  notes: string[];
-  lifts: Lift[];
-};
-
-type MaxesType = {
-  [key: string]: number;
-};
-
-export function findMaxesNeeded(sessions: Session[]): MaxesType {
+export function findMaxesNeeded(sessions: SessionType[]): MaxesType {
   const liftNamesWithPerc: string[] = [];
 
   for (const session of sessions) {
@@ -77,24 +56,15 @@ export function findMaxesNeeded(sessions: Session[]): MaxesType {
   return maxesNeeded;
 }
 
-// temp
-export const maxesArray: MaxesType[] = [
-  {
-    squat: 0,
-    bench: 0,
-    deadlift: 0,
-    press: 0,
-  },
-  {
-    squat: 140,
-    bench: 115,
-    deadlift: 160,
-    press: 80,
-  },
-  {
-    squat: 335,
-    bench: 285,
-    deadlift: 385,
-    press: 160,
-  },
-];
+export function findSession(checks: boolean[]): number {
+  // find the first unchecked session after the last checked session
+
+  // skip the first session (intro page)
+  for (let i = checks.length - 1; i >= 1; i--) {
+    if (checks[i] === true && checks[i - 1] === false && i + 1 !== undefined) {
+      return i + 1;
+    }
+  }
+
+  return 1;
+}

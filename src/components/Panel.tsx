@@ -19,7 +19,7 @@ type PanelProps = {
   setMode: React.Dispatch<React.SetStateAction<Mode | undefined>>;
   maxes: MaxesType;
   programName: string;
-  reset: () => void;
+  handleReset: () => void;
 };
 
 export default function Panel({
@@ -27,7 +27,7 @@ export default function Panel({
   mode,
   setMode,
   maxes,
-  reset,
+  handleReset,
 }: PanelProps) {
   const backgroundColor = mode === Mode.light ? WHITE : MED_BLACK;
   const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
@@ -45,7 +45,7 @@ export default function Panel({
           alignSelf="flex-end"
           padding={20}
           onPress={onClose}
-          onLongPress={reset}
+          onLongPress={handleReset}
         />
       </View>
 
