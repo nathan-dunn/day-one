@@ -22,14 +22,14 @@ export class Lift {
   }
 }
 
-type WeekDayTuple = [number, number];
+type SessionIdTuple = [number, number];
 
 export class Session {
-  sessionId: WeekDayTuple;
+  sessionId: SessionIdTuple;
   notes: string[];
   lifts: Lift[];
 
-  constructor(sessionId: WeekDayTuple, notes: string[], lifts: Lift[]) {
+  constructor(sessionId: SessionIdTuple, notes: string[], lifts: Lift[]) {
     this.sessionId = sessionId;
     this.notes = notes;
     this.lifts = lifts;
@@ -37,7 +37,7 @@ export class Session {
 }
 
 export class Program {
-  sessionId: WeekDayTuple;
+  sessionId: SessionIdTuple;
   name: string;
   notes: string[];
   sessions: Session[] = [];
@@ -48,7 +48,11 @@ export class Program {
     this.notes = notes;
   }
 
-  addSession(sessionId: WeekDayTuple, notes: string[], lifts: Lift[]): Program {
+  addSession(
+    sessionId: SessionIdTuple,
+    notes: string[],
+    lifts: Lift[]
+  ): Program {
     const session = new Session(sessionId, notes, lifts);
     this.sessions.push(session);
     return this;

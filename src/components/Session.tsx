@@ -11,15 +11,16 @@ import {
 import AnimatedText from './AnimatedText';
 import AnimatedLine from './AnimatedLine';
 import AnimatedCheckbox from './AnimatedCheckbox';
+import NavBar from './NavBar';
 import { colors, BENCH, PRESS } from '../constants';
-import { Mode, MaxesType, LiftType, Day } from '../types';
+import { Mode, MaxesType, LiftType, Day, SessionIdTuple } from '../types';
 import { roundTo } from '../utils';
 
 const { width } = Dimensions.get('window');
 
 type SessionProps = {
   page: number;
-  sessionId: [number, number];
+  sessionId: SessionIdTuple;
   notes: string[];
   lifts: LiftType[];
   index: number;
@@ -28,6 +29,8 @@ type SessionProps = {
   maxes: MaxesType;
   handleCheck: () => void;
   isChecked: boolean;
+  sessionsCount: number;
+  handleNavPress: (index: number) => void;
 };
 
 export default function Session({
@@ -41,6 +44,8 @@ export default function Session({
   maxes,
   handleCheck,
   isChecked,
+  sessionsCount,
+  handleNavPress,
 }: SessionProps) {
   const _width = width * 0.85;
 
@@ -142,7 +147,7 @@ export default function Session({
             translateX={translateFast}
           />
         </View>
-
+        {/* 
         <AnimatedLine
           style={[
             styles.line,
@@ -150,6 +155,14 @@ export default function Session({
           ]}
           opacity={opacity}
           translateX={translateFast}
+        /> */}
+
+        <NavBar
+          page={page}
+          sessionsCount={sessionsCount}
+          width={_width}
+          mode={mode}
+          onPress={handleNavPress}
         />
 
         <View style={[styles.liftsContainer]}>
@@ -345,9 +358,5 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 2,
     marginBottom: 10,
-  },
-
-  checkbox: {
-    //
   },
 });

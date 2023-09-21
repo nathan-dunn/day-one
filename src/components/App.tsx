@@ -34,12 +34,13 @@ const drawerStyles = {
 };
 
 export default function App() {
-  const [program, setProgram] = useState(programs[0]);
+  const [program] = useState(programs[0]);
 
   const programData = [
     { name: program.name, notes: program.notes, sessionId: program.sessionId },
     ...program.sessions,
   ];
+  const sessionsCount = program.sessions.length;
 
   const [mode, setMode] = useState<Mode | undefined>(undefined);
   const [checks, setChecks] = useState<boolean[]>([]);
@@ -77,7 +78,7 @@ export default function App() {
     }
   };
 
-  const handlePageChange = (index: number) => {
+  const handlePageNav = (index: number) => {
     flatListRef.current?.scrollToOffset({
       offset: index * width,
       animated: true,
@@ -93,6 +94,12 @@ export default function App() {
       setChecks(newChecks);
       setStorage('@day_one_checks', JSON.stringify(newChecks));
     }
+  };
+
+  const handleNavPress = (index: number) => {
+    handlePageNav(index + 1);
+    setPage(index + 1);
+    setStorage('@day_one_page', String(index + 1));
   };
 
   const handleReset = async () => {
@@ -129,12 +136,12 @@ export default function App() {
     if (parsed) {
       setChecks(parsed);
       const currentSession = findSession(parsed);
-      handlePageChange(currentSession);
+      handlePageNav(currentSession);
     } else {
-      const _checks = new Array(program.sessions.length + 1).fill(false);
+      const _checks = new Array(sessionsCount + 1).fill(false);
       setChecks(_checks);
       await setStorage('@day_one_checks', JSON.stringify(_checks));
-      handlePageChange(1);
+      handlePageNav(1);
     }
   };
 
@@ -241,6 +248,8 @@ export default function App() {
                   maxes={maxes}
                   isChecked={checks[index]}
                   handleCheck={() => handleCheck(index)}
+                  sessionsCount={sessionsCount}
+                  handleNavPress={handleNavPress}
                 />
               );
             }}

@@ -29,8 +29,10 @@ export type LiftType = {
   rxs: RxType[];
 };
 
+export type SessionIdTuple = [number, number];
+
 export type SessionType = {
-  sessionId: [number, number];
+  sessionId: SessionIdTuple;
   notes: string[];
   lifts: LiftType[];
 };
