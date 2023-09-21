@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import AnimatedText from './AnimatedText';
 import { Mode } from '../types';
-import { WHITE, LIGHT_BLACK, LIGHT_GRAY, DARK_GRAY } from '../constants';
+import { colors } from '../constants';
 
 const { width } = Dimensions.get('window');
 
@@ -27,8 +27,9 @@ export default function Intro({
   mode,
   scrollX,
 }: IntroProps) {
-  const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
-  const SECONDARY_TEXT = mode === Mode.light ? DARK_GRAY : LIGHT_GRAY;
+  const PRIMARY_COLOR = mode === Mode.light ? colors.LIGHT_BLACK : colors.WHITE;
+  const SECONDARY_COLOR =
+    mode === Mode.light ? colors.DARK_GRAY : colors.LIGHT_GRAY;
 
   const inputRange = [
     (sessionIndex - 1) * width,
@@ -66,7 +67,7 @@ export default function Intro({
           text={name}
           style={[
             styles.headerText,
-            { width: width * 0.75, color: PRIMARY_TEXT },
+            { width: width * 0.75, color: PRIMARY_COLOR },
           ]}
           opacity={opacity}
           translateX={translateSlow}
@@ -81,7 +82,7 @@ export default function Intro({
             text={note.trim()}
             style={[
               styles.note,
-              { width: width * 0.85, color: SECONDARY_TEXT },
+              { width: width * 0.85, color: SECONDARY_COLOR },
             ]}
             opacity={opacity}
             translateX={translateFast}

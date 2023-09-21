@@ -8,21 +8,21 @@ import {
 import { Feather } from '@expo/vector-icons';
 
 type AnimatedCheckboxProps = {
+  onPress: () => void;
   isChecked: boolean;
+  style: StyleProp<TextStyle>;
   opacity: Animated.AnimatedInterpolation<number>;
   translateX: Animated.AnimatedInterpolation<number>;
-  style: StyleProp<TextStyle>;
   color: string;
-  onPress: () => void;
 };
 
 export default function AnimatedCheckbox({
+  onPress,
   isChecked,
+  style,
   opacity,
   translateX,
-  style,
   color,
-  onPress,
 }: AnimatedCheckboxProps) {
   return (
     <Animated.View style={[style, { opacity, transform: [{ translateX }] }]}>

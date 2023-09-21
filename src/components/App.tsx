@@ -17,7 +17,7 @@ import Session from './Session';
 import Intro from './Intro';
 import Panel from './Panel';
 import programs from '../programs';
-import { WHITE, LIGHT_BLACK, DARK_BLACK } from '../constants';
+import { colors } from '../constants';
 import {
   findMaxesNeeded,
   findSession,
@@ -43,8 +43,9 @@ export default function App() {
 
   const [mode, setMode] = useState<Mode | undefined>(undefined);
   const [checks, setChecks] = useState<boolean[]>([]);
-  const BACKGROUND_COLOR = mode === Mode.light ? WHITE : DARK_BLACK;
-  const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
+  const BACKGROUND_COLOR =
+    mode === Mode.light ? colors.WHITE : colors.DARK_BLACK;
+  const PRIMARY_COLOR = mode === Mode.light ? colors.LIGHT_BLACK : colors.WHITE;
 
   const [page, setPage] = useState<number>(0);
   const maxesNeeded: MaxesType = findMaxesNeeded(program.sessions);
@@ -203,7 +204,7 @@ export default function App() {
             <Feather
               name={'settings'}
               size={24}
-              color={PRIMARY_TEXT}
+              color={PRIMARY_COLOR}
               padding={20}
               onPress={openPanel}
             />

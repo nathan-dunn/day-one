@@ -11,14 +11,7 @@ import {
 import AnimatedText from './AnimatedText';
 import AnimatedLine from './AnimatedLine';
 import AnimatedCheckbox from './AnimatedCheckbox';
-import {
-  WHITE,
-  LIGHT_BLACK,
-  LIGHT_GRAY,
-  DARK_GRAY,
-  BENCH,
-  PRESS,
-} from '../constants';
+import { colors, BENCH, PRESS } from '../constants';
 import { Mode, MaxesType, LiftType, Day } from '../types';
 import { roundTo } from '../utils';
 
@@ -56,8 +49,9 @@ export default function Session({
   const scrollViewRef = useRef<ScrollView | null>(null);
 
   const [week, day] = sessionId;
-  const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
-  const SECONDARY_TEXT = mode === Mode.light ? DARK_GRAY : LIGHT_GRAY;
+  const PRIMARY_COLOR = mode === Mode.light ? colors.LIGHT_BLACK : colors.WHITE;
+  const SECONDARY_COLOR =
+    mode === Mode.light ? colors.DARK_GRAY : colors.LIGHT_GRAY;
 
   const inputRange = [
     (sessionIndex - 1) * width,
@@ -128,29 +122,32 @@ export default function Session({
           >
             <AnimatedText
               text={`Week ${week}`}
-              style={[styles.week, { color: PRIMARY_TEXT }]}
+              style={[styles.week, { color: PRIMARY_COLOR }]}
               opacity={opacity}
               translateX={translateSlow}
             />
             <AnimatedCheckbox
               isChecked={isChecked}
               onPress={handleCheck}
-              style={[styles.checkbox, { color: PRIMARY_TEXT }]}
+              style={[styles.checkbox, { color: PRIMARY_COLOR }]}
               opacity={opacity}
               translateX={translateSlow}
-              color={PRIMARY_TEXT}
+              color={isChecked ? SECONDARY_COLOR : SECONDARY_COLOR}
             />
           </View>
           <AnimatedText
             text={dayText || `Day ${day}`}
-            style={[styles.day, { color: SECONDARY_TEXT }]}
+            style={[styles.day, { color: SECONDARY_COLOR }]}
             opacity={opacity}
             translateX={translateFast}
           />
         </View>
 
         <AnimatedLine
-          style={[styles.line, { width: _width, backgroundColor: LIGHT_GRAY }]}
+          style={[
+            styles.line,
+            { width: _width, backgroundColor: colors.LIGHT_GRAY },
+          ]}
           opacity={opacity}
           translateX={translateFast}
         />
@@ -167,7 +164,7 @@ export default function Session({
               >
                 <AnimatedText
                   text={name}
-                  style={[styles.lift, { color: PRIMARY_TEXT }]}
+                  style={[styles.lift, { color: PRIMARY_COLOR }]}
                   opacity={opacity}
                   translateX={translateSlow}
                 />
@@ -197,7 +194,7 @@ export default function Session({
                       <AnimatedText
                         key={rxIndex}
                         text={rxText}
-                        style={[styles.rx, { color: SECONDARY_TEXT }]}
+                        style={[styles.rx, { color: SECONDARY_COLOR }]}
                         opacity={opacity}
                         translateX={translateFast}
                       />
@@ -212,14 +209,14 @@ export default function Session({
                       <View key={noteIndex} style={[styles.liftNoteContainer]}>
                         <AnimatedText
                           text={'•'}
-                          style={[styles.bullet, { color: SECONDARY_TEXT }]}
+                          style={[styles.bullet, { color: SECONDARY_COLOR }]}
                           opacity={opacity}
                           translateX={translateFast}
                         />
 
                         <AnimatedText
                           text={note.trim()}
-                          style={[styles.liftNote, { color: SECONDARY_TEXT }]}
+                          style={[styles.liftNote, { color: SECONDARY_COLOR }]}
                           opacity={opacity}
                           translateX={translateFast}
                         />
@@ -232,7 +229,10 @@ export default function Session({
         </View>
 
         <AnimatedLine
-          style={[styles.line, { width: _width, backgroundColor: LIGHT_GRAY }]}
+          style={[
+            styles.line,
+            { width: _width, backgroundColor: colors.LIGHT_GRAY },
+          ]}
           opacity={opacity}
           translateX={translateSlow}
         />
@@ -245,7 +245,7 @@ export default function Session({
                 <View key={noteIndex} style={[styles.noteContainer]}>
                   <AnimatedText
                     text={note.trim()}
-                    style={[styles.note, { color: SECONDARY_TEXT }]}
+                    style={[styles.note, { color: SECONDARY_COLOR }]}
                     opacity={opacity}
                     translateX={translateFast}
                   />

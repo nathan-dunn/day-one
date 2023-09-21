@@ -9,7 +9,7 @@ import {
 import { Feather } from '@expo/vector-icons';
 import NumericInput from './NumericInput';
 import { setStorage } from '../utils';
-import { WHITE, LIGHT_BLACK, MED_BLACK } from '../constants';
+import { colors } from '../constants';
 import { Mode, MaxesType } from '../types';
 
 type PanelProps = {
@@ -29,19 +29,20 @@ export default function Panel({
   maxes,
   handleReset,
 }: PanelProps) {
-  const backgroundColor = mode === Mode.light ? WHITE : MED_BLACK;
-  const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
+  const BACKGROUND_COLOR =
+    mode === Mode.light ? colors.DARK_GRAY : colors.LIGHT_BLACK;
+  const PRIMARY_COLOR = mode === Mode.light ? colors.WHITE : colors.WHITE;
 
   return (
     <SafeAreaView
-      style={[styles.container, { backgroundColor: backgroundColor }]}
+      style={[styles.container, { backgroundColor: BACKGROUND_COLOR }]}
     >
       {/* HEADER */}
       <View style={styles.headerContainer}>
         <Feather
           name={'x'}
           size={24}
-          color={PRIMARY_TEXT}
+          color={PRIMARY_COLOR}
           alignSelf="flex-end"
           padding={20}
           onPress={onClose}
@@ -59,14 +60,14 @@ export default function Panel({
             setMode(updated);
           }}
         >
-          <Text style={[styles.rowKey, { color: PRIMARY_TEXT }]}>MODE</Text>
+          <Text style={[styles.rowKey, { color: PRIMARY_COLOR }]}>MODE</Text>
           <View
             style={[styles.row, { justifyContent: 'center', width: '33%' }]}
           >
             <Feather
               name={mode === Mode.light ? 'sun' : 'moon'}
               size={24}
-              color={PRIMARY_TEXT}
+              color={PRIMARY_COLOR}
             />
           </View>
         </TouchableOpacity>
@@ -81,7 +82,7 @@ export default function Panel({
         {Object.entries(maxes).map(([lift]) => {
           return (
             <View key={lift} style={[styles.row]}>
-              <Text style={[styles.rowKey, { color: PRIMARY_TEXT }]}>
+              <Text style={[styles.rowKey, { color: PRIMARY_COLOR }]}>
                 {lift}
               </Text>
               <NumericInput
@@ -90,8 +91,8 @@ export default function Panel({
                 style={[
                   styles.input,
                   {
-                    color: PRIMARY_TEXT,
-                    borderColor: PRIMARY_TEXT,
+                    color: PRIMARY_COLOR,
+                    borderColor: PRIMARY_COLOR,
                     borderWidth: 1,
                   },
                 ]}
