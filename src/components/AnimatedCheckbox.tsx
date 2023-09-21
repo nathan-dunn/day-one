@@ -14,6 +14,8 @@ type AnimatedCheckboxProps = {
   opacity: Animated.AnimatedInterpolation<number>;
   translateX: Animated.AnimatedInterpolation<number>;
   color: string;
+  checks: boolean[];
+  sessionIndex: number;
 };
 
 export default function AnimatedCheckbox({

@@ -33,6 +33,8 @@ type SessionProps = {
   scrollX: Animated.Value;
   mode: Mode;
   maxes: MaxesType;
+  handleCheck: () => void;
+  isChecked: boolean;
 };
 
 export default function Session({
@@ -44,6 +46,8 @@ export default function Session({
   index: sessionIndex,
   mode,
   maxes,
+  handleCheck,
+  isChecked,
 }: SessionProps) {
   const _width = width * 0.85;
 
@@ -105,8 +109,6 @@ export default function Session({
       ? Day.friday
       : null;
 
-  const [isBlueSelected, setIsBlueSelected] = useState(false);
-
   return (
     <ScrollView
       ref={scrollViewRef}
@@ -131,10 +133,8 @@ export default function Session({
               translateX={translateSlow}
             />
             <AnimatedCheckbox
-              isChecked={isBlueSelected}
-              onPress={() => {
-                setIsBlueSelected(!isBlueSelected);
-              }}
+              isChecked={isChecked}
+              onPress={handleCheck}
               style={[styles.checkbox, { color: PRIMARY_TEXT }]}
               opacity={opacity}
               translateX={translateSlow}

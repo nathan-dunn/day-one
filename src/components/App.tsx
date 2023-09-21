@@ -41,6 +41,7 @@ export default function App() {
   ];
 
   const [mode, setMode] = useState<Mode | undefined>(undefined);
+  const [checks, setChecks] = useState<boolean[]>([]);
   const BACKGROUND_COLOR = mode === Mode.light ? WHITE : DARK_BLACK;
   const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
 
@@ -96,6 +97,20 @@ export default function App() {
     }
   };
 
+  const loadChecks = async () => {
+    const storedChecks = await getStorage('@day_one_checks');
+    const parsed = storedChecks ? JSON.parse(storedChecks) : null;
+
+    console.log('parsed:', parsed);
+
+    if (parsed) {
+      setChecks(parsed);
+    } else {
+      setChecks(new Array(program.sessions.length + 1).fill(false));
+      await setStorage('@day_one_checks', JSON.stringify(checks));
+    }
+  };
+
   const loadStoredMode = async () => {
     const storedMode = await getStorage('@day_one_mode');
     if (isMode(storedMode)) {
@@ -118,13 +133,26 @@ export default function App() {
     }
   };
 
+  const handleCheck = async (index: number) => {
+    const storedChecks = await getStorage('@day_one_checks');
+    const parsed = storedChecks ? JSON.parse(storedChecks) : null;
+    if (parsed) {
+      const newChecks = [...parsed];
+      newChecks[index] = !newChecks[index];
+      setChecks(newChecks);
+      setStorage('@day_one_checks', JSON.stringify(newChecks));
+    }
+  };
+
   const reset = async () => {
     await removeStorage('@day_one_mode');
     await removeStorage('@day_one_page');
+    await removeStorage('@day_one_checks');
     await removeStorage('@day_one_maxes');
 
     loadStoredMode();
     loadStoredPage();
+    loadChecks();
     loadMaxes();
 
     alert('App Reset');
@@ -134,6 +162,7 @@ export default function App() {
   useEffect(() => {
     loadStoredMode();
     loadStoredPage();
+    loadChecks();
     loadMaxes();
   }, []);
 
@@ -209,6 +238,8 @@ export default function App() {
                   scrollX={_scrollX}
                   mode={mode}
                   maxes={maxes}
+                  isChecked={checks[index]}
+                  handleCheck={() => handleCheck(index)}
                 />
               );
             }}
