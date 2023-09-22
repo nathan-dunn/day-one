@@ -72,12 +72,15 @@ export default function App() {
   const _scrollX = useRef(ANIMATED_VALUE).current;
 
   // HANDLERS
-  const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const contentOffset = e.nativeEvent.contentOffset;
-    const viewSize = e.nativeEvent.layoutMeasurement;
-    const pageNum = Math.floor(contentOffset.x / viewSize.width);
-    setPage(pageNum);
-  };
+  const onScrollEnd = useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const contentOffset = e.nativeEvent.contentOffset;
+      const viewSize = e.nativeEvent.layoutMeasurement;
+      const pageNum = Math.floor(contentOffset.x / viewSize.width);
+      setPage(pageNum);
+    },
+    []
+  );
 
   const onScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { x: _scrollX } } }],
@@ -183,17 +186,10 @@ export default function App() {
 
   if (page === undefined || !mode) {
     return (
-      <SafeAreaView
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: colors.DARK_BLACK,
-        }}
-      >
+      <SafeAreaView style={styles.splashContainer}>
         <Image
           source={require('../../assets/icon.png')}
-          style={{ width: width * 0.85, resizeMode: 'contain' }}
+          style={[styles.splashImage, { width: width * 0.85 }]}
         />
       </SafeAreaView>
     );
@@ -307,5 +303,14 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 30,
     height: 64,
+  },
+  splashContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.DARK_BLACK,
+  },
+  splashImage: {
+    resizeMode: 'contain',
   },
 });
