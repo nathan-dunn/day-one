@@ -163,6 +163,8 @@ export default function Session({
           width={_width}
           mode={mode}
           onPress={handleNavPress}
+          opacity={opacity}
+          translateX={translateSlow}
         />
 
         <View style={[styles.liftsContainer]}>
@@ -358,5 +360,8 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 2,
     marginBottom: 10,
+  },
+  checkbox: {
+    //
   },
 });

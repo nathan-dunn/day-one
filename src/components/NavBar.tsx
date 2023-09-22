@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Animated, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Mode } from '../types';
 import { colors } from '../constants';
 
@@ -9,6 +9,8 @@ type NavBarProps = {
   width: number;
   mode: Mode;
   onPress: (index: number) => void;
+  opacity: Animated.AnimatedInterpolation<number>;
+  translateX: Animated.AnimatedInterpolation<number>;
 };
 
 export default function NavBar({
@@ -17,6 +19,8 @@ export default function NavBar({
   width,
   mode,
   onPress,
+  opacity,
+  translateX,
 }: NavBarProps) {
   return (
     <View style={[styles.container, { width }]}>
@@ -35,7 +39,7 @@ export default function NavBar({
             style={styles.touch}
             onPress={() => onPress(index)}
           >
-            <View
+            <Animated.View
               style={[
                 styles.nav,
                 {
@@ -43,6 +47,7 @@ export default function NavBar({
                   height: isCurrent ? 6 : 3,
                   backgroundColor: isCurrent ? PRIMARY_COLOR : SECONDARY_COLOR,
                 },
+                { opacity, transform: [{ translateX }] },
               ]}
             />
           </TouchableOpacity>
