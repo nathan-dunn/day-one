@@ -6,7 +6,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import AnimatedText from './AnimatedText';
+import TextBlock from './TextBlock';
 import { Mode } from '../types';
 import { colors } from '../constants';
 
@@ -38,9 +38,9 @@ export default function Intro({
   ];
 
   const opacityInputRange = [
-    (sessionIndex - 0.4) * width,
+    (sessionIndex - 0.5) * width,
     sessionIndex * width,
-    (sessionIndex + 0.4) * width,
+    (sessionIndex + 0.5) * width,
   ];
 
   const opacity: Animated.AnimatedInterpolation<number> = scrollX.interpolate({
@@ -63,7 +63,7 @@ export default function Intro({
   return (
     <ScrollView contentContainerStyle={[styles.container, { width }]}>
       <View style={styles.header}>
-        <AnimatedText
+        <TextBlock
           text={name}
           style={[
             styles.headerText,
@@ -77,7 +77,7 @@ export default function Intro({
       {notes
         .filter(note => note)
         .map((note, noteIndex) => (
-          <AnimatedText
+          <TextBlock
             key={noteIndex}
             text={note.trim()}
             style={[

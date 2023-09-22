@@ -59,10 +59,16 @@ export function findMaxesNeeded(sessions: SessionType[]): MaxesType {
 export function findSession(checks: boolean[]): number {
   // find the first unchecked session after the last checked session
 
-  // short cut
+  // if no checks, go to first session
+  if (checks.every(check => check === false)) {
+    return 0;
+  }
+
+  // if last session checked, go to first session
   if (checks[checks.length - 1] === true) {
     return 0;
   }
+
   // skip the first session (intro page)
   for (let i = checks.length - 1; i >= 1; i--) {
     if (checks[i] === true && checks[i + 1] === false) {
@@ -70,5 +76,5 @@ export function findSession(checks: boolean[]): number {
     }
   }
 
-  return 1;
+  return 0;
 }

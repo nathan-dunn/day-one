@@ -1,55 +1,36 @@
 import React from 'react';
-import { Animated, View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Mode } from '../types';
-import { colors } from '../constants';
+import {
+  Animated,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  TextStyle,
+  StyleProp,
+} from 'react-native';
 
 type NavBarProps = {
-  page: number;
-  sessionsCount: number;
   width: number;
-  mode: Mode;
+  sessionsCount: number;
+  segmentStyle: StyleProp<TextStyle>;
   onPress: (index: number) => void;
-  opacity: Animated.AnimatedInterpolation<number>;
-  translateX: Animated.AnimatedInterpolation<number>;
 };
 
 export default function NavBar({
-  page,
-  sessionsCount,
   width,
-  mode,
+  sessionsCount,
   onPress,
-  opacity,
-  translateX,
+  segmentStyle,
 }: NavBarProps) {
   return (
     <View style={[styles.container, { width }]}>
-      {new Array(sessionsCount).fill(false).map((item, index) => {
-        const PRIMARY_COLOR =
-          mode === Mode.light ? colors.LIGHT_BLACK : colors.WHITE;
-        const SECONDARY_COLOR =
-          mode === Mode.light ? colors.DARK_GRAY : colors.LIGHT_GRAY;
-        const padding = 1.5;
-        const adjustedWidth = width / sessionsCount - 2 * padding;
-        const isCurrent = index === page - 1;
-
+      {new Array(sessionsCount).fill(null).map((item, index) => {
         return (
           <TouchableOpacity
             key={index}
-            style={styles.touch}
+            style={[styles.touch, {}]}
             onPress={() => onPress(index)}
           >
-            <Animated.View
-              style={[
-                styles.nav,
-                {
-                  width: adjustedWidth,
-                  height: isCurrent ? 6 : 3,
-                  backgroundColor: isCurrent ? PRIMARY_COLOR : SECONDARY_COLOR,
-                },
-                { opacity, transform: [{ translateX }] },
-              ]}
-            />
+            <Animated.View style={[segmentStyle]} />
           </TouchableOpacity>
         );
       })}
@@ -65,10 +46,6 @@ const styles = StyleSheet.create({
   },
   touch: {
     paddingVertical: 30,
-    underlayColor: 'red',
     activeOpacity: 1,
-  },
-  nav: {
-    height: 3,
   },
 });

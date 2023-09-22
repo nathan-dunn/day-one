@@ -8,9 +8,9 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import AnimatedText from './AnimatedText';
-import AnimatedLine from './AnimatedLine';
-import AnimatedCheckbox from './AnimatedCheckbox';
+import TextBlock from './TextBlock';
+import Line from './Line';
+import Checkbox from './Checkbox';
 import NavBar from './NavBar';
 import { colors, BENCH, PRESS } from '../constants';
 import { Mode, MaxesType, LiftType, Day, SessionIdTuple } from '../types';
@@ -33,7 +33,7 @@ type SessionProps = {
   handleNavPress: (index: number) => void;
 };
 
-export default function Session({
+function Session({
   page,
   sessionId,
   notes,
@@ -47,6 +47,11 @@ export default function Session({
   sessionsCount,
   handleNavPress,
 }: SessionProps) {
+  const isCurrent = sessionIndex === page + 1;
+  console.log(
+    `.....sessionIndex: ${sessionIndex} page: ${page} isCurrent: ${isCurrent}`
+  );
+
   const _width = width * 0.85;
 
   const [scrollPosition, setScrollPosition] = useState<number>(0);
@@ -93,10 +98,10 @@ export default function Session({
   };
 
   useEffect(() => {
-    if (scrollPosition > 0) {
-      scrollViewRef.current?.scrollTo({ y: 0, animated: true });
-      console.log('paging...:', { page, scrollPosition });
-    }
+    // if (scrollPosition > 0) {
+    //   scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+    //   console.log('paging...:', { page, scrollPosition });
+    // }
   }, [page]);
 
   const dayText: Day | null =
@@ -125,13 +130,13 @@ export default function Session({
               alignItems: 'center',
             }}
           >
-            <AnimatedText
+            <TextBlock
               text={`Week ${week}`}
               style={[styles.week, { color: PRIMARY_COLOR }]}
               opacity={opacity}
               translateX={translateSlow}
             />
-            <AnimatedCheckbox
+            <Checkbox
               isChecked={isChecked}
               onPress={handleCheck}
               style={[styles.checkbox, { color: PRIMARY_COLOR }]}
@@ -140,31 +145,25 @@ export default function Session({
               color={isChecked ? SECONDARY_COLOR : SECONDARY_COLOR}
             />
           </View>
-          <AnimatedText
+          <TextBlock
             text={dayText || `Day ${day}`}
             style={[styles.day, { color: SECONDARY_COLOR }]}
             opacity={opacity}
             translateX={translateFast}
           />
         </View>
-        {/* 
-        <AnimatedLine
-          style={[
-            styles.line,
-            { width: _width, backgroundColor: colors.LIGHT_GRAY },
-          ]}
-          opacity={opacity}
-          translateX={translateFast}
-        /> */}
 
         <NavBar
-          page={page}
-          sessionsCount={sessionsCount}
           width={_width}
-          mode={mode}
+          sessionsCount={sessionsCount}
           onPress={handleNavPress}
-          opacity={opacity}
-          translateX={translateSlow}
+          segmentStyle={{
+            width: _width / sessionsCount - 2 * 1.5,
+            height: isCurrent ? 6 : 3,
+            backgroundColor: isCurrent ? PRIMARY_COLOR : SECONDARY_COLOR,
+            opacity,
+            transform: [{ translateX: translateSlow }],
+          }}
         />
 
         <View style={[styles.liftsContainer]}>
@@ -177,7 +176,7 @@ export default function Session({
                 ]}
                 key={liftIndex}
               >
-                <AnimatedText
+                <TextBlock
                   text={name}
                   style={[styles.lift, { color: PRIMARY_COLOR }]}
                   opacity={opacity}
@@ -206,7 +205,7 @@ export default function Session({
                         : `${sets} ${setsText} x ${reps} ${repsText}`;
 
                     return (
-                      <AnimatedText
+                      <TextBlock
                         key={rxIndex}
                         text={rxText}
                         style={[styles.rx, { color: SECONDARY_COLOR }]}
@@ -222,14 +221,14 @@ export default function Session({
                   .map((note, noteIndex) => {
                     return (
                       <View key={noteIndex} style={[styles.liftNoteContainer]}>
-                        <AnimatedText
+                        <TextBlock
                           text={'•'}
                           style={[styles.bullet, { color: SECONDARY_COLOR }]}
                           opacity={opacity}
                           translateX={translateFast}
                         />
 
-                        <AnimatedText
+                        <TextBlock
                           text={note.trim()}
                           style={[styles.liftNote, { color: SECONDARY_COLOR }]}
                           opacity={opacity}
@@ -243,7 +242,7 @@ export default function Session({
           })}
         </View>
 
-        <AnimatedLine
+        <Line
           style={[
             styles.line,
             { width: _width, backgroundColor: colors.LIGHT_GRAY },
@@ -258,7 +257,7 @@ export default function Session({
             .map((note, noteIndex) => {
               return (
                 <View key={noteIndex} style={[styles.noteContainer]}>
-                  <AnimatedText
+                  <TextBlock
                     text={note.trim()}
                     style={[styles.note, { color: SECONDARY_COLOR }]}
                     opacity={opacity}
@@ -365,3 +364,5 @@ const styles = StyleSheet.create({
     //
   },
 });
+
+export default React.memo(Session);

@@ -1,3 +1,4 @@
+import { ProgramType } from '../types';
 import {
   SQUAT,
   BENCH,
@@ -10,7 +11,7 @@ import {
   ARMS,
 } from '../constants';
 
-export default {
+const program: ProgramType = {
   name: 'Garage Gym Warrior II',
   sessionId: [0, 0],
   notes: [
@@ -485,3 +486,4 @@ export default {
     },
   ],
 };
+export default program;

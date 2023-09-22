@@ -19,7 +19,7 @@ export type MaxesType = {
 
 export type RxType = {
   sets?: number | string;
-  reps: number | string;
+  reps?: number | string;
   perc?: number;
 };
 
@@ -35,6 +35,13 @@ export type SessionType = {
   sessionId: SessionIdTuple;
   notes: string[];
   lifts: LiftType[];
+};
+
+export type ProgramType = {
+  name: string;
+  sessionId: SessionIdTuple;
+  notes: string[];
+  sessions: SessionType[];
 };
 
 export function isMode(value: any): value is Mode {

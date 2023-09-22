@@ -29,9 +29,8 @@ export default function Panel({
   maxes,
   handleReset,
 }: PanelProps) {
-  const BACKGROUND_COLOR =
-    mode === Mode.light ? colors.DARK_GRAY : colors.LIGHT_BLACK;
-  const PRIMARY_COLOR = mode === Mode.light ? colors.WHITE : colors.WHITE;
+  const BACKGROUND_COLOR = colors.LIGHT_BLACK;
+  const PRIMARY_COLOR = colors.WHITE;
 
   return (
     <SafeAreaView

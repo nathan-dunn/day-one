@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
-type AnimatedCheckboxProps = {
+type CheckboxProps = {
   onPress: () => void;
   isChecked: boolean;
   style: StyleProp<TextStyle>;
@@ -16,14 +16,14 @@ type AnimatedCheckboxProps = {
   color: string;
 };
 
-export default function AnimatedCheckbox({
+export default function Checkbox({
   onPress,
   isChecked,
   style,
   opacity,
   translateX,
   color,
-}: AnimatedCheckboxProps) {
+}: CheckboxProps) {
   return (
     <Animated.View style={[style, { opacity, transform: [{ translateX }] }]}>
       <TouchableHighlight onPress={onPress} underlayColor="transparent">
