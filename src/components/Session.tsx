@@ -19,39 +19,34 @@ import { roundTo } from '../utils';
 const { width } = Dimensions.get('window');
 
 type SessionProps = {
-  page: number;
-  sessionId: SessionIdTuple;
-  notes: string[];
-  lifts: LiftType[];
-  index: number;
-  scrollX: Animated.Value;
-  mode: Mode;
-  maxes: MaxesType;
   handleCheck: () => void;
-  isChecked: boolean;
-  sessionsCount: number;
   handleNavPress: (index: number) => void;
+  index: number;
+  isChecked: boolean;
+  lifts: LiftType[];
+  maxes: MaxesType;
+  mode: Mode;
+  notes: string[];
+  page: number;
+  scrollX: Animated.Value;
+  sessionId: SessionIdTuple;
+  totalPages: number;
 };
 
 function Session({
-  page,
-  sessionId,
-  notes,
-  lifts,
-  scrollX,
-  index: sessionIndex,
-  mode,
-  maxes,
   handleCheck,
-  isChecked,
-  sessionsCount,
   handleNavPress,
+  index: sessionIndex,
+  isChecked,
+  lifts,
+  maxes,
+  mode,
+  notes,
+  page,
+  scrollX,
+  sessionId,
+  totalPages,
 }: SessionProps) {
-  const isCurrent = sessionIndex === page + 1;
-  console.log(
-    `.....sessionIndex: ${sessionIndex} page: ${page} isCurrent: ${isCurrent}`
-  );
-
   const _width = width * 0.85;
 
   const [scrollPosition, setScrollPosition] = useState<number>(0);
@@ -98,10 +93,9 @@ function Session({
   };
 
   useEffect(() => {
-    // if (scrollPosition > 0) {
-    //   scrollViewRef.current?.scrollTo({ y: 0, animated: true });
-    //   console.log('paging...:', { page, scrollPosition });
-    // }
+    if (scrollPosition > 0) {
+      scrollViewRef.current?.scrollTo({ y: 0, animated: false });
+    }
   }, [page]);
 
   const dayText: Day | null =
@@ -154,13 +148,12 @@ function Session({
         </View>
 
         <NavBar
+          page={page}
           width={_width}
-          sessionsCount={sessionsCount}
+          mode={mode}
+          totalPages={totalPages}
           onPress={handleNavPress}
           segmentStyle={{
-            width: _width / sessionsCount - 2 * 1.5,
-            height: isCurrent ? 6 : 3,
-            backgroundColor: isCurrent ? PRIMARY_COLOR : SECONDARY_COLOR,
             opacity,
             transform: [{ translateX: translateSlow }],
           }}

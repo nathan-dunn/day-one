@@ -14,17 +14,19 @@ const { width } = Dimensions.get('window');
 
 type IntroProps = {
   index: number;
+  mode: Mode;
   name: string;
   notes: string[];
-  mode: Mode;
+  page: number;
   scrollX: Animated.Value;
 };
 
 export default function Intro({
-  name,
   index: sessionIndex, // always 0
-  notes,
   mode,
+  name,
+  notes,
+  page,
   scrollX,
 }: IntroProps) {
   const PRIMARY_COLOR = mode === Mode.light ? colors.LIGHT_BLACK : colors.WHITE;

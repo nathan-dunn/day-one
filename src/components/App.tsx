@@ -45,12 +45,12 @@ const ANIMATED_VALUE = new Animated.Value(0);
 export default function App() {
   // PROGRAM
   const [program] = useState(programs[0]);
-  const sessionsCount = program.sessions.length;
 
   // MODE
   const [mode, setMode] = useState<Mode | undefined>(undefined);
 
   // PAGE && CHECKS
+  const totalPages = program.sessions.length + 1;
   const [page, setPage] = useState<number | undefined>(undefined);
   const [checks, setChecks] = useState<boolean[]>([]);
 
@@ -77,9 +77,6 @@ export default function App() {
     const viewSize = e.nativeEvent.layoutMeasurement;
     const pageNum = Math.floor(contentOffset.x / viewSize.width);
     setPage(pageNum);
-    console.log('...setPage', pageNum);
-    setStorage('@day_one_page', String(pageNum));
-    console.log('...setStorage', pageNum);
   };
 
   const onScroll = Animated.event(
@@ -102,7 +99,7 @@ export default function App() {
   const handlePageNav = (index: number) => {
     flatListRef.current?.scrollToOffset({
       offset: index * width,
-      animated: true,
+      animated: false,
     });
   };
 
@@ -120,14 +117,13 @@ export default function App() {
   const handleNavPress = useCallback((index: number) => {
     handlePageNav(index + 1);
     setPage(index + 1);
-    setStorage('@day_one_page', String(index + 1));
   }, []);
 
   const handleReset = useCallback(async () => {
     await removeStorage('@day_one_checks');
     await removeStorage('@day_one_mode');
     await removeStorage('@day_one_maxes');
-    await removeStorage('@day_one_page'); // sunset
+    await removeStorage('@day_one_page');
 
     loadStoredMode();
     loadStoredChecks();
@@ -154,13 +150,14 @@ export default function App() {
     if (parsed) {
       setChecks(parsed);
       const currentSession = findSession(parsed);
+
       setPage(currentSession);
       handlePageNav(currentSession);
     } else {
-      const _checks = new Array(sessionsCount + 1).fill(false);
+      const _checks = new Array(totalPages).fill(false);
+      setChecks(_checks);
       setPage(0);
       handlePageNav(0);
-      setChecks(_checks);
       await setStorage('@day_one_checks', JSON.stringify(_checks));
     }
   };
@@ -243,7 +240,7 @@ export default function App() {
         </View>
 
         <Animated.FlatList
-          // initialScrollIndex={page}
+          initialScrollIndex={page}
           ref={flatListRef}
           showsHorizontalScrollIndicator={false}
           scrollEventThrottle={16}
@@ -263,6 +260,7 @@ export default function App() {
           renderItem={({ item, index }) => {
             return index === 0 ? (
               <Intro
+                page={page}
                 index={index}
                 name={item.name}
                 notes={item.notes}
@@ -279,7 +277,7 @@ export default function App() {
                 maxes={maxes}
                 isChecked={checks[index]}
                 handleCheck={() => handleCheck(index)}
-                sessionsCount={sessionsCount}
+                totalPages={totalPages}
                 handleNavPress={handleNavPress}
               />
             );

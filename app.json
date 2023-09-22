@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.tru36rit.dayone",
-      "buildNumber": "19",
+      "buildNumber": "20",
       "config": {
         "usesNonExemptEncryption": false
       },
