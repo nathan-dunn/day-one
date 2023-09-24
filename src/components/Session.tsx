@@ -13,15 +13,8 @@ import Line from './Line';
 import Checkbox from './Checkbox';
 import NavBar from './NavBar';
 import { colors, BENCH, PRESS } from '../constants';
-import {
-  Mode,
-  MaxesType,
-  LiftType,
-  Day,
-  SessionIdTuple,
-  Theme,
-} from '../types';
-import { roundTo, getColor } from '../utils';
+import { MaxesType, LiftType, Day, SessionIdTuple, Theme } from '../types';
+import { roundTo, getColor, interpolateColors } from '../utils';
 
 const { width } = Dimensions.get('window');
 
@@ -32,7 +25,6 @@ type SessionProps = {
   isChecked: boolean;
   lifts: LiftType[];
   maxes: MaxesType;
-  mode: Mode;
   notes: string[];
   page: number;
   scrollX: Animated.Value;
@@ -47,7 +39,6 @@ function Session({
   isChecked,
   lifts,
   maxes,
-  mode,
   notes,
   page,
   scrollX,
@@ -55,6 +46,11 @@ function Session({
   totalPages,
 }: SessionProps) {
   const _width = width * 0.85;
+  const gradient = interpolateColors(
+    totalPages,
+    colors.PALE_BLUE,
+    colors.PALE_GREEN
+  );
 
   const [scrollPosition, setScrollPosition] = useState<number>(0);
 
@@ -62,17 +58,11 @@ function Session({
 
   const [week, day] = sessionId;
 
-  const BG_2 = getColor(mode, Theme.BG_2);
-  const BG_3 = getColor(mode, Theme.BG_3);
-  const TEXT_2 = getColor(mode, Theme.TEXT_2);
-  const TEXT_3 = getColor(mode, Theme.TEXT_3);
-  const TEXT_4 = getColor(mode, Theme.TEXT_4);
-  const HEADER_BACKGROUND =
-    day === 1
-      ? colors.PALE_BLUE
-      : day === 2
-      ? colors.PALE_VIOLET
-      : colors.PALE_GREEN;
+  const BG_2 = getColor(Theme.BG_2);
+  const TEXT_2 = getColor(Theme.TEXT_2);
+  const TEXT_3 = getColor(Theme.TEXT_3);
+  const TEXT_4 = getColor(Theme.TEXT_4);
+  const HIGHLIGHT_COLOR = gradient[sessionIndex - 1];
 
   const inputRange = [
     (sessionIndex - 1) * width,
@@ -133,18 +123,9 @@ function Session({
       <View style={[styles.content, { width: _width }]}>
         {/* HEADER */}
         <View
-          style={[
-            styles.headerContainer,
-            { backgroundColor: HEADER_BACKGROUND },
-          ]}
+          style={[styles.headerContainer, { backgroundColor: HIGHLIGHT_COLOR }]}
         >
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
+          <View style={[styles.headerSubContainer]}>
             <TextBlock
               text={`Week ${week}`}
               style={[styles.week, { color: TEXT_4 }]}
@@ -162,12 +143,7 @@ function Session({
           </View>
           <TextBlock
             text={dayText || `Day ${day}`}
-            style={[
-              styles.day,
-              {
-                color: TEXT_4,
-              },
-            ]}
+            style={[styles.day, { color: TEXT_4 }]}
             opacity={opacity}
             translateX={translateFast}
           />
@@ -176,13 +152,10 @@ function Session({
         <NavBar
           page={page}
           width={_width}
-          mode={mode}
           totalPages={totalPages}
           onPress={handleNavPress}
-          segmentStyle={{
-            opacity,
-            transform: [{ translateX: translateSlow }],
-          }}
+          segmentStyle={{ opacity, transform: [{ translateX: translateSlow }] }}
+          highlightColor={HIGHLIGHT_COLOR}
         />
 
         <View style={[styles.liftsContainer]}>
@@ -192,15 +165,15 @@ function Session({
                 style={[
                   styles.liftContainer,
                   {
-                    marginBottom: liftIndex === lifts.length - 1 ? 10 : 50,
                     backgroundColor: BG_2,
+                    marginBottom: liftIndex === lifts.length - 1 ? 10 : 50,
                   },
                 ]}
                 key={liftIndex}
               >
                 <TextBlock
                   text={name}
-                  style={[styles.lift, { color: TEXT_2 }]}
+                  style={[styles.liftName, { color: TEXT_2 }]}
                   opacity={opacity}
                   translateX={translateSlow}
                 />
@@ -246,24 +219,14 @@ function Session({
                       <View key={noteIndex} style={[styles.liftNoteContainer]}>
                         <TextBlock
                           text={'•'}
-                          style={[
-                            styles.bullet,
-                            {
-                              color: TEXT_3,
-                            },
-                          ]}
+                          style={[styles.bullet, { color: TEXT_3 }]}
                           opacity={opacity}
                           translateX={translateFast}
                         />
 
                         <TextBlock
-                          text={note.trim()}
-                          style={[
-                            styles.liftNote,
-                            {
-                              color: TEXT_3,
-                            },
-                          ]}
+                          text={note.replace(/\.$/, '').trim()}
+                          style={[styles.liftNote, { color: TEXT_3 }]}
                           opacity={opacity}
                           translateX={translateFast}
                         />
@@ -285,15 +248,17 @@ function Session({
               opacity={opacity}
               translateX={translateSlow}
             />
-            <View style={[styles.notesContainer, { backgroundColor: BG_2 }]}>
+            <View
+              style={[styles.sessionNotesContainer, { backgroundColor: BG_2 }]}
+            >
               {notes
                 .filter(note => note)
                 .map((note, noteIndex) => {
                   return (
-                    <View key={noteIndex} style={[styles.noteContainer]}>
+                    <View key={noteIndex} style={[styles.sessionNoteContainer]}>
                       <TextBlock
                         text={note.trim()}
-                        style={[styles.note, { color: TEXT_3 }]}
+                        style={[styles.sessionNote, { color: TEXT_3 }]}
                         opacity={opacity}
                         translateX={translateFast}
                       />
@@ -309,92 +274,23 @@ function Session({
 }
 
 const styles = StyleSheet.create({
-  bullet: {
-    fontWeight: '600',
-    marginRight: 10,
-    fontSize: 16,
-    lineHeight: 16 * 1.5,
-    width: 10,
-    textAlign: 'center',
-  },
   container: {
     paddingTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  content: {},
-  day: {
-    fontWeight: '600',
-    textAlign: 'left',
-    marginRight: 10,
-    fontSize: 20,
-    lineHeight: 16 * 1.5,
+  content: {
+    //
   },
   headerContainer: {
     padding: 15,
     borderRadius: 5,
     fontFamily: 'Archivo Black',
   },
-  liftsContainer: {
-    // paddingHorizontal: 20,
-  },
-  lift: {
-    textTransform: 'uppercase',
-    textAlign: 'left',
-    fontSize: 20,
-    // fontWeight: '400',
-    letterSpacing: 2,
-    marginBottom: 10,
-    fontFamily: 'Archivo Black',
-  },
-  liftContainer: {
-    padding: 15,
-    borderRadius: 5,
-  },
-  line: {
-    height: 1,
-    marginVertical: 30,
-  },
-  notesContainer: {
-    padding: 15,
-    borderRadius: 5,
-  },
-  liftNote: {
-    fontWeight: '600',
-    textAlign: 'left',
-    marginRight: 10,
-    fontSize: 16,
-    lineHeight: 16 * 1.5,
-    marginLeft: -6,
-    // fontFamily: 'Archivo Black',
-  },
-  note: {
-    fontWeight: '600',
-    textAlign: 'justify',
-    marginRight: 10,
-    fontSize: 16,
-    lineHeight: 16 * 1.5,
-    marginLeft: -6,
-    // fontFamily: 'Archivo Black',
-  },
-  rx: {
-    // fontWeight: '600',
-    textAlign: 'left',
-    marginRight: 10,
-    fontSize: 16,
-    lineHeight: 16 * 1.5,
-    fontFamily: 'Archivo Black',
-  },
-  rxContainer: {
-    paddingBottom: 10,
-  },
-  noteContainer: {
-    paddingBottom: 10,
-    paddingHorizontal: 8,
-  },
-  liftNoteContainer: {
+  headerSubContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   week: {
     textTransform: 'uppercase',
@@ -404,8 +300,81 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     marginBottom: 10,
   },
+  day: {
+    fontWeight: '600',
+    textAlign: 'left',
+    marginRight: 10,
+    fontSize: 20,
+    lineHeight: 16 * 1.5,
+  },
   checkbox: {
     //
+  },
+  liftsContainer: {
+    // paddingHorizontal: 20,
+  },
+  liftContainer: {
+    padding: 15,
+    borderRadius: 5,
+  },
+  liftName: {
+    textTransform: 'uppercase',
+    textAlign: 'left',
+    fontSize: 20,
+    marginBottom: 10,
+    fontFamily: 'Archivo Black',
+    // letterSpacing: 1,
+  },
+  rxContainer: {
+    paddingBottom: 10,
+  },
+  rx: {
+    textAlign: 'left',
+    marginRight: 10,
+    fontSize: 16,
+    lineHeight: 16 * 1.5,
+    fontFamily: 'Archivo Black',
+  },
+  bullet: {
+    fontWeight: '600',
+    marginRight: 10,
+    fontSize: 16,
+    lineHeight: 24,
+    width: 10,
+    textAlign: 'center',
+  },
+  liftNoteContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  liftNote: {
+    fontWeight: '600',
+    textAlign: 'left',
+    marginRight: 10,
+    fontSize: 16,
+    lineHeight: 24,
+    marginLeft: -6,
+  },
+  line: {
+    height: 1,
+    marginVertical: 30,
+  },
+  sessionNotesContainer: {
+    padding: 15,
+    borderRadius: 5,
+  },
+  sessionNoteContainer: {
+    paddingBottom: 10,
+    paddingHorizontal: 8,
+  },
+  sessionNote: {
+    fontWeight: '600',
+    textAlign: 'justify',
+    marginRight: 10,
+    fontSize: 16,
+    lineHeight: 16 * 1.5,
+    marginLeft: -6,
+    // fontFamily: 'Archivo Black',
   },
 });
 

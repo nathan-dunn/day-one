@@ -79,23 +79,61 @@ export function findSession(checks: boolean[]): number {
 
   return 0;
 }
-export const getColor = (
-  mode: Mode | undefined | null,
-  theme: Theme
-): string => {
-  if (mode === null) mode = Mode.dark;
-
+export const getColor = (theme: Theme): string => {
   const themes = {
-    BG_1: mode === Mode.light ? colors.WHITE : colors.DARK_BLACK,
-    BG_2: mode === Mode.light ? colors.DARK_GRAY : colors.DARK_GRAY,
-    BG_3: mode === Mode.light ? colors.PALE_VIOLET : colors.PALE_VIOLET,
-    BG_4: mode === Mode.light ? colors.PALE_BLUE : colors.PALE_BLUE,
+    BG_1: colors.DARK_BLACK,
+    BG_2: colors.DARK_GRAY,
+    BG_3: colors.PALE_VIOLET,
+    BG_4: colors.PALE_BLUE,
 
-    TEXT_1: mode === Mode.light ? colors.DARK_GRAY : colors.WHITE,
-    TEXT_2: mode === Mode.light ? colors.DARK_BLACK : colors.WHITE,
-    TEXT_3: mode === Mode.light ? colors.LIGHT_GRAY : colors.LIGHT_GRAY,
-    TEXT_4: mode === Mode.light ? colors.WHITE : colors.DARK_BLACK,
+    TEXT_1: colors.WHITE,
+    TEXT_2: colors.WHITE,
+    TEXT_3: colors.LIGHT_GRAY,
+    TEXT_4: colors.DARK_BLACK,
   };
 
   return themes[theme] || colors.PINK;
+};
+
+const hexToRgb = (hex: string): [number, number, number] => {
+  // Remove the hash at the start if it's there
+  hex = hex.charAt(0) === '#' ? hex.slice(1) : hex;
+
+  // Parse r, g, b values
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+
+  return [r, g, b];
+};
+
+const rgbToHex = (r: number, g: number, b: number): string => {
+  return (
+    '#' +
+    ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1).toUpperCase()
+  );
+};
+
+export const interpolateColors = (
+  n: number,
+  color1: string,
+  color2: string
+): string[] => {
+  const [r1, g1, b1] = hexToRgb(color1);
+  const [r2, g2, b2] = hexToRgb(color2);
+
+  const output = [];
+
+  for (let i = 0; i < n; i++) {
+    const t = i / (n - 1);
+
+    const r = r1 + (r2 - r1) * t;
+    const g = g1 + (g2 - g1) * t;
+    const b = b1 + (b2 - b1) * t;
+
+    output.push(rgbToHex(Math.round(r), Math.round(g), Math.round(b)));
+  }
+
+  return output;
 };

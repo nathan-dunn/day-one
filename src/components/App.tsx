@@ -32,8 +32,7 @@ import {
   setStorage,
   getColor,
 } from '../utils';
-import { Mode, MaxesType, isMode, isMaxesType, Theme } from '../types';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { MaxesType, isMaxesType, Theme } from '../types';
 
 const { width } = Dimensions.get('window');
 
@@ -46,9 +45,6 @@ const ANIMATED_VALUE = new Animated.Value(0);
 export default function App() {
   // PROGRAM
   const [program] = useState(programs[0]);
-
-  // MODE
-  const [mode, setMode] = useState<Mode | undefined>(undefined);
 
   // PAGE && CHECKS
   const totalPages = program.sessions.length + 1;
@@ -63,8 +59,8 @@ export default function App() {
   const [maxes, setMaxes] = useState<MaxesType>(maxesNeeded);
 
   // VARIABLES
-  const BASE_BG = getColor(mode, Theme.BG_1);
-  const BASE_TEXT = getColor(mode, Theme.TEXT_1);
+  const BASE_BG = getColor(Theme.BG_1);
+  const BASE_TEXT = getColor(Theme.TEXT_1);
 
   // REFS
   const drawerRef = useRef<Drawer>(null);
@@ -128,7 +124,6 @@ export default function App() {
     await removeStorage('@day_one_maxes');
     await removeStorage('@day_one_page');
 
-    loadStoredMode();
     loadStoredChecks();
     loadStoredMaxes();
 
@@ -136,15 +131,6 @@ export default function App() {
   }, []);
 
   // LOADERS
-  const loadStoredMode = async () => {
-    const storedMode = await getStorage('@day_one_mode');
-    if (isMode(storedMode)) {
-      setMode(storedMode);
-    } else {
-      setMode(Mode.dark);
-      await setStorage('@day_one_mode', Mode.dark);
-    }
-  };
 
   const loadStoredChecks = async () => {
     const storedChecks = await getStorage('@day_one_checks');
@@ -179,18 +165,14 @@ export default function App() {
 
   // EFFECTS
   useEffect(() => {
-    loadStoredMode();
     loadStoredChecks();
     loadStoredMaxes();
   }, []);
 
-  if (page === undefined || !mode) {
+  if (page === undefined) {
     return (
       <SafeAreaView
-        style={[
-          styles.container,
-          { backgroundColor: getColor(null, Theme.BG_1) },
-        ]}
+        style={[styles.container, { backgroundColor: getColor(Theme.BG_1) }]}
       >
         <Image
           source={require('../../assets/icon.png')}
@@ -218,8 +200,6 @@ export default function App() {
       content={
         <Panel
           onClose={closePanel}
-          mode={mode}
-          setMode={setMode}
           maxes={maxes}
           programName={program.name}
           handleReset={handleReset}
@@ -263,7 +243,6 @@ export default function App() {
                 index={index}
                 name={item.name}
                 notes={item.notes}
-                mode={mode}
                 scrollX={_scrollX}
               />
             ) : (
@@ -272,7 +251,6 @@ export default function App() {
                 index={index}
                 page={page}
                 scrollX={_scrollX}
-                mode={mode}
                 maxes={maxes}
                 isChecked={checks[index]}
                 handleCheck={() => handleCheck(index)}

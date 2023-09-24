@@ -25,7 +25,8 @@ export const colors = {
   RED: '#BD1D26',
   PINK: '#E91E63',
   ORANGE: '#BD562D',
-  PALE_BLUE: '#BED4E5',
+  PALE_BLUE: '#ABC4E7',
   PALE_VIOLET: '#D1D7EC',
-  PALE_GREEN: '#F1FFE8',
+  PALE_GREEN: '#B8D8BE',
+  PALE_RED: '#E5BEBD',
 };

@@ -7,7 +7,6 @@ import {
   TextStyle,
   StyleProp,
 } from 'react-native';
-import { Mode } from '../types';
 import { colors } from '../constants';
 
 type NavBarProps = {
@@ -16,7 +15,7 @@ type NavBarProps = {
   segmentStyle: StyleProp<TextStyle>;
   onPress: (index: number) => void;
   page: number;
-  mode: Mode;
+  highlightColor: string;
 };
 
 export default function NavBar({
@@ -25,12 +24,8 @@ export default function NavBar({
   onPress,
   segmentStyle,
   page,
-  mode,
+  highlightColor,
 }: NavBarProps) {
-  const PRIMARY_COLOR = mode === Mode.light ? colors.LIGHT_BLACK : colors.WHITE;
-  const SECONDARY_COLOR =
-    mode === Mode.light ? colors.DARK_GRAY : colors.LIGHT_GRAY;
-
   const segments = useMemo(
     () => new Array(totalPages - 1).fill(null),
     [totalPages]
@@ -53,7 +48,7 @@ export default function NavBar({
               {
                 width: width / totalPages - 2 * padding,
                 height: isCurrent ? 5 : 3,
-                backgroundColor: isCurrent ? PRIMARY_COLOR : SECONDARY_COLOR,
+                backgroundColor: isCurrent ? highlightColor : colors.LIGHT_GRAY,
               },
             ]}
           />

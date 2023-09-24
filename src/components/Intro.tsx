@@ -7,14 +7,12 @@ import {
   View,
 } from 'react-native';
 import TextBlock from './TextBlock';
-import { Mode } from '../types';
 import { colors } from '../constants';
 
 const { width } = Dimensions.get('window');
 
 type IntroProps = {
   index: number;
-  mode: Mode;
   name: string;
   notes: string[];
   page: number;
@@ -23,15 +21,12 @@ type IntroProps = {
 
 export default function Intro({
   index: sessionIndex, // always 0
-  mode,
   name,
   notes,
-  page,
   scrollX,
 }: IntroProps) {
-  const PRIMARY_COLOR = mode === Mode.light ? colors.LIGHT_BLACK : colors.WHITE;
-  const SECONDARY_COLOR =
-    mode === Mode.light ? colors.DARK_GRAY : colors.LIGHT_GRAY;
+  const PRIMARY_COLOR = colors.WHITE;
+  const SECONDARY_COLOR = colors.LIGHT_GRAY;
 
   const inputRange = [
     (sessionIndex - 1) * width,
@@ -107,13 +102,8 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: 'Archivo Black',
   },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-
   note: {
     fontWeight: '600',
     textAlign: 'justify',
