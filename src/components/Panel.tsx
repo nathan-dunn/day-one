@@ -51,7 +51,7 @@ export default function Panel({
 
       <View style={styles.rows}>
         {/* MODE */}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[styles.row]}
           onPress={() => {
             const updated = mode === Mode.light ? Mode.dark : Mode.light;
@@ -69,7 +69,7 @@ export default function Panel({
               color={PRIMARY_COLOR}
             />
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {/* PROGRAM */}
         {/* <View style={[styles.row]}>
@@ -112,11 +112,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     paddingVertical: 10,
     textTransform: 'uppercase',
+    fontFamily: 'Archivo Black',
   },
   rowValue: {
     fontSize: 20,
     paddingVertical: 10,
     textAlign: 'center',
+    fontFamily: 'Archivo Black',
   },
   headerContainer: {
     justifyContent: 'flex-start',
@@ -139,7 +141,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderWidth: 1,
+    borderWidth: 2,
     padding: 10,
     width: '33%',
     textAlign: 'center',

@@ -91,7 +91,7 @@ export const getColor = (
     BG_3: mode === Mode.light ? colors.PALE_VIOLET : colors.PALE_VIOLET,
     BG_4: mode === Mode.light ? colors.PALE_BLUE : colors.PALE_BLUE,
 
-    TEXT_1: mode === Mode.light ? colors.WHITE : colors.WHITE,
+    TEXT_1: mode === Mode.light ? colors.DARK_GRAY : colors.WHITE,
     TEXT_2: mode === Mode.light ? colors.DARK_BLACK : colors.WHITE,
     TEXT_3: mode === Mode.light ? colors.LIGHT_GRAY : colors.LIGHT_GRAY,
     TEXT_4: mode === Mode.light ? colors.WHITE : colors.DARK_BLACK,
