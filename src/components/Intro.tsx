@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   headerText: {
-    fontSize: 36,
+    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
     fontFamily: 'Archivo Black',
