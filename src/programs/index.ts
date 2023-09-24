@@ -1,17 +1,19 @@
 import ggw2 from './ggw2';
 
 // import { Program, Lift, Rx } from './ProgramCreator';
-// import {
+// import { exercises } from '../constants';
+
+// const {
 //   SQUAT,
 //   BENCH,
-//   ROWS,
 //   PRESS,
 //   DEADLIFT,
 //   SLDL,
-//   ARMS,
+//   ROWS,
 //   DIPS_OR_PUSHUPS,
 //   CHINS_OR_PULLUPS,
-// } from '../constants';
+//   ARMS,
+// } = exercises;
 
 // const GARAGE_GYM_WARRIOR_2 = new Program('Garage Gym Warrior II', [
 //   'This basic barbell program has a total duration of 15 weeks. The 15th week is a testing week where lifters can choose to test their 1-rep maxes if they so choose. If not, then after week 14, the lifter might conservatively “assume” an increase in 1-rep max strength of approximately 5% and restart the program based off of a new assumed maximum for each lift.',

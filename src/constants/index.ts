@@ -1,16 +1,18 @@
-export const SQUAT: string = 'squat';
-export const BENCH: string = 'bench';
-export const PRESS: string = 'press';
-export const DEADLIFT: string = 'deadlift';
-export const ROWS: string = 'rows';
-export const SLDL: string = 'stiff-leg deadlift';
-export const DIPS: string = 'dips';
-export const PUSHUPS: string = 'pushups';
-export const CHINS: string = 'chins';
-export const PULLUPS: string = 'pullups';
-export const ARMS: string = 'arms';
-export const DIPS_OR_PUSHUPS = `${DIPS} or ${PUSHUPS}`;
-export const CHINS_OR_PULLUPS = `${CHINS} or ${PULLUPS}`;
+export const exercises = {
+  SQUAT: 'squat',
+  BENCH: 'bench',
+  PRESS: 'press',
+  DEADLIFT: 'deadlift',
+  ROWS: 'rows',
+  SLDL: 'stiff-leg deadlift',
+  DIPS: 'dips',
+  PUSHUPS: 'pushups',
+  CHINS: 'chins',
+  PULLUPS: 'pullups',
+  ARMS: 'arms',
+  DIPS_OR_PUSHUPS: `dips or pushups`,
+  CHINS_OR_PULLUPS: `chins or pullups`,
+};
 
 export const colors = {
   DARK_BLACK: '#222',
@@ -18,7 +20,6 @@ export const colors = {
   LIGHT_BLACK: '#444',
   WHITE: '#F8F8F8',
   LIGHT_GRAY: '#AAA',
-  // DARK_GRAY: '#989898',
   DARK_GRAY: '#3D3D3D',
   MED_GRAY: '#777',
   BRICK: '#92282E',

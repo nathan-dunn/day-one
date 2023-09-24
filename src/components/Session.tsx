@@ -12,7 +12,7 @@ import {
 import TextBlock from './TextBlock';
 import Checkbox from './Checkbox';
 import NavBar from './NavBar';
-import { BENCH, PRESS } from '../constants';
+import { exercises } from '../constants';
 import { MaxesType, LiftType, Day, SessionIdTuple, Theme } from '../types';
 import { roundTo, getColor } from '../utils';
 
@@ -177,7 +177,11 @@ function Session({
                         : 'set';
                     const repsText =
                       reps === 'AMRAP' ? '' : reps == 1 ? 'rep' : 'reps';
-                    const rounded = [BENCH, PRESS].includes(name) ? 2.5 : 5;
+                    const rounded = [exercises.BENCH, exercises.PRESS].includes(
+                      name
+                    )
+                      ? 2.5
+                      : 5;
                     const rxText =
                       max && perc
                         ? `${sets} ${setsText} x ${reps} ${repsText} @ ${roundTo(
