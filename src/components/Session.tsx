@@ -6,10 +6,10 @@ import {
   NativeSyntheticEvent,
   ScrollView,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 import TextBlock from './TextBlock';
-import Line from './Line';
 import Checkbox from './Checkbox';
 import NavBar from './NavBar';
 import { colors, BENCH, PRESS } from '../constants';
@@ -162,13 +162,7 @@ function Session({
           {lifts.map(({ name, notes: liftNotes, rxs }, liftIndex) => {
             return (
               <View
-                style={[
-                  styles.liftContainer,
-                  {
-                    backgroundColor: BG_2,
-                    marginBottom: liftIndex === lifts.length - 1 ? 10 : 50,
-                  },
-                ]}
+                style={[styles.liftContainer, { backgroundColor: BG_2 }]}
                 key={liftIndex}
               >
                 <TextBlock
@@ -239,34 +233,27 @@ function Session({
         </View>
 
         {!!notes.filter(note => note).length && (
-          <>
-            <Line
-              style={[
-                styles.line,
-                { width: _width, backgroundColor: colors.LIGHT_GRAY },
-              ]}
-              opacity={opacity}
-              translateX={translateSlow}
-            />
-            <View
-              style={[styles.sessionNotesContainer, { backgroundColor: BG_2 }]}
-            >
-              {notes
-                .filter(note => note)
-                .map((note, noteIndex) => {
-                  return (
-                    <View key={noteIndex} style={[styles.sessionNoteContainer]}>
-                      <TextBlock
-                        text={note.trim()}
-                        style={[styles.sessionNote, { color: TEXT_3 }]}
-                        opacity={opacity}
-                        translateX={translateFast}
-                      />
-                    </View>
-                  );
-                })}
-            </View>
-          </>
+          <View
+            style={[styles.sessionNotesContainer, { backgroundColor: BG_2 }]}
+          >
+            <Text style={[styles.sessionNoteHeader, { color: TEXT_2 }]}>
+              Session Notes
+            </Text>
+            {notes
+              .filter(note => note)
+              .map((note, noteIndex) => {
+                return (
+                  <View key={noteIndex} style={[styles.sessionNoteContainer]}>
+                    <TextBlock
+                      text={note.trim()}
+                      style={[styles.sessionNote, { color: TEXT_3 }]}
+                      opacity={opacity}
+                      translateX={translateFast}
+                    />
+                  </View>
+                );
+              })}
+          </View>
         )}
       </View>
     </ScrollView>
@@ -311,11 +298,12 @@ const styles = StyleSheet.create({
     //
   },
   liftsContainer: {
-    // paddingHorizontal: 20,
+    //
   },
   liftContainer: {
     padding: 15,
     borderRadius: 5,
+    marginBottom: 50,
   },
   liftName: {
     textTransform: 'uppercase',
@@ -323,7 +311,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 10,
     fontFamily: 'Archivo Black',
-    // letterSpacing: 1,
   },
   rxContainer: {
     paddingBottom: 10,
@@ -333,7 +320,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
     fontSize: 18,
     lineHeight: 16 * 1.5,
-    // fontFamily: 'Archivo Black',
   },
   bullet: {
     fontWeight: '600',
@@ -363,6 +349,13 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 5,
   },
+  sessionNoteHeader: {
+    textTransform: 'uppercase',
+    textAlign: 'left',
+    fontSize: 20,
+    marginBottom: 10,
+    fontFamily: 'Archivo Black',
+  },
   sessionNoteContainer: {
     paddingBottom: 10,
     paddingHorizontal: 8,
@@ -374,7 +367,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 16 * 1.5,
     marginLeft: -6,
-    // fontFamily: 'Archivo Black',
   },
 });
 
