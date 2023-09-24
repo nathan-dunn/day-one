@@ -12,9 +12,9 @@ import {
 import TextBlock from './TextBlock';
 import Checkbox from './Checkbox';
 import NavBar from './NavBar';
-import { colors, BENCH, PRESS } from '../constants';
+import { BENCH, PRESS } from '../constants';
 import { MaxesType, LiftType, Day, SessionIdTuple, Theme } from '../types';
-import { roundTo, getColor, interpolateColors } from '../utils';
+import { roundTo, getColor } from '../utils';
 
 const { width } = Dimensions.get('window');
 
@@ -30,6 +30,7 @@ type SessionProps = {
   scrollX: Animated.Value;
   sessionId: SessionIdTuple;
   totalPages: number;
+  highlightColor: string;
 };
 
 function Session({
@@ -44,13 +45,9 @@ function Session({
   scrollX,
   sessionId,
   totalPages,
+  highlightColor,
 }: SessionProps) {
   const _width = width * 0.85;
-  const gradient = interpolateColors(
-    totalPages,
-    colors.PALE_BLUE,
-    colors.PALE_GREEN
-  );
 
   const [scrollPosition, setScrollPosition] = useState<number>(0);
 
@@ -62,7 +59,6 @@ function Session({
   const TEXT_2 = getColor(Theme.TEXT_2);
   const TEXT_3 = getColor(Theme.TEXT_3);
   const TEXT_4 = getColor(Theme.TEXT_4);
-  const HIGHLIGHT_COLOR = gradient[sessionIndex - 1];
 
   const inputRange = [
     (sessionIndex - 1) * width,
@@ -123,7 +119,7 @@ function Session({
       <View style={[styles.content, { width: _width }]}>
         {/* HEADER */}
         <View
-          style={[styles.headerContainer, { backgroundColor: HIGHLIGHT_COLOR }]}
+          style={[styles.headerContainer, { backgroundColor: highlightColor }]}
         >
           <View style={[styles.headerSubContainer]}>
             <TextBlock
@@ -155,7 +151,7 @@ function Session({
           totalPages={totalPages}
           onPress={handleNavPress}
           segmentStyle={{ opacity, transform: [{ translateX: translateSlow }] }}
-          highlightColor={HIGHLIGHT_COLOR}
+          highlightColor={highlightColor}
         />
 
         <View style={[styles.liftsContainer]}>

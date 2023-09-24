@@ -24,6 +24,7 @@ import Session from './Session';
 import Intro from './Intro';
 import Panel from './Panel';
 import programs from '../programs';
+import { colors } from '../constants';
 import {
   findMaxesNeeded,
   findSession,
@@ -31,6 +32,7 @@ import {
   removeStorage,
   setStorage,
   getColor,
+  interpolateColors,
 } from '../utils';
 import { MaxesType, isMaxesType, Theme } from '../types';
 
@@ -61,9 +63,15 @@ export default function App() {
   );
   const [maxes, setMaxes] = useState<MaxesType>(maxesNeeded);
 
-  // VARIABLES
+  // COLORS
+  const gradient = interpolateColors(
+    totalPages,
+    colors.PALE_BLUE,
+    colors.PALE_GREEN
+  );
   const BASE_BG = getColor(Theme.BG_1);
   const BASE_TEXT = getColor(Theme.TEXT_1);
+  const HIGHLIGHT_COLOR = page ? gradient[page] : colors.WHITE;
 
   // REFS
   const drawerRef = useRef<Drawer>(null);
@@ -206,6 +214,7 @@ export default function App() {
           maxes={maxes}
           programName={program.name}
           handleReset={handleReset}
+          highlightColor={HIGHLIGHT_COLOR}
         />
       }
     >
@@ -259,6 +268,7 @@ export default function App() {
                 handleCheck={() => handleCheck(index)}
                 totalPages={totalPages}
                 handleNavPress={handleNavPress}
+                highlightColor={HIGHLIGHT_COLOR}
               />
             );
           }}

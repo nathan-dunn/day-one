@@ -17,14 +17,27 @@ type PanelProps = {
   maxes: MaxesType;
   programName: string;
   handleReset: () => void;
+  highlightColor: string;
 };
 
-export default function Panel({ onClose, maxes, handleReset }: PanelProps) {
-  const BG_1 = colors.DARK_BLACK;
+export default function Panel({
+  onClose,
+  maxes,
+  handleReset,
+  highlightColor,
+}: PanelProps) {
   const TEXT_1 = colors.WHITE;
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        {
+          backgroundColor: colors.DARK_BLACK,
+          borderRightColor: highlightColor,
+        },
+      ]}
+    >
       <TouchableOpacity onPress={onClose} style={styles.content}>
         {/* HEADER */}
         <View style={styles.headerContainer}>
@@ -79,6 +92,7 @@ export default function Panel({ onClose, maxes, handleReset }: PanelProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    borderRightWidth: 1,
   },
   content: {
     flex: 1,
