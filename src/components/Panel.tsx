@@ -41,6 +41,12 @@ export default function Panel({ onClose, maxes, handleReset }: PanelProps) {
 
         {/* MAXES */}
         <View style={[styles.maxesContainer]}>
+          <View style={[styles.row, {}]}>
+            <Text style={[styles.rowKey, { color: TEXT_1, fontSize: 20 }]}>
+              MAXES
+            </Text>
+          </View>
+
           {Object.entries(maxes).map(([lift]) => {
             return (
               <View key={lift} style={[styles.row]}>
@@ -87,13 +93,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   rowKey: {
-    fontSize: 20,
+    fontSize: 18,
     paddingVertical: 10,
     textTransform: 'uppercase',
     fontFamily: 'Archivo Black',
   },
   rowValue: {
-    fontSize: 20,
+    fontSize: 18,
     paddingVertical: 10,
     textAlign: 'center',
     fontFamily: 'Archivo Black',

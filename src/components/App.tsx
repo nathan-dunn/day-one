@@ -37,7 +37,10 @@ import { MaxesType, isMaxesType, Theme } from '../types';
 const { width } = Dimensions.get('window');
 
 const drawerStyles = {
-  main: { paddingLeft: 0 },
+  main: {},
+  drawer: {},
+  drawerOverlay: {},
+  mainOverlay: {},
 };
 
 const ANIMATED_VALUE = new Animated.Value(0);
