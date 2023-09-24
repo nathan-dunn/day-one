@@ -331,9 +331,9 @@ const styles = StyleSheet.create({
   rx: {
     textAlign: 'left',
     marginRight: 10,
-    fontSize: 16,
+    fontSize: 18,
     lineHeight: 16 * 1.5,
-    fontFamily: 'Archivo Black',
+    // fontFamily: 'Archivo Black',
   },
   bullet: {
     fontWeight: '600',
