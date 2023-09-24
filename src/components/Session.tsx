@@ -13,8 +13,15 @@ import Line from './Line';
 import Checkbox from './Checkbox';
 import NavBar from './NavBar';
 import { colors, BENCH, PRESS } from '../constants';
-import { Mode, MaxesType, LiftType, Day, SessionIdTuple } from '../types';
-import { roundTo } from '../utils';
+import {
+  Mode,
+  MaxesType,
+  LiftType,
+  Day,
+  SessionIdTuple,
+  Theme,
+} from '../types';
+import { roundTo, getColor } from '../utils';
 
 const { width } = Dimensions.get('window');
 
@@ -54,9 +61,18 @@ function Session({
   const scrollViewRef = useRef<ScrollView | null>(null);
 
   const [week, day] = sessionId;
-  const PRIMARY_COLOR = mode === Mode.light ? colors.LIGHT_BLACK : colors.WHITE;
-  const SECONDARY_COLOR =
-    mode === Mode.light ? colors.DARK_GRAY : colors.LIGHT_GRAY;
+
+  const BG_2 = getColor(mode, Theme.BG_2);
+  const BG_3 = getColor(mode, Theme.BG_3);
+  const TEXT_2 = getColor(mode, Theme.TEXT_2);
+  const TEXT_3 = getColor(mode, Theme.TEXT_3);
+  const TEXT_4 = getColor(mode, Theme.TEXT_4);
+  const HEADER_BACKGROUND =
+    day === 1
+      ? colors.PALE_BLUE
+      : day === 2
+      ? colors.PALE_VIOLET
+      : colors.PALE_GREEN;
 
   const inputRange = [
     (sessionIndex - 1) * width,
@@ -116,7 +132,12 @@ function Session({
     >
       <View style={[styles.content, { width: _width }]}>
         {/* HEADER */}
-        <View style={[styles.headerContainer]}>
+        <View
+          style={[
+            styles.headerContainer,
+            { backgroundColor: HEADER_BACKGROUND },
+          ]}
+        >
           <View
             style={{
               flexDirection: 'row',
@@ -126,22 +147,27 @@ function Session({
           >
             <TextBlock
               text={`Week ${week}`}
-              style={[styles.week, { color: PRIMARY_COLOR }]}
+              style={[styles.week, { color: TEXT_4 }]}
               opacity={opacity}
               translateX={translateSlow}
             />
             <Checkbox
               isChecked={isChecked}
               onPress={handleCheck}
-              style={[styles.checkbox, { color: PRIMARY_COLOR }]}
+              style={[styles.checkbox, { color: TEXT_4 }]}
               opacity={opacity}
               translateX={translateSlow}
-              color={isChecked ? SECONDARY_COLOR : SECONDARY_COLOR}
+              color={isChecked ? TEXT_4 : TEXT_4}
             />
           </View>
           <TextBlock
             text={dayText || `Day ${day}`}
-            style={[styles.day, { color: SECONDARY_COLOR }]}
+            style={[
+              styles.day,
+              {
+                color: TEXT_4,
+              },
+            ]}
             opacity={opacity}
             translateX={translateFast}
           />
@@ -164,14 +190,17 @@ function Session({
             return (
               <View
                 style={[
-                  styles.liftSubContainer,
-                  { paddingBottom: liftIndex === lifts.length - 1 ? 10 : 50 },
+                  styles.liftContainer,
+                  {
+                    marginBottom: liftIndex === lifts.length - 1 ? 10 : 50,
+                    backgroundColor: BG_2,
+                  },
                 ]}
                 key={liftIndex}
               >
                 <TextBlock
                   text={name}
-                  style={[styles.lift, { color: PRIMARY_COLOR }]}
+                  style={[styles.lift, { color: TEXT_2 }]}
                   opacity={opacity}
                   translateX={translateSlow}
                 />
@@ -183,7 +212,8 @@ function Session({
                       typeof sets === 'string'
                         ? 'sets'
                         : 'set';
-                    const repsText = reps === 'AMRAP' ? '' : 'reps';
+                    const repsText =
+                      reps === 'AMRAP' ? '' : reps == 1 ? 'rep' : 'reps';
                     const rounded = [BENCH, PRESS].includes(name) ? 2.5 : 5;
                     const rxText =
                       max && perc
@@ -201,7 +231,7 @@ function Session({
                       <TextBlock
                         key={rxIndex}
                         text={rxText}
-                        style={[styles.rx, { color: SECONDARY_COLOR }]}
+                        style={[styles.rx, { color: TEXT_2 }]}
                         opacity={opacity}
                         translateX={translateFast}
                       />
@@ -216,14 +246,24 @@ function Session({
                       <View key={noteIndex} style={[styles.liftNoteContainer]}>
                         <TextBlock
                           text={'•'}
-                          style={[styles.bullet, { color: SECONDARY_COLOR }]}
+                          style={[
+                            styles.bullet,
+                            {
+                              color: TEXT_3,
+                            },
+                          ]}
                           opacity={opacity}
                           translateX={translateFast}
                         />
 
                         <TextBlock
                           text={note.trim()}
-                          style={[styles.liftNote, { color: SECONDARY_COLOR }]}
+                          style={[
+                            styles.liftNote,
+                            {
+                              color: TEXT_3,
+                            },
+                          ]}
                           opacity={opacity}
                           translateX={translateFast}
                         />
@@ -235,31 +275,34 @@ function Session({
           })}
         </View>
 
-        <Line
-          style={[
-            styles.line,
-            { width: _width, backgroundColor: colors.LIGHT_GRAY },
-          ]}
-          opacity={opacity}
-          translateX={translateSlow}
-        />
-
-        <View style={[styles.notesContainer]}>
-          {notes
-            .filter(note => note)
-            .map((note, noteIndex) => {
-              return (
-                <View key={noteIndex} style={[styles.noteContainer]}>
-                  <TextBlock
-                    text={note.trim()}
-                    style={[styles.note, { color: SECONDARY_COLOR }]}
-                    opacity={opacity}
-                    translateX={translateFast}
-                  />
-                </View>
-              );
-            })}
-        </View>
+        {!!notes.filter(note => note).length && (
+          <>
+            <Line
+              style={[
+                styles.line,
+                { width: _width, backgroundColor: colors.LIGHT_GRAY },
+              ]}
+              opacity={opacity}
+              translateX={translateSlow}
+            />
+            <View style={[styles.notesContainer, { backgroundColor: BG_2 }]}>
+              {notes
+                .filter(note => note)
+                .map((note, noteIndex) => {
+                  return (
+                    <View key={noteIndex} style={[styles.noteContainer]}>
+                      <TextBlock
+                        text={note.trim()}
+                        style={[styles.note, { color: TEXT_3 }]}
+                        opacity={opacity}
+                        translateX={translateFast}
+                      />
+                    </View>
+                  );
+                })}
+            </View>
+          </>
+        )}
       </View>
     </ScrollView>
   );
@@ -288,28 +331,33 @@ const styles = StyleSheet.create({
     lineHeight: 16 * 1.5,
   },
   headerContainer: {
-    //
+    padding: 15,
+    borderRadius: 5,
+    fontFamily: 'Archivo Black',
+  },
+  liftsContainer: {
+    // paddingHorizontal: 20,
   },
   lift: {
     textTransform: 'uppercase',
     textAlign: 'left',
     fontSize: 20,
-    fontWeight: '800',
+    // fontWeight: '400',
     letterSpacing: 2,
     marginBottom: 10,
+    fontFamily: 'Archivo Black',
   },
-  liftsContainer: {
-    // paddingHorizontal: 20,
-  },
-  liftSubContainer: {
-    // paddingHorizontal: 20,
+  liftContainer: {
+    padding: 15,
+    borderRadius: 5,
   },
   line: {
     height: 1,
     marginVertical: 30,
   },
   notesContainer: {
-    //
+    padding: 15,
+    borderRadius: 5,
   },
   liftNote: {
     fontWeight: '600',
@@ -318,6 +366,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 16 * 1.5,
     marginLeft: -6,
+    // fontFamily: 'Archivo Black',
   },
   note: {
     fontWeight: '600',
@@ -326,13 +375,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 16 * 1.5,
     marginLeft: -6,
+    // fontFamily: 'Archivo Black',
   },
   rx: {
-    fontWeight: '600',
+    // fontWeight: '600',
     textAlign: 'left',
     marginRight: 10,
     fontSize: 16,
     lineHeight: 16 * 1.5,
+    fontFamily: 'Archivo Black',
   },
   rxContainer: {
     paddingBottom: 10,

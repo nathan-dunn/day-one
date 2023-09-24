@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/ArchivoBlack-Regular.ttf",
+      "sha1": "5b6c44432da2e1330ad30153eddf98c739013b88"
+    },
+    {
+      "path": "assets/fonts/Mooli-Regular.ttf",
+      "sha1": "d9697af4351e41fdf1e25c9f4bb22592b0001c65"
+    }
+  ]
+}

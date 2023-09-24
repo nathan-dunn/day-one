@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SessionType, MaxesType } from '../types';
+import { colors } from '../constants';
+import { SessionType, MaxesType, Mode, Theme } from '../types';
 
 export const getStorage = async (key: string) => {
   try {
@@ -78,3 +79,23 @@ export function findSession(checks: boolean[]): number {
 
   return 0;
 }
+export const getColor = (
+  mode: Mode | undefined | null,
+  theme: Theme
+): string => {
+  if (mode === null) mode = Mode.dark;
+
+  const themes = {
+    BG_1: mode === Mode.light ? colors.WHITE : colors.DARK_BLACK,
+    BG_2: mode === Mode.light ? colors.DARK_GRAY : colors.DARK_GRAY,
+    BG_3: mode === Mode.light ? colors.PALE_VIOLET : colors.PALE_VIOLET,
+    BG_4: mode === Mode.light ? colors.PALE_BLUE : colors.PALE_BLUE,
+
+    TEXT_1: mode === Mode.light ? colors.WHITE : colors.WHITE,
+    TEXT_2: mode === Mode.light ? colors.DARK_BLACK : colors.WHITE,
+    TEXT_3: mode === Mode.light ? colors.LIGHT_GRAY : colors.LIGHT_GRAY,
+    TEXT_4: mode === Mode.light ? colors.WHITE : colors.DARK_BLACK,
+  };
+
+  return themes[theme] || colors.PINK;
+};

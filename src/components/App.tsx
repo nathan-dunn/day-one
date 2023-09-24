@@ -24,15 +24,16 @@ import Session from './Session';
 import Intro from './Intro';
 import Panel from './Panel';
 import programs from '../programs';
-import { colors } from '../constants';
 import {
   findMaxesNeeded,
   findSession,
   getStorage,
   removeStorage,
   setStorage,
+  getColor,
 } from '../utils';
-import { Mode, MaxesType, isMode, isMaxesType } from '../types';
+import { Mode, MaxesType, isMode, isMaxesType, Theme } from '../types';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const { width } = Dimensions.get('window');
 
@@ -62,9 +63,8 @@ export default function App() {
   const [maxes, setMaxes] = useState<MaxesType>(maxesNeeded);
 
   // VARIABLES
-  const BACKGROUND_COLOR =
-    mode === Mode.light ? colors.WHITE : colors.DARK_BLACK;
-  const PRIMARY_COLOR = mode === Mode.light ? colors.LIGHT_BLACK : colors.WHITE;
+  const BASE_BG = getColor(mode, Theme.BG_1);
+  const BASE_TEXT = getColor(mode, Theme.TEXT_1);
 
   // REFS
   const drawerRef = useRef<Drawer>(null);
@@ -186,7 +186,12 @@ export default function App() {
 
   if (page === undefined || !mode) {
     return (
-      <SafeAreaView style={styles.splashContainer}>
+      <SafeAreaView
+        style={[
+          styles.container,
+          { backgroundColor: getColor(null, Theme.BG_1) },
+        ]}
+      >
         <Image
           source={require('../../assets/icon.png')}
           style={[styles.splashImage, { width: width * 0.85 }]}
@@ -221,16 +226,14 @@ export default function App() {
         />
       }
     >
-      <SafeAreaView
-        style={[styles.container, { backgroundColor: BACKGROUND_COLOR }]}
-      >
+      <SafeAreaView style={[styles.container, { backgroundColor: BASE_BG }]}>
         <StatusBar style="auto" />
 
         <View style={styles.headerContainer}>
           <Feather
-            name={'settings'}
+            name={'menu'}
             size={24}
-            color={PRIMARY_COLOR}
+            color={BASE_TEXT}
             onPress={openPanel}
           />
         </View>
@@ -303,12 +306,6 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 30,
     height: 64,
-  },
-  splashContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.DARK_BLACK,
   },
   splashImage: {
     resizeMode: 'contain',
