@@ -1,5 +1,11 @@
 import React from 'react';
-import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import NumericInput from './NumericInput';
 import { colors } from '../constants';
@@ -19,54 +25,62 @@ export default function Panel({ onClose, maxes, handleReset }: PanelProps) {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
-      {/* HEADER */}
-      <View style={styles.headerContainer}>
-        <Feather
-          name={'x'}
-          size={24}
-          color={TEXT_1}
-          alignSelf="flex-end"
-          padding={20}
-          onPress={onClose}
-          onLongPress={handleReset}
-        />
-      </View>
+      <TouchableOpacity onPress={onClose} style={styles.content}>
+        {/* HEADER */}
+        <View style={styles.headerContainer}>
+          <Feather
+            name={'x'}
+            size={24}
+            color={TEXT_1}
+            alignSelf="flex-end"
+            padding={20}
+            onPress={onClose}
+            onLongPress={handleReset}
+          />
+        </View>
 
-      <View style={styles.rows}>
-        {/* PROGRAM */}
-        {/* <View style={[styles.row]}>
+        <View style={styles.rows}>
+          {/* PROGRAM */}
+          {/* <View style={[styles.row]}>
           <Text style={[styles.rowKey, { color }]}>PROGRAM</Text>
           <Text style={[styles.rowValue, { color }]}>{programName}</Text>
         </View> */}
 
-        {/* MAXES */}
-        <View style={[styles.maxesContainer]}>
-          <View style={[styles.row, {}]}>
-            <Text style={[styles.rowKey, { color: TEXT_1, fontSize: 20 }]}>
-              MAXES
-            </Text>
-          </View>
+          {/* MAXES */}
+          <View style={[styles.maxesContainer]}>
+            <View style={[styles.row, {}]}>
+              <Text style={[styles.rowKey, { color: TEXT_1, fontSize: 20 }]}>
+                MAXES
+              </Text>
+            </View>
 
-          {Object.entries(maxes).map(([lift]) => {
-            return (
-              <View key={lift} style={[styles.row]}>
-                <Text style={[styles.rowKey, { color: TEXT_1 }]}>{lift}</Text>
-                <NumericInput
-                  maxes={maxes}
-                  lift={lift}
-                  style={[styles.input, { color: TEXT_1, borderColor: TEXT_1 }]}
-                />
-              </View>
-            );
-          })}
+            {Object.entries(maxes).map(([lift]) => {
+              return (
+                <View key={lift} style={[styles.row]}>
+                  <Text style={[styles.rowKey, { color: TEXT_1 }]}>{lift}</Text>
+                  <NumericInput
+                    maxes={maxes}
+                    lift={lift}
+                    style={[
+                      styles.input,
+                      { color: TEXT_1, borderColor: TEXT_1 },
+                    ]}
+                  />
+                </View>
+              );
+            })}
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  content: {
     flex: 1,
   },
   headerContainer: {
