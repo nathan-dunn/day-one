@@ -13,6 +13,13 @@ export const exercises = {
   DIPS_OR_PUSHUPS: `dips or pushups`,
   CHINS_OR_PULLUPS: `chins or pullups`,
 };
+//  as const;
+
+// type ExerciseTypes = (typeof exercises)[keyof typeof exercises];
+
+// export type Exercises = {
+//   [key: string]: ExerciseTypes;
+// };
 
 export const colors = {
   DARK_BLACK: '#222',
@@ -31,3 +38,10 @@ export const colors = {
   PALE_GREEN: '#B8D8BE',
   PALE_RED: '#E5BEBD',
 };
+// as const;
+
+// type ColorTypes = (typeof colors)[keyof typeof colors];
+
+// export type Colors = {
+//   [key: string]: ColorTypes;
+// };

@@ -71,7 +71,7 @@ export default function App() {
   );
   const BASE_BG = getColor(Theme.BG_1);
   const BASE_TEXT = getColor(Theme.TEXT_1);
-  const HIGHLIGHT_COLOR = page ? gradient[page] : colors.WHITE;
+  const HIGHLIGHT_COLOR = page ? gradient[page] : colors.PALE_BLUE;
 
   // REFS
   const drawerRef = useRef<Drawer>(null);
@@ -125,8 +125,8 @@ export default function App() {
   }, []);
 
   const handleNavPress = useCallback((index: number) => {
-    handlePageNav(index + 1);
     setPage(index + 1);
+    handlePageNav(index + 1);
   }, []);
 
   const handleReset = useCallback(async () => {
@@ -231,6 +231,7 @@ export default function App() {
         </View>
 
         <Animated.FlatList
+          windowSize={totalPages + 1}
           initialScrollIndex={page}
           ref={flatListRef}
           showsHorizontalScrollIndicator={false}

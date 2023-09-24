@@ -21,10 +21,6 @@ export type ColorType = {
   [key: string]: string;
 };
 
-export const ExerciseType = {
-  // [key: string]: string;
-};
-
 export type RxType = {
   sets?: number | string;
   reps?: number | string;
