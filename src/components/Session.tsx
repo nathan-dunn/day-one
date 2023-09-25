@@ -13,14 +13,16 @@ import TextBlock from './TextBlock';
 import Checkbox from './Checkbox';
 import NavBar from './NavBar';
 import { exercises } from '../constants';
-import { MaxesType, LiftType, Day, SessionIdTuple, Theme } from '../types';
+import { MaxesType, LiftType, Day, Theme } from '../types';
 import { roundTo, getColor } from '../utils';
 
 const { width } = Dimensions.get('window');
 
 type SessionProps = {
+  day: number;
   handleCheck: () => void;
   handleNavPress: (index: number) => void;
+  highlightColor: string;
   index: number;
   isChecked: boolean;
   lifts: LiftType[];
@@ -28,14 +30,16 @@ type SessionProps = {
   notes: string[];
   page: number;
   scrollX: Animated.Value;
-  sessionId: SessionIdTuple;
   totalPages: number;
-  highlightColor: string;
+  totalWeeks: number;
+  week: number;
 };
 
 function Session({
+  day,
   handleCheck,
   handleNavPress,
+  highlightColor,
   index: sessionIndex,
   isChecked,
   lifts,
@@ -43,17 +47,15 @@ function Session({
   notes,
   page,
   scrollX,
-  sessionId,
   totalPages,
-  highlightColor,
+  totalWeeks,
+  week,
 }: SessionProps) {
   const _width = width * 0.85;
 
   const [scrollPosition, setScrollPosition] = useState<number>(0);
 
   const scrollViewRef = useRef<ScrollView | null>(null);
-
-  const [week, day] = sessionId;
 
   const BG_2 = getColor(Theme.BG_2);
   const TEXT_2 = getColor(Theme.TEXT_2);
@@ -149,9 +151,11 @@ function Session({
           page={page}
           width={_width}
           totalPages={totalPages}
+          totalWeeks={totalWeeks}
           onPress={handleNavPress}
           segmentStyle={{ opacity, transform: [{ translateX: translateSlow }] }}
           highlightColor={highlightColor}
+          week={week}
         />
 
         <View style={[styles.liftsContainer]}>

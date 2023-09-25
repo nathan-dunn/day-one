@@ -15,7 +15,6 @@ const {
 
 const program: ProgramType = {
   name: 'Garage Gym Warrior II',
-  sessionId: [0, 0],
   notes: [
     'This basic barbell program has a total duration of 15 weeks. The 15th week is a testing week where lifters can choose to test their 1-rep maxes if they so choose. If not, then after week 14, the lifter might conservatively “assume” an increase in 1-rep max strength of approximately 5% and restart the program based off of a new assumed maximum for each lift.',
     'This program does not aggressively load weight every week. Instead week to week progression often comes in the form of increases in volume (more sets or reps) while weight is held constant.',
@@ -32,7 +31,8 @@ const program: ProgramType = {
   ],
   sessions: [
     {
-      sessionId: [1, 1],
+      week: 1,
+      day: 1,
       notes: [
         'Volumes and Intensities are starting out very moderate.',
         'Use this as an opportunity to build your work capacity and endurance by pushing the rest times to be as minimal as possible. 2-3 minutes is allowed, but if you can shorten rest periods to 60-90 seconds this is permissible provided (1) your form does not degrade (2) you do not have massive losses in bar speed.',
@@ -75,7 +75,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [1, 2],
+      week: 1,
+      day: 2,
       notes: [''],
       lifts: [
         {
@@ -108,7 +109,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [1, 3],
+      week: 1,
+      day: 3,
       notes: [''],
       lifts: [
         {
@@ -150,7 +152,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [2, 1],
+      week: 2,
+      day: 1,
       notes: [''],
       lifts: [
         {
@@ -185,7 +188,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [2, 2],
+      week: 2,
+      day: 2,
       notes: [''],
       lifts: [
         {
@@ -217,7 +221,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [2, 3],
+      week: 2,
+      day: 3,
       notes: [''],
       lifts: [
         {
@@ -259,7 +264,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [3, 1],
+      week: 3,
+      day: 1,
       notes: [''],
       lifts: [
         {
@@ -294,7 +300,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [3, 2],
+      week: 3,
+      day: 2,
       notes: [''],
       lifts: [
         {
@@ -326,7 +333,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [3, 3],
+      week: 3,
+      day: 3,
       notes: [''],
       lifts: [
         {
@@ -368,7 +376,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [4, 1],
+      week: 4,
+      day: 1,
       notes: [''],
       lifts: [
         {
@@ -404,7 +413,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [4, 2],
+      week: 4,
+      day: 2,
       notes: [''],
       lifts: [
         {
@@ -436,7 +446,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [4, 3],
+      week: 4,
+      day: 3,
       notes: [''],
       lifts: [
         {
@@ -487,7 +498,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [5, 1],
+      week: 5,
+      day: 1,
       notes: [''],
       lifts: [
         {
@@ -522,7 +534,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [5, 2],
+      week: 5,
+      day: 2,
       notes: [''],
       lifts: [
         {
@@ -554,7 +567,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [5, 3],
+      week: 5,
+      day: 3,
       notes: [''],
       lifts: [
         {
@@ -597,7 +611,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [6, 1],
+      week: 6,
+      day: 1,
       notes: [''],
       lifts: [
         {
@@ -632,7 +647,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [6, 2],
+      week: 6,
+      day: 2,
       notes: [''],
       lifts: [
         {
@@ -664,7 +680,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [6, 3],
+      week: 6,
+      day: 3,
       notes: [''],
       lifts: [
         {
@@ -708,7 +725,8 @@ const program: ProgramType = {
     },
 
     {
-      sessionId: [7, 1],
+      week: 7,
+      day: 1,
       notes: [''],
       lifts: [
         {
@@ -745,7 +763,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [7, 2],
+      week: 7,
+      day: 2,
       notes: [''],
       lifts: [
         {
@@ -785,7 +804,8 @@ const program: ProgramType = {
       ],
     },
     {
-      sessionId: [7, 3],
+      week: 7,
+      day: 3,
       notes: [''],
       lifts: [
         {

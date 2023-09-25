@@ -10,56 +10,59 @@ import {
 import { colors } from '../constants';
 
 type NavBarProps = {
-  width: number;
-  totalPages: number;
-  segmentStyle: StyleProp<TextStyle>;
+  highlightColor: string;
   onPress: (index: number) => void;
   page: number;
-  highlightColor: string;
+  segmentStyle: StyleProp<TextStyle>;
+  totalPages: number;
+  totalWeeks: number;
+  week: number;
+  width: number;
 };
 
 export default function NavBar({
-  width,
-  totalPages,
-  onPress,
-  segmentStyle,
-  page,
   highlightColor,
+  onPress,
+  page,
+  segmentStyle,
+  totalPages,
+  totalWeeks,
+  week,
+  width,
 }: NavBarProps) {
   const segments = useMemo(
-    () => new Array(totalPages - 1).fill(null),
+    () => new Array(totalWeeks).fill(null),
     [totalPages]
   );
-
-  const callback = useCallback(
-    (item: null, index: number) => {
-      const isCurrent = index + 1 === page;
-      const padding = 0.5;
-
-      return (
-        <TouchableOpacity
-          key={index}
-          style={[styles.touch, {}]}
-          onPress={() => onPress(index)}
-        >
-          <Animated.View
-            style={[
-              segmentStyle,
-              {
-                width: width / totalPages - 2 * padding,
-                height: isCurrent ? 5 : 3,
-                backgroundColor: isCurrent ? highlightColor : colors.LIGHT_GRAY,
-              },
-            ]}
-          />
-        </TouchableOpacity>
-      );
-    },
-    [page]
-  );
+  const padding = 2;
 
   return (
-    <View style={[styles.container, { width }]}>{segments.map(callback)}</View>
+    <View style={[styles.container, { width }]}>
+      {segments.map((item: null, index: number) => {
+        const isCurrent = index + 1 === week;
+
+        return (
+          <TouchableOpacity
+            key={index}
+            style={[styles.touch, {}]}
+            onPress={() => onPress(index)}
+          >
+            <Animated.View
+              style={[
+                segmentStyle,
+                {
+                  width: width / totalWeeks - 2 * padding,
+                  height: isCurrent ? 5 : 3,
+                  backgroundColor: isCurrent
+                    ? highlightColor
+                    : colors.LIGHT_GRAY,
+                },
+              ]}
+            />
+          </TouchableOpacity>
+        );
+      })}
+    </View>
   );
 }
 

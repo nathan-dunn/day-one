@@ -33,17 +33,15 @@ export type LiftType = {
   rxs: RxType[];
 };
 
-export type SessionIdTuple = [number, number];
-
 export type SessionType = {
-  sessionId: SessionIdTuple;
+  week: number;
+  day: number;
   notes: string[];
   lifts: LiftType[];
 };
 
 export type ProgramType = {
   name: string;
-  sessionId: SessionIdTuple;
   notes: string[];
   sessions: SessionType[];
 };

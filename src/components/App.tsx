@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
+import { findIndex } from 'lodash';
 import Session from './Session';
 import Intro from './Intro';
 import Panel from './Panel';
@@ -45,23 +46,26 @@ const drawerStyles = {
   mainOverlay: {},
 };
 
-const ANIMATED_VALUE = new Animated.Value(0);
+const ANIMATED_VALUE: Animated.Value = new Animated.Value(0);
 
 export default function App() {
-  // PROGRAM
+  // PROGRAM & MAXES
   const [program] = useState(programs[0]);
-
-  // PAGE && CHECKS
-  const totalPages = program.sessions.length + 1;
-  const [page, setPage] = useState<number | undefined>(undefined);
-  const [checks, setChecks] = useState<boolean[]>([]);
-
-  // MAXES
   const maxesNeeded: MaxesType = useMemo(
     () => findMaxesNeeded(program.sessions),
     [program]
   );
   const [maxes, setMaxes] = useState<MaxesType>(maxesNeeded);
+  // const totalWeeks = useMemo(
+  //   () => program.sessions.filter(session => session.week === 1).length,
+  //   [program]
+  // );
+  const totalWeeks = 7;
+
+  // PAGE & CHECKS
+  const totalPages = program.sessions.length + 1;
+  const [page, setPage] = useState<number | undefined>(undefined);
+  const [checks, setChecks] = useState<boolean[]>([]);
 
   // COLORS
   const gradient = interpolateColors(
@@ -69,14 +73,14 @@ export default function App() {
     colors.PALE_BLUE,
     colors.PALE_GREEN
   );
+  const HIGHLIGHT_COLOR = page ? gradient[page] : colors.PALE_BLUE;
   const BASE_BG = getColor(Theme.BG_1);
   const BASE_TEXT = getColor(Theme.TEXT_1);
-  const HIGHLIGHT_COLOR = page ? gradient[page] : colors.PALE_BLUE;
 
   // REFS
+  const scrollX = useRef(ANIMATED_VALUE).current;
   const drawerRef = useRef<Drawer>(null);
   const flatListRef = useRef<FlatList>(null);
-  const _scrollX = useRef(ANIMATED_VALUE).current;
 
   // HANDLERS
   const onScrollEnd = useCallback(
@@ -90,7 +94,7 @@ export default function App() {
   );
 
   const onScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { x: _scrollX } } }],
+    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
     { useNativeDriver: true }
   );
 
@@ -124,10 +128,20 @@ export default function App() {
     }
   }, []);
 
-  const handleNavPress = useCallback((index: number) => {
-    setPage(index + 1);
-    handlePageNav(index + 1);
-  }, []);
+  const handleNavPress = useCallback(
+    (weekIndex: number) => {
+      if (page !== undefined) {
+        const currentDay = program.sessions[page - 1].day;
+        const sessionIndex = findIndex(program.sessions, {
+          week: weekIndex + 1,
+          day: currentDay,
+        });
+
+        setPage(sessionIndex + 1);
+      }
+    },
+    [page]
+  );
 
   const handleReset = useCallback(async () => {
     await removeStorage('@day_one_checks');
@@ -142,7 +156,6 @@ export default function App() {
   }, []);
 
   // LOADERS
-
   const loadStoredChecks = async () => {
     const storedChecks = await getStorage('@day_one_checks');
     const parsed = storedChecks ? JSON.parse(storedChecks) : null;
@@ -150,14 +163,11 @@ export default function App() {
     if (parsed) {
       setChecks(parsed);
       const currentSession = findSession(parsed);
-
       setPage(currentSession);
-      handlePageNav(currentSession);
     } else {
       const _checks = new Array(totalPages).fill(false);
       setChecks(_checks);
       setPage(0);
-      handlePageNav(0);
       await setStorage('@day_one_checks', JSON.stringify(_checks));
     }
   };
@@ -180,13 +190,17 @@ export default function App() {
     loadStoredMaxes();
   }, []);
 
+  useEffect(() => {
+    if (page !== undefined) handlePageNav(page);
+  }, [page]);
+
   if (page === undefined) {
     return (
       <SafeAreaView
         style={[styles.container, { backgroundColor: getColor(Theme.BG_1) }]}
       >
         <Image
-          source={require('../../assets/icon.png')}
+          source={require('../../assets/_splash.png')}
           style={[styles.splashImage, { width: width * 0.85 }]}
         />
       </SafeAreaView>
@@ -238,36 +252,36 @@ export default function App() {
           scrollEventThrottle={16}
           horizontal
           pagingEnabled
-          keyExtractor={item => item.sessionId.toString()}
+          keyExtractor={item => `${item.week} + ${item.day}`}
           onScroll={onScroll}
           onMomentumScrollEnd={onScrollEnd}
           data={[
             {
               name: program.name,
               notes: program.notes,
-              sessionId: program.sessionId,
             },
             ...program.sessions,
           ]}
           renderItem={({ item, index }) => {
             return index === 0 ? (
               <Intro
-                page={page}
-                index={index}
                 name={item.name}
                 notes={item.notes}
-                scrollX={_scrollX}
+                index={index}
+                page={page}
+                scrollX={scrollX}
               />
             ) : (
               <Session
                 {...item}
                 index={index}
                 page={page}
-                scrollX={_scrollX}
+                scrollX={scrollX}
                 maxes={maxes}
                 isChecked={checks[index]}
                 handleCheck={() => handleCheck(index)}
                 totalPages={totalPages}
+                totalWeeks={totalWeeks}
                 handleNavPress={handleNavPress}
                 highlightColor={HIGHLIGHT_COLOR}
               />
