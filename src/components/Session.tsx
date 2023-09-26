@@ -51,8 +51,6 @@ function Session({
   const TEXT_2 = getColor(Theme.TEXT_2);
   const TEXT_3 = getColor(Theme.TEXT_3);
 
-  console.log('session...scrollX: ', scrollX);
-
   const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
 
   const opacityInputRange = [

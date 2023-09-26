@@ -26,7 +26,7 @@ import programs from '../programs';
 import { colors } from '../constants';
 import {
   findMaxesNeeded,
-  findSession,
+  findLastChecked,
   getStorage,
   clearStorage,
   setStorage,
@@ -80,8 +80,6 @@ export default function App() {
   const drawerRef = useRef<Drawer>(null);
   const flatListRef = useRef<FlatList>(null);
 
-  console.log('app....scrollX: ', scrollX);
-
   // HANDLERS
   const onScrollEnd = useCallback(
     (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -89,7 +87,7 @@ export default function App() {
       const viewSize = e.nativeEvent.layoutMeasurement;
       const pageNum = Math.floor(contentOffset.x / viewSize.width);
 
-      handlePageNav(pageNum);
+      setPage(pageNum);
     },
     []
   );
@@ -114,7 +112,7 @@ export default function App() {
   const handlePageNav = (index: number) => {
     flatListRef.current?.scrollToOffset({
       offset: index * width,
-      animated: false,
+      animated: true,
     });
     setPage(index);
   };
@@ -147,7 +145,7 @@ export default function App() {
 
     if (parsed) {
       setChecks(parsed);
-      const currentSession = findSession(parsed);
+      const currentSession = findLastChecked(parsed);
       handlePageNav(currentSession);
     } else {
       const _checks = new Array(totalPages).fill(false);
@@ -232,7 +230,7 @@ export default function App() {
         </View>
 
         <Animated.FlatList
-          initialScrollIndex={page}
+          windowSize={program.sessions.length + 1}
           keyExtractor={item => `${item.week} + ${item.day}`}
           ref={flatListRef}
           showsHorizontalScrollIndicator={false}

@@ -71,7 +71,7 @@ export function findMaxesNeeded(sessions: Session[]): Maxes {
   return maxesNeeded;
 }
 
-export function findSession(checks: boolean[]): number {
+export function findLastChecked(checks: boolean[]): number {
   // find the first unchecked session after the last checked session
 
   // if no checks, go to first session
@@ -87,12 +87,13 @@ export function findSession(checks: boolean[]): number {
   // skip the first session (intro page)
   for (let i = checks.length - 1; i >= 1; i--) {
     if (checks[i] === true && checks[i + 1] === false) {
-      return i + 1;
+      return i;
     }
   }
 
   return 0;
 }
+
 export const getColor = (theme: Theme): string => {
   const themes = {
     BG_1: colors.DARK_BLACK,
