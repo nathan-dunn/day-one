@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.19.3",
+    "@react-native-picker/picker": "^2.5.1",
     "@types/lodash": "^4.14.199",
     "@types/react-native-drawer": "^2.5.5",
     "expo": "~49.0.11",
@@ -23,7 +24,9 @@
     "expo-status-bar": "~1.6.0",
     "react": "18.2.0",
     "react-native": "0.72.4",
-    "react-native-drawer": "^2.5.1"
+    "react-native-drawer": "^2.5.1",
+    "react-native-multi-selectbox": "^1.5.0",
+    "react-native-svg": "^13.14.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

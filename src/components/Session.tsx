@@ -148,7 +148,6 @@ function Session({
         </View>
 
         <NavBar
-          page={page}
           width={_width}
           totalPages={totalPages}
           totalWeeks={totalWeeks}
@@ -281,7 +280,7 @@ const styles = StyleSheet.create({
   headerSubContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   week: {
     textTransform: 'uppercase',
@@ -293,7 +292,6 @@ const styles = StyleSheet.create({
   },
   day: {
     fontWeight: '600',
-    textAlign: 'left',
     marginRight: 10,
     fontSize: 20,
     lineHeight: 16 * 1.5,
@@ -302,12 +300,11 @@ const styles = StyleSheet.create({
     //
   },
   liftsContainer: {
-    //
+    gap: 20,
   },
   liftContainer: {
     padding: 15,
     borderRadius: 5,
-    marginBottom: 50,
   },
   liftName: {
     textTransform: 'uppercase',

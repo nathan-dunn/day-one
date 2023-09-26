@@ -1,3 +1,4 @@
+// ENUMS
 export enum Mode {
   dark = 'dark',
   light = 'light',
@@ -11,8 +12,27 @@ export enum Day {
   friday = 'Friday',
   saturday = 'Saturday',
   sunday = 'Sunday',
+  mon = 'Mon',
+  tue = 'Tue',
+  wed = 'Wed',
+  thu = 'Thu',
+  fri = 'Fri',
+  sat = 'Sat',
+  sun = 'Sun',
 }
 
+export enum Theme {
+  BG_1 = 'BG_1',
+  BG_2 = 'BG_2',
+  BG_3 = 'BG_3',
+  BG_4 = 'BG_4',
+  TEXT_1 = 'TEXT_1',
+  TEXT_2 = 'TEXT_2',
+  TEXT_3 = 'TEXT_3',
+  TEXT_4 = 'TEXT_4',
+}
+
+// TYPES
 export type MaxesType = {
   [key: string]: number;
 };
@@ -42,10 +62,12 @@ export type SessionType = {
 
 export type ProgramType = {
   name: string;
+  shortName?: string;
   notes: string[];
   sessions: SessionType[];
 };
 
+// TYPE GUARDS
 export function isMode(value: any): value is Mode {
   return Object.values(Mode).includes(value);
 }
@@ -60,15 +82,4 @@ export function isMaxesType(obj: any): obj is MaxesType {
   }
 
   return true;
-}
-
-export const enum Theme {
-  BG_1 = 'BG_1',
-  BG_2 = 'BG_2',
-  BG_3 = 'BG_3',
-  BG_4 = 'BG_4',
-  TEXT_1 = 'TEXT_1',
-  TEXT_2 = 'TEXT_2',
-  TEXT_3 = 'TEXT_3',
-  TEXT_4 = 'TEXT_4',
 }

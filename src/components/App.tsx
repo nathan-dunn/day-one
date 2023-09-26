@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React, {
   useState,
   useRef,
@@ -30,12 +29,12 @@ import {
   findMaxesNeeded,
   findSession,
   getStorage,
-  removeStorage,
+  clearStorage,
   setStorage,
   getColor,
   interpolateColors,
 } from '../utils';
-import { MaxesType, isMaxesType, Theme } from '../types';
+import { MaxesType, isMaxesType, Theme, ProgramType } from '../types';
 
 const { width } = Dimensions.get('window');
 
@@ -50,21 +49,19 @@ const ANIMATED_VALUE: Animated.Value = new Animated.Value(0);
 
 export default function App() {
   // PROGRAM & MAXES
-  const [program] = useState(programs[0]);
+  const [program, setProgram] = useState<ProgramType>(programs[1]);
   const maxesNeeded: MaxesType = useMemo(
     () => findMaxesNeeded(program.sessions),
     [program]
   );
   const [maxes, setMaxes] = useState<MaxesType>(maxesNeeded);
-  // const totalWeeks = useMemo(
-  //   () => program.sessions.filter(session => session.week === 1).length,
-  //   [program]
-  // );
-  const totalWeeks = 7;
+  const totalWeeks = program.sessions.length
+    ? program.sessions.at(-1)?.week
+    : 0;
 
   // PAGE & CHECKS
   const totalPages = program.sessions.length + 1;
-  const [page, setPage] = useState<number | undefined>(undefined);
+  const [page, setPage] = useState<number>(0);
   const [checks, setChecks] = useState<boolean[]>([]);
 
   // COLORS
@@ -88,7 +85,8 @@ export default function App() {
       const contentOffset = e.nativeEvent.contentOffset;
       const viewSize = e.nativeEvent.layoutMeasurement;
       const pageNum = Math.floor(contentOffset.x / viewSize.width);
-      setPage(pageNum);
+
+      handlePageNav(pageNum);
     },
     []
   );
@@ -115,16 +113,20 @@ export default function App() {
       offset: index * width,
       animated: false,
     });
+    setPage(index);
   };
 
   const handleCheck = useCallback(async (index: number) => {
-    const storedChecks = await getStorage('@day_one_checks');
+    const storedChecks = await getStorage(`@day_one_checks_${program.name}`);
     const parsed = storedChecks ? JSON.parse(storedChecks) : null;
     if (parsed) {
       const updatedChecks = [...parsed];
       updatedChecks[index] = !updatedChecks[index];
       setChecks(updatedChecks);
-      setStorage('@day_one_checks', JSON.stringify(updatedChecks));
+      setStorage(
+        `@day_one_checks_${program.name}`,
+        JSON.stringify(updatedChecks)
+      );
     }
   }, []);
 
@@ -137,50 +139,51 @@ export default function App() {
           day: currentDay,
         });
 
-        setPage(sessionIndex + 1);
+        handlePageNav(sessionIndex + 1);
       }
     },
     [page]
   );
 
   const handleReset = useCallback(async () => {
-    await removeStorage('@day_one_checks');
-    await removeStorage('@day_one_mode');
-    await removeStorage('@day_one_maxes');
-    await removeStorage('@day_one_page');
-
+    await clearStorage();
     loadStoredChecks();
     loadStoredMaxes();
-
     alert('App Reset');
   }, []);
 
   // LOADERS
   const loadStoredChecks = async () => {
-    const storedChecks = await getStorage('@day_one_checks');
+    const storedChecks = await getStorage(`@day_one_checks_${program.name}`);
     const parsed = storedChecks ? JSON.parse(storedChecks) : null;
 
     if (parsed) {
       setChecks(parsed);
       const currentSession = findSession(parsed);
-      setPage(currentSession);
+      handlePageNav(currentSession);
     } else {
       const _checks = new Array(totalPages).fill(false);
       setChecks(_checks);
-      setPage(0);
-      await setStorage('@day_one_checks', JSON.stringify(_checks));
+      handlePageNav(0);
+      await setStorage(
+        `@day_one_checks_${program.name}`,
+        JSON.stringify(_checks)
+      );
     }
   };
 
   const loadStoredMaxes = async () => {
-    const storedMaxes = await getStorage('@day_one_maxes');
+    const storedMaxes = await getStorage(`@day_one_maxes_${program.name}`);
     const parsed = storedMaxes ? JSON.parse(storedMaxes) : null;
 
     if (isMaxesType(parsed)) {
       setMaxes({ ...maxesNeeded, ...parsed });
     } else {
       setMaxes(maxesNeeded);
-      await setStorage('@day_one_maxes', JSON.stringify(maxesNeeded));
+      await setStorage(
+        `@day_one_maxes_${program.name}`,
+        JSON.stringify(maxesNeeded)
+      );
     }
   };
 
@@ -188,11 +191,7 @@ export default function App() {
   useEffect(() => {
     loadStoredChecks();
     loadStoredMaxes();
-  }, []);
-
-  useEffect(() => {
-    if (page !== undefined) handlePageNav(page);
-  }, [page]);
+  }, [program]);
 
   if (page === undefined) {
     return (
@@ -226,15 +225,15 @@ export default function App() {
         <Panel
           onClose={closePanel}
           maxes={maxes}
-          programName={program.name}
           handleReset={handleReset}
           highlightColor={HIGHLIGHT_COLOR}
+          setProgram={setProgram}
+          program={program}
+          programs={programs}
         />
       }
     >
       <SafeAreaView style={[styles.container, { backgroundColor: BASE_BG }]}>
-        <StatusBar style="auto" />
-
         <View style={styles.headerContainer}>
           <Feather
             name={'menu'}
@@ -246,7 +245,7 @@ export default function App() {
 
         <Animated.FlatList
           windowSize={totalPages + 1}
-          initialScrollIndex={page}
+          // initialScrollIndex={page}
           ref={flatListRef}
           showsHorizontalScrollIndicator={false}
           scrollEventThrottle={16}

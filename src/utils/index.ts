@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { exercises } from '../constants';
 import { colors } from '../constants';
 import { SessionType, MaxesType, Mode, Theme } from '../types';
 
@@ -29,6 +30,14 @@ export const removeStorage = async (key: string) => {
   }
 };
 
+export const clearStorage = async () => {
+  try {
+    await AsyncStorage.clear();
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 export function roundTo(num: number, nearest: number): number {
   return Math.round(num / nearest) * nearest;
 }
@@ -48,7 +57,12 @@ export function findMaxesNeeded(sessions: SessionType[]): MaxesType {
   }
 
   const liftNames = Array.from(new Set(liftNamesWithPerc));
-  const maxesNeeded: MaxesType = {};
+  const maxesNeeded: MaxesType = {
+    [exercises.SQUAT]: 0,
+    [exercises.BENCH]: 0,
+    [exercises.DEADLIFT]: 0,
+    [exercises.PRESS]: 0,
+  };
 
   for (const liftName of liftNames) {
     maxesNeeded[liftName] = 0;
