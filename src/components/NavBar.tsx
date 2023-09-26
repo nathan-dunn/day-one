@@ -90,9 +90,6 @@ export default function NavBar({
                 style={[
                   segmentStyle,
                   {
-                    // width: 20,
-                    // height: 20,
-                    // borderRadius: 25,
                     width: width / totalWeeks - 2 * padding,
                     height: isCurrent ? 5 : 3,
                     backgroundColor: isCurrent

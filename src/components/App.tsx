@@ -65,11 +65,16 @@ export default function App() {
   const [checks, setChecks] = useState<boolean[]>([]);
 
   // COLORS
-  const gradient = interpolateColors(
-    totalPages,
-    colors.PALE_BLUE,
-    colors.PALE_GREEN
+  const gradient = useMemo(
+    () =>
+      interpolateColors(totalPages, [
+        colors.PALE_BLUE,
+        colors.PALE_VIOLET,
+        colors.PALE_GREEN,
+      ]),
+    [totalPages]
   );
+
   const HIGHLIGHT_COLOR = page ? gradient[page] : colors.PALE_BLUE;
   const BASE_BG = getColor(Theme.BG_1);
   const BASE_TEXT = getColor(Theme.TEXT_1);
@@ -130,20 +135,20 @@ export default function App() {
     }
   }, []);
 
-  const handleNavPress = useCallback(
-    (weekIndex: number) => {
-      if (page !== undefined) {
-        const currentDay = program.sessions[page - 1].day;
-        const sessionIndex = findIndex(program.sessions, {
-          week: weekIndex + 1,
-          day: currentDay,
-        });
+  // const handleNavPress = useCallback(
+  //   (weekIndex: number) => {
+  //     if (page !== undefined) {
+  //       const currentDay = program.sessions[page - 1].day;
+  //       const sessionIndex = findIndex(program.sessions, {
+  //         week: weekIndex + 1,
+  //         day: currentDay,
+  //       });
 
-        handlePageNav(sessionIndex + 1);
-      }
-    },
-    [page]
-  );
+  //       handlePageNav(sessionIndex + 1);
+  //     }
+  //   },
+  //   [page]
+  // );
 
   const handleReset = useCallback(async () => {
     await clearStorage();
@@ -244,54 +249,46 @@ export default function App() {
         </View>
 
         <Animated.FlatList
-          windowSize={totalPages + 1}
-          // initialScrollIndex={page}
+          initialScrollIndex={page}
+          keyExtractor={item => `${item.week} + ${item.day}`}
           ref={flatListRef}
           showsHorizontalScrollIndicator={false}
           scrollEventThrottle={16}
           horizontal
           pagingEnabled
-          keyExtractor={item => `${item.week} + ${item.day}`}
           onScroll={onScroll}
           onMomentumScrollEnd={onScrollEnd}
-          data={[
-            {
-              name: program.name,
-              notes: program.notes,
-            },
-            ...program.sessions,
-          ]}
-          renderItem={({ item, index }) => {
+          getItemLayout={(_, index) => ({
+            length: width,
+            offset: width * index,
+            index,
+          })}
+          data={[{}, ...program.sessions]}
+          renderItem={({ item: session, index }) => {
             return index === 0 ? (
               <Intro
-                name={item.name}
-                notes={item.notes}
+                name={program.name}
+                notes={program.notes}
                 index={index}
                 page={page}
                 scrollX={scrollX}
               />
             ) : (
               <Session
-                {...item}
                 index={index}
+                week={session.week}
+                day={session.day}
+                notes={session.notes}
+                lifts={session.lifts}
+                maxes={maxes}
                 page={page}
                 scrollX={scrollX}
-                maxes={maxes}
+                highlightColor={HIGHLIGHT_COLOR}
                 isChecked={checks[index]}
                 handleCheck={() => handleCheck(index)}
-                totalPages={totalPages}
-                // totalWeeks={totalWeeks}
-                program={program}
-                handleNavPress={handleNavPress}
-                highlightColor={HIGHLIGHT_COLOR}
               />
             );
           }}
-          getItemLayout={(data, index) => ({
-            length: width,
-            offset: width * index,
-            index,
-          })}
         />
       </SafeAreaView>
     </Drawer>

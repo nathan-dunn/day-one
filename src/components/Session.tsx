@@ -10,68 +10,53 @@ import {
   View,
 } from 'react-native';
 import TextBlock from './TextBlock';
-import Checkbox from './Checkbox';
-import NavBar from './NavBar';
 import { exercises } from '../constants';
-import { MaxesType, LiftType, Day, Theme, ProgramType } from '../types';
+import { MaxesType, LiftType, Theme } from '../types';
 import { roundTo, getColor } from '../utils';
-
+import SessionHeader from './SessionHeader';
 const { width } = Dimensions.get('window');
 
 type SessionProps = {
-  day: number;
-  handleCheck: () => void;
-  handleNavPress: (index: number) => void;
-  highlightColor: string;
   index: number;
-  isChecked: boolean;
+  week: number;
+  day: number;
+  notes: string[];
   lifts: LiftType[];
   maxes: MaxesType;
-  notes: string[];
   page: number;
   scrollX: Animated.Value;
-  totalPages: number;
-  program: ProgramType;
-  week: number;
+  highlightColor: string;
+  isChecked: boolean;
+  handleCheck: () => void;
 };
 
 function Session({
+  index,
+  week,
   day,
-  handleCheck,
-  handleNavPress,
-  highlightColor,
-  index: sessionIndex,
-  isChecked,
+  notes,
   lifts,
   maxes,
-  notes,
   page,
   scrollX,
-  totalPages,
-  program,
-  week,
+  highlightColor,
+  isChecked,
+  handleCheck,
 }: SessionProps) {
-  const _width = width * 0.85;
-
+  const scrollViewRef = useRef<ScrollView | null>(null);
   const [scrollPosition, setScrollPosition] = useState<number>(0);
 
-  const scrollViewRef = useRef<ScrollView | null>(null);
-
+  const _width = width * 0.85;
   const BG_2 = getColor(Theme.BG_2);
   const TEXT_2 = getColor(Theme.TEXT_2);
   const TEXT_3 = getColor(Theme.TEXT_3);
-  const TEXT_4 = getColor(Theme.TEXT_4);
 
-  const inputRange = [
-    (sessionIndex - 1) * width,
-    sessionIndex * width,
-    (sessionIndex + 1) * width,
-  ];
+  const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
 
   const opacityInputRange = [
-    (sessionIndex - 0.4) * width,
-    sessionIndex * width,
-    (sessionIndex + 0.4) * width,
+    (index - 0.4) * width,
+    index * width,
+    (index + 0.4) * width,
   ];
 
   const opacity: Animated.AnimatedInterpolation<number> = scrollX.interpolate({
@@ -102,15 +87,6 @@ function Session({
     }
   }, [page]);
 
-  const dayText: Day | null =
-    day === 1
-      ? Day.monday
-      : day === 2
-      ? Day.wednesday
-      : day === 3
-      ? Day.friday
-      : null;
-
   return (
     <ScrollView
       ref={scrollViewRef}
@@ -120,42 +96,16 @@ function Session({
     >
       <View style={[styles.content, { width: _width }]}>
         {/* HEADER */}
-        <View
-          style={[styles.headerContainer, { backgroundColor: highlightColor }]}
-        >
-          <View style={[styles.headerSubContainer]}>
-            <TextBlock
-              text={`Week ${week}`}
-              style={[styles.week, { color: TEXT_4 }]}
-              opacity={opacity}
-              translateX={translateSlow}
-            />
-            <Checkbox
-              isChecked={isChecked}
-              onPress={handleCheck}
-              style={[styles.checkbox, { color: TEXT_4 }]}
-              opacity={opacity}
-              translateX={translateSlow}
-              color={isChecked ? TEXT_4 : TEXT_4}
-            />
-          </View>
-          <TextBlock
-            text={dayText || `Day ${day}`}
-            style={[styles.day, { color: TEXT_4 }]}
-            opacity={opacity}
-            translateX={translateFast}
-          />
-        </View>
-
-        <NavBar
-          page={page}
-          width={_width}
-          totalPages={totalPages}
-          program={program}
-          onPress={handleNavPress}
-          segmentStyle={{ opacity, transform: [{ translateX: translateSlow }] }}
-          highlightColor={highlightColor}
+        <SessionHeader
+          index={index}
           week={week}
+          day={day}
+          isChecked={isChecked}
+          highlightColor={highlightColor}
+          handleCheck={handleCheck}
+          opacity={opacity}
+          translateFast={translateFast}
+          translateSlow={translateSlow}
         />
 
         <View style={[styles.liftsContainer]}>
@@ -271,34 +221,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   content: {
-    //
-  },
-  headerContainer: {
-    padding: 15,
-    borderRadius: 5,
-    fontFamily: 'Archivo Black',
-  },
-  headerSubContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  week: {
-    textTransform: 'uppercase',
-    textAlign: 'left',
-    fontSize: 24,
-    fontWeight: '800',
-    letterSpacing: 2,
-    marginBottom: 10,
-  },
-  day: {
-    fontWeight: '600',
-    marginRight: 10,
-    fontSize: 20,
-    lineHeight: 16 * 1.5,
-  },
-  checkbox: {
-    //
+    gap: 20,
   },
   liftsContainer: {
     gap: 20,

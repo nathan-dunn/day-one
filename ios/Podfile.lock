@@ -9,7 +9,7 @@ PODS:
     - ExpoModulesCore
   - EXFont (11.4.0):
     - ExpoModulesCore
-  - Expo (49.0.11):
+  - Expo (49.0.12):
     - ExpoModulesCore
   - ExpoKeepAwake (12.3.0):
     - ExpoModulesCore
@@ -451,7 +451,7 @@ PODS:
     - React-Core
   - RNCPicker (2.5.1):
     - React-Core
-  - RNSVG (13.14.0):
+  - RNSVG (12.5.1):
     - React-Core
   - SocketRocket (0.6.1)
   - Yoga (1.14.0)
@@ -626,7 +626,7 @@ SPEC CHECKSUMS:
   EXConstants: ce5bbea779da8031ac818c36bea41b10e14d04e1
   EXFileSystem: 2b826a3bf1071a4b80a8457e97124783d1ac860e
   EXFont: 738c44c390953ebcbab075a4848bfbef025fd9ee
-  Expo: 8a2d2c235bcbe4f41774562a0635bd74c174858c
+  Expo: 30f1f1af73d650fa5d158702faec70e5d26b5d97
   ExpoKeepAwake: be4cbd52d9b177cde0fd66daa1913afa3161fc1d
   ExpoModulesCore: 51cb2e7ab4c8da14be3f40b66d54c1781002e99d
   EXSplashScreen: c0e7f2d4a640f3b875808ed0b88575538daf6d82
@@ -670,7 +670,7 @@ SPEC CHECKSUMS:
   ReactCommon: 4b2bdcb50a3543e1c2b2849ad44533686610826d
   RNCAsyncStorage: c913ede1fa163a71cea118ed4670bbaaa4b511bb
   RNCPicker: 529d564911e93598cc399b56cc0769ce3675f8c8
-  RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
+  RNSVG: d7d7bc8229af3842c9cfc3a723c815a52cdd1105
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: 3efc43e0d48686ce2e8c60f99d4e6bd349aff981
 

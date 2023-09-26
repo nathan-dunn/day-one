@@ -129,25 +129,38 @@ const rgbToHex = (r: number, g: number, b: number): string => {
   );
 };
 
-export const interpolateColors = (
-  n: number,
-  color1: string,
-  color2: string
-): string[] => {
-  const [r1, g1, b1] = hexToRgb(color1);
-  const [r2, g2, b2] = hexToRgb(color2);
+export const interpolateColors = (n: number, colors: string[]): string[] => {
+  if (colors.length < 2)
+    throw new Error('Need at least two colors to interpolate');
 
-  const output = [];
+  const segments = colors.length - 1; // the number of segments between colors
+  const stepsPerSegment = Math.floor(n / segments); // calculate how many steps per each segment
+  const remainder = n - stepsPerSegment * segments; // remainder if n is not divisible by segments
 
-  for (let i = 0; i < n; i++) {
-    const t = i / (n - 1);
+  const output: string[] = [];
 
-    const r = r1 + (r2 - r1) * t;
-    const g = g1 + (g2 - g1) * t;
-    const b = b1 + (b2 - b1) * t;
+  for (let i = 0; i < segments; i++) {
+    const color1 = colors[i];
+    const color2 = colors[i + 1];
 
-    output.push(rgbToHex(Math.round(r), Math.round(g), Math.round(b)));
+    // Calculate how many steps for the current segment, adding remainder to the last segment
+    const steps =
+      i === segments - 1 ? stepsPerSegment + remainder : stepsPerSegment;
+
+    const [r1, g1, b1] = hexToRgb(color1);
+    const [r2, g2, b2] = hexToRgb(color2);
+
+    for (let j = 0; j < steps; j++) {
+      const t = j / (steps - 1);
+
+      const r = r1 + (r2 - r1) * t;
+      const g = g1 + (g2 - g1) * t;
+      const b = b1 + (b2 - b1) * t;
+
+      output.push(rgbToHex(Math.round(r), Math.round(g), Math.round(b)));
+    }
   }
 
+  console.log('output:', output);
   return output;
 };
