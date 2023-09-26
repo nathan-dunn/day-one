@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import TextBlock from './TextBlock';
 import { exercises } from '../constants';
-import { Maxes, Lift, Theme } from '../types';
+import { Maxes, Lift, Theme, Option } from '../types';
 import { roundTo, getColor } from '../utils';
 import SessionHeader from './SessionHeader';
 const { width } = Dimensions.get('window');
@@ -28,11 +28,16 @@ type SessionProps = {
   highlightColor: string;
   isChecked: boolean;
   handleCheck: () => void;
+  weekOptions: Option[];
+  weekOption: Option;
+  setWeekOption: (week: Option) => void;
+  dayOptions: Option[];
+  dayOption: Option;
+  setDayOption: (day: Option) => void;
 };
 
 function Session({
   index,
-  week,
   day,
   notes,
   lifts,
@@ -42,6 +47,12 @@ function Session({
   highlightColor,
   isChecked,
   handleCheck,
+  weekOptions,
+  weekOption,
+  setWeekOption,
+  dayOptions,
+  dayOption,
+  setDayOption,
 }: SessionProps) {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [scrollPosition, setScrollPosition] = useState<number>(0);
@@ -98,7 +109,9 @@ function Session({
         {/* HEADER */}
         <SessionHeader
           index={index}
-          week={week}
+          setWeekOption={setWeekOption}
+          weekOptions={weekOptions}
+          weekOption={weekOption}
           day={day}
           isChecked={isChecked}
           highlightColor={highlightColor}
@@ -106,6 +119,9 @@ function Session({
           opacity={opacity}
           translateFast={translateFast}
           translateSlow={translateSlow}
+          dayOptions={dayOptions}
+          dayOption={dayOption}
+          setDayOption={setDayOption}
         />
 
         <View style={[styles.liftsContainer]}>

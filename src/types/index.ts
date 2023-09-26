@@ -30,9 +30,15 @@ export enum Theme {
   TEXT_2 = 'TEXT_2',
   TEXT_3 = 'TEXT_3',
   TEXT_4 = 'TEXT_4',
+  TEXT_5 = 'TEXT_5',
 }
 
 // TYPES
+export type Option = {
+  id: number;
+  item: string;
+};
+
 export type Maxes = {
   [key: string]: number;
 };

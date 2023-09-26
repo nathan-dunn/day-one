@@ -19,6 +19,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
+import { findIndex, set } from 'lodash';
 import Session from './Session';
 import Intro from './Intro';
 import Panel from './Panel';
@@ -33,7 +34,7 @@ import {
   getColor,
   interpolateColors,
 } from '../utils';
-import { Maxes, isMaxes, Theme, Program } from '../types';
+import { Day, Maxes, isMaxes, Theme, Program, Option } from '../types';
 
 const { width } = Dimensions.get('window');
 
@@ -43,6 +44,16 @@ const drawerStyles = {
   drawerOverlay: {},
   mainOverlay: {},
 };
+
+// const weekOptions: Option[] = [
+//   { id: 1, item: 'Week 1' },
+//   { id: 2, item: 'Week 2' },
+//   { id: 3, item: 'Week 3' },
+//   { id: 4, item: 'Week 4' },
+//   { id: 5, item: 'Week 5' },
+//   { id: 6, item: 'Week 6' },
+//   { id: 7, item: 'Week 7' },
+// ];
 
 // const ANIMATED_VALUE: Animated.Value = new Animated.Value(0);
 
@@ -59,6 +70,23 @@ export default function App() {
   const totalPages = program.sessions.length + 1;
   const [page, setPage] = useState<number>(0);
   const [checks, setChecks] = useState<boolean[]>([]);
+
+  // WEEKS
+  const weekOptions: Option[] = program.sessions
+    .filter(session => session.day === 1)
+    .map(session => ({
+      id: session.week,
+      item: `Week ${session.week}`,
+    }));
+  const [weekOption, setWeekOption] = useState<Option>(weekOptions[0]);
+
+  // DAYS
+  const dayOptions: Option[] = [
+    { id: 1, item: Day.monday },
+    { id: 2, item: Day.wednesday },
+    { id: 3, item: Day.friday },
+  ];
+  const [dayOption, setDayOption] = useState<Option>(dayOptions[0]);
 
   // COLORS
   const gradient = useMemo(
@@ -175,6 +203,24 @@ export default function App() {
 
   // EFFECTS
   useEffect(() => {
+    const currentDay = program.sessions[page - 1]?.day;
+    const index = findIndex(program.sessions, {
+      week: weekOption.id,
+      day: currentDay,
+    });
+    handlePageNav(index + 1);
+  }, [weekOption]);
+
+  useEffect(() => {
+    const currentDay = dayOption.id;
+    const index = findIndex(program.sessions, {
+      week: weekOption.id,
+      day: currentDay,
+    });
+    handlePageNav(index + 1);
+  }, [dayOption]);
+
+  useEffect(() => {
     loadStoredChecks();
     loadStoredMaxes();
   }, [program]);
@@ -267,6 +313,12 @@ export default function App() {
                 highlightColor={HIGHLIGHT_COLOR}
                 isChecked={checks[index]}
                 handleCheck={() => handleCheck(index)}
+                weekOptions={weekOptions}
+                weekOption={weekOption}
+                setWeekOption={setWeekOption}
+                dayOptions={dayOptions}
+                dayOption={dayOption}
+                setDayOption={setDayOption}
               />
             );
           }}

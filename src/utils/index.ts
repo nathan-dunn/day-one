@@ -105,6 +105,7 @@ export const getColor = (theme: Theme): string => {
     TEXT_2: colors.WHITE,
     TEXT_3: colors.LIGHT_GRAY,
     TEXT_4: colors.DARK_BLACK,
+    TEXT_5: colors.DARK_GRAY,
   };
 
   return themes[theme] || colors.PINK;
