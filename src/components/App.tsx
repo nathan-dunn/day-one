@@ -55,9 +55,9 @@ export default function App() {
     [program]
   );
   const [maxes, setMaxes] = useState<MaxesType>(maxesNeeded);
-  const totalWeeks = program.sessions.length
-    ? program.sessions.at(-1)?.week
-    : 0;
+  // const totalWeeks = program.sessions.length
+  //   ? program.sessions.at(-1)?.week
+  //   : 0;
 
   // PAGE & CHECKS
   const totalPages = program.sessions.length + 1;
@@ -280,7 +280,8 @@ export default function App() {
                 isChecked={checks[index]}
                 handleCheck={() => handleCheck(index)}
                 totalPages={totalPages}
-                totalWeeks={totalWeeks}
+                // totalWeeks={totalWeeks}
+                program={program}
                 handleNavPress={handleNavPress}
                 highlightColor={HIGHLIGHT_COLOR}
               />

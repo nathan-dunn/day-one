@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   Animated,
   View,
@@ -7,40 +7,49 @@ import {
   TextStyle,
   StyleProp,
 } from 'react-native';
+import { findLast } from 'lodash';
 import { colors } from '../constants';
+import { ProgramType } from '../types';
 
 type NavBarProps = {
   highlightColor: string;
   onPress: (index: number) => void;
-  // page: number;
   segmentStyle: StyleProp<TextStyle>;
   totalPages: number;
-  totalWeeks: number;
   week: number;
   width: number;
+  program: ProgramType;
+  page: number;
 };
 
 export default function NavBar({
   highlightColor,
   onPress,
-  // page,
   segmentStyle,
   totalPages,
-  totalWeeks,
   week,
   width,
+  program,
+  page,
 }: NavBarProps) {
+  const lastSession = findLast(program.sessions);
+  const totalWeeks = lastSession ? lastSession.week : 0;
+  const daysThisWeek = findLast(program.sessions, { week })?.day || 0;
+
   const weekSegments = useMemo(
     () => new Array(totalWeeks).fill(null),
     [totalPages]
   );
-  const daySegments = useMemo(() => new Array(3).fill(null), [totalPages]);
+  const daySegments = useMemo(
+    () => new Array(daysThisWeek).fill(null),
+    [totalPages]
+  );
   const padding = 2;
 
   return (
     <View style={styles.container}>
       <View style={[styles.content, { width }]}>
-        {weekSegments.map((item: null, index: number) => {
+        {weekSegments.map((_, index: number) => {
           const isCurrent = index + 1 === week;
 
           return (
@@ -65,21 +74,26 @@ export default function NavBar({
           );
         })}
       </View>
-      <View style={[styles.content, { width }]}>
-        {daySegments.map((item: null, index: number) => {
-          const isCurrent = index + 1 === week;
+      <View
+        style={[styles.content, { width, justifyContent: 'center', gap: 50 }]}
+      >
+        {daySegments.map((_, index: number) => {
+          const isCurrent = index + 1 === program.sessions[page - 1]?.day;
 
           return (
             <TouchableOpacity
               key={index}
               style={[styles.touch, {}]}
-              onPress={() => onPress(index)}
+              // onPress={() => onPress(index)}
             >
               <Animated.View
                 style={[
                   segmentStyle,
                   {
-                    width: width / 3 - 2 * padding,
+                    // width: 20,
+                    // height: 20,
+                    // borderRadius: 25,
+                    width: width / totalWeeks - 2 * padding,
                     height: isCurrent ? 5 : 3,
                     backgroundColor: isCurrent
                       ? highlightColor

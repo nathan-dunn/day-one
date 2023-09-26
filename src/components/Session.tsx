@@ -13,7 +13,7 @@ import TextBlock from './TextBlock';
 import Checkbox from './Checkbox';
 import NavBar from './NavBar';
 import { exercises } from '../constants';
-import { MaxesType, LiftType, Day, Theme } from '../types';
+import { MaxesType, LiftType, Day, Theme, ProgramType } from '../types';
 import { roundTo, getColor } from '../utils';
 
 const { width } = Dimensions.get('window');
@@ -31,7 +31,7 @@ type SessionProps = {
   page: number;
   scrollX: Animated.Value;
   totalPages: number;
-  totalWeeks: number;
+  program: ProgramType;
   week: number;
 };
 
@@ -48,7 +48,7 @@ function Session({
   page,
   scrollX,
   totalPages,
-  totalWeeks,
+  program,
   week,
 }: SessionProps) {
   const _width = width * 0.85;
@@ -148,9 +148,10 @@ function Session({
         </View>
 
         <NavBar
+          page={page}
           width={_width}
           totalPages={totalPages}
-          totalWeeks={totalWeeks}
+          program={program}
           onPress={handleNavPress}
           segmentStyle={{ opacity, transform: [{ translateX: translateSlow }] }}
           highlightColor={highlightColor}
