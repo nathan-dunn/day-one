@@ -6,26 +6,30 @@ import {
   TextStyle,
   Keyboard,
 } from 'react-native';
-import { MaxesType } from '../types';
+import { Maxes, Program } from '../types';
 import { getStorage, setStorage } from '../utils';
 
-type NumericInputProps = {
-  lift: keyof MaxesType;
+type MaxInputProps = {
+  lift: keyof Maxes;
   style: StyleProp<TextStyle>;
-  maxes: MaxesType;
+  maxes: Maxes;
+  program: Program;
 };
 
-export default function NumericInput({
+export default function MaxInput({
   lift,
   style,
   maxes,
-}: NumericInputProps) {
+  program,
+}: MaxInputProps) {
   const [max, setMax] = useState<number>(0);
 
   const inputRef = useRef<TextInput | null>(null);
 
   const getMaxes = async () => {
-    const maxes = (await getStorage('@day_one_maxes')) || JSON.stringify({});
+    const maxes =
+      (await getStorage(`@day_one_maxes_${program.name}`)) ||
+      JSON.stringify({});
     return JSON.parse(maxes);
   };
 
@@ -65,7 +69,7 @@ export default function NumericInput({
 
       const maxes = await getMaxes();
       await setStorage(
-        '@day_one_maxes',
+        `@day_one_maxes_${program.name}`,
         JSON.stringify({ ...maxes, [lift]: updatedMax })
       );
     }

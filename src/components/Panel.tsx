@@ -7,17 +7,19 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import NumericInput from './NumericInput';
+import SelectBox from 'react-native-multi-selectbox';
+import MaxInput from './MaxInput';
 import { colors } from '../constants';
-import { MaxesType } from '../types';
+import { Maxes, Program } from '../types';
 
 type PanelProps = {
-  onOptionSelected?: (option: string) => void;
-  onClose: () => void;
-  maxes: MaxesType;
-  programName: string;
-  handleReset: () => void;
   highlightColor: string;
+  maxes: Maxes;
+  programs: Program[];
+  program: Program;
+  handleReset: () => void;
+  onClose: () => void;
+  setProgram: (program: Program) => void;
 };
 
 export default function Panel({
@@ -25,22 +27,24 @@ export default function Panel({
   maxes,
   handleReset,
   highlightColor,
+  programs,
+  program,
+  setProgram,
 }: PanelProps) {
+  const BG_1 = colors.DARK_BLACK;
   const TEXT_1 = colors.WHITE;
+  const TEXT_2 = colors.MED_GRAY;
 
   return (
     <SafeAreaView
       style={[
         styles.container,
-        {
-          backgroundColor: colors.DARK_BLACK,
-          borderRightColor: highlightColor,
-        },
+        { backgroundColor: BG_1, borderRightColor: highlightColor },
       ]}
     >
-      <TouchableOpacity onPress={onClose} style={styles.content}>
+      <TouchableOpacity style={styles.content} onPress={onClose}>
         {/* HEADER */}
-        <View style={styles.headerContainer}>
+        <View style={[styles.headerContainer]}>
           <Feather
             name={'x'}
             size={24}
@@ -52,37 +56,63 @@ export default function Panel({
           />
         </View>
 
-        <View style={styles.rows}>
+        <View style={[styles.sectionContainer]}>
           {/* PROGRAM */}
-          {/* <View style={[styles.row]}>
-          <Text style={[styles.rowKey, { color }]}>PROGRAM</Text>
-          <Text style={[styles.rowValue, { color }]}>{programName}</Text>
-        </View> */}
-
-          {/* MAXES */}
-          <View style={[styles.maxesContainer]}>
-            <View style={[styles.row, {}]}>
-              <Text style={[styles.rowKey, { color: TEXT_1, fontSize: 20 }]}>
-                MAXES
-              </Text>
-            </View>
-
-            {Object.entries(maxes).map(([lift]) => {
-              return (
-                <View key={lift} style={[styles.row]}>
-                  <Text style={[styles.rowKey, { color: TEXT_1 }]}>{lift}</Text>
-                  <NumericInput
-                    maxes={maxes}
-                    lift={lift}
-                    style={[
-                      styles.input,
-                      { color: TEXT_1, borderColor: TEXT_1 },
-                    ]}
-                  />
-                </View>
-              );
-            })}
+          <View style={[styles.row, {}]}>
+            <Text style={[styles.rowKey, { color: TEXT_1, fontSize: 20 }]}>
+              PROGRAM
+            </Text>
           </View>
+
+          <SelectBox
+            label=""
+            options={programs.map(program => ({
+              item: program.name,
+              id: program.name,
+              ...program,
+            }))}
+            value={{ id: program.name, item: program.name }}
+            onChange={setProgram}
+            hideInputFilter
+            arrowIconColor={TEXT_1}
+            containerStyle={{
+              paddingLeft: 5,
+              borderTopWidth: 0,
+              borderBottomWidth: 0,
+            }}
+            labelStyle={{ height: 0 }}
+            optionContainerStyle={{
+              paddingLeft: 5,
+              borderTopWidth: 0,
+              borderBottomWidth: 1,
+              borderBottomColor: TEXT_2,
+            }}
+            optionsLabelStyle={{ color: TEXT_2 }}
+            selectedItemStyle={{ color: TEXT_1 }}
+          />
+        </View>
+
+        {/* MAXES */}
+        <View style={[styles.sectionContainer, { flexGrow: 1 }]}>
+          <View style={[styles.row, {}]}>
+            <Text style={[styles.rowKey, { color: TEXT_1, fontSize: 20 }]}>
+              MAXES
+            </Text>
+          </View>
+
+          {Object.entries(maxes).map(([lift]) => {
+            return (
+              <View key={lift} style={[styles.row]}>
+                <Text style={[styles.rowKey, { color: TEXT_1 }]}>{lift}</Text>
+                <MaxInput
+                  program={program}
+                  maxes={maxes}
+                  lift={lift}
+                  style={[styles.input, { color: TEXT_1, borderColor: TEXT_1 }]}
+                />
+              </View>
+            );
+          })}
         </View>
       </TouchableOpacity>
     </SafeAreaView>
@@ -98,13 +128,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
+    flexDirection: 'row',
     justifyContent: 'flex-start',
     alignSelf: 'flex-start',
+    width: '100%',
     paddingTop: 0,
   },
-  maxesContainer: {
+  sectionContainer: {
     padding: 20,
-    borderRadius: 5,
   },
   rows: {
     justifyContent: 'flex-start',

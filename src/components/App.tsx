@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React, {
   useState,
   useRef,
@@ -20,7 +19,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
-import { findIndex } from 'lodash';
+import { findIndex, set } from 'lodash';
 import Session from './Session';
 import Intro from './Intro';
 import Panel from './Panel';
@@ -28,14 +27,14 @@ import programs from '../programs';
 import { colors } from '../constants';
 import {
   findMaxesNeeded,
-  findSession,
+  findLastChecked,
   getStorage,
-  removeStorage,
+  clearStorage,
   setStorage,
   getColor,
   interpolateColors,
 } from '../utils';
-import { MaxesType, isMaxesType, Theme } from '../types';
+import { Day, Maxes, isMaxes, Theme, Program, Option } from '../types';
 
 const { width } = Dimensions.get('window');
 
@@ -46,39 +45,66 @@ const drawerStyles = {
   mainOverlay: {},
 };
 
-const ANIMATED_VALUE: Animated.Value = new Animated.Value(0);
+// const weekOptions: Option[] = [
+//   { id: 1, item: 'Week 1' },
+//   { id: 2, item: 'Week 2' },
+//   { id: 3, item: 'Week 3' },
+//   { id: 4, item: 'Week 4' },
+//   { id: 5, item: 'Week 5' },
+//   { id: 6, item: 'Week 6' },
+//   { id: 7, item: 'Week 7' },
+// ];
+
+// const ANIMATED_VALUE: Animated.Value = new Animated.Value(0);
 
 export default function App() {
   // PROGRAM & MAXES
-  const [program] = useState(programs[0]);
-  const maxesNeeded: MaxesType = useMemo(
+  const [program, setProgram] = useState<Program>(programs[1]);
+  const maxesNeeded: Maxes = useMemo(
     () => findMaxesNeeded(program.sessions),
     [program]
   );
-  const [maxes, setMaxes] = useState<MaxesType>(maxesNeeded);
-  // const totalWeeks = useMemo(
-  //   () => program.sessions.filter(session => session.week === 1).length,
-  //   [program]
-  // );
-  const totalWeeks = 7;
+  const [maxes, setMaxes] = useState<Maxes>(maxesNeeded);
 
   // PAGE & CHECKS
   const totalPages = program.sessions.length + 1;
-  const [page, setPage] = useState<number | undefined>(undefined);
+  const [page, setPage] = useState<number>(0);
   const [checks, setChecks] = useState<boolean[]>([]);
 
+  // WEEKS
+  const weekOptions: Option[] = program.sessions
+    .filter(session => session.day === 1)
+    .map(session => ({
+      id: session.week,
+      item: `Week ${session.week}`,
+    }));
+  const [weekOption, setWeekOption] = useState<Option>(weekOptions[0]);
+
+  // DAYS
+  const dayOptions: Option[] = [
+    { id: 1, item: Day.monday },
+    { id: 2, item: Day.wednesday },
+    { id: 3, item: Day.friday },
+  ];
+  const [dayOption, setDayOption] = useState<Option>(dayOptions[0]);
+
   // COLORS
-  const gradient = interpolateColors(
-    totalPages,
-    colors.PALE_BLUE,
-    colors.PALE_GREEN
+  const gradient = useMemo(
+    () =>
+      interpolateColors(totalPages, [
+        colors.PALE_BLUE,
+        colors.PALE_VIOLET,
+        colors.PALE_GREEN,
+      ]),
+    [totalPages]
   );
+
   const HIGHLIGHT_COLOR = page ? gradient[page] : colors.PALE_BLUE;
   const BASE_BG = getColor(Theme.BG_1);
   const BASE_TEXT = getColor(Theme.TEXT_1);
 
   // REFS
-  const scrollX = useRef(ANIMATED_VALUE).current;
+  const scrollX = useRef(new Animated.Value(0)).current;
   const drawerRef = useRef<Drawer>(null);
   const flatListRef = useRef<FlatList>(null);
 
@@ -88,6 +114,7 @@ export default function App() {
       const contentOffset = e.nativeEvent.contentOffset;
       const viewSize = e.nativeEvent.layoutMeasurement;
       const pageNum = Math.floor(contentOffset.x / viewSize.width);
+
       setPage(pageNum);
     },
     []
@@ -113,86 +140,90 @@ export default function App() {
   const handlePageNav = (index: number) => {
     flatListRef.current?.scrollToOffset({
       offset: index * width,
-      animated: false,
+      animated: true,
     });
+    setPage(index);
   };
 
   const handleCheck = useCallback(async (index: number) => {
-    const storedChecks = await getStorage('@day_one_checks');
+    const storedChecks = await getStorage(`@day_one_checks_${program.name}`);
     const parsed = storedChecks ? JSON.parse(storedChecks) : null;
     if (parsed) {
       const updatedChecks = [...parsed];
       updatedChecks[index] = !updatedChecks[index];
       setChecks(updatedChecks);
-      setStorage('@day_one_checks', JSON.stringify(updatedChecks));
+      setStorage(
+        `@day_one_checks_${program.name}`,
+        JSON.stringify(updatedChecks)
+      );
     }
   }, []);
 
-  const handleNavPress = useCallback(
-    (weekIndex: number) => {
-      if (page !== undefined) {
-        const currentDay = program.sessions[page - 1].day;
-        const sessionIndex = findIndex(program.sessions, {
-          week: weekIndex + 1,
-          day: currentDay,
-        });
-
-        setPage(sessionIndex + 1);
-      }
-    },
-    [page]
-  );
-
   const handleReset = useCallback(async () => {
-    await removeStorage('@day_one_checks');
-    await removeStorage('@day_one_mode');
-    await removeStorage('@day_one_maxes');
-    await removeStorage('@day_one_page');
-
+    await clearStorage();
     loadStoredChecks();
     loadStoredMaxes();
-
     alert('App Reset');
   }, []);
 
   // LOADERS
   const loadStoredChecks = async () => {
-    const storedChecks = await getStorage('@day_one_checks');
+    const storedChecks = await getStorage(`@day_one_checks_${program.name}`);
     const parsed = storedChecks ? JSON.parse(storedChecks) : null;
 
     if (parsed) {
       setChecks(parsed);
-      const currentSession = findSession(parsed);
-      setPage(currentSession);
+      const currentSession = findLastChecked(parsed);
+      handlePageNav(currentSession);
     } else {
       const _checks = new Array(totalPages).fill(false);
       setChecks(_checks);
-      setPage(0);
-      await setStorage('@day_one_checks', JSON.stringify(_checks));
+      handlePageNav(0);
+      await setStorage(
+        `@day_one_checks_${program.name}`,
+        JSON.stringify(_checks)
+      );
     }
   };
 
   const loadStoredMaxes = async () => {
-    const storedMaxes = await getStorage('@day_one_maxes');
+    const storedMaxes = await getStorage(`@day_one_maxes_${program.name}`);
     const parsed = storedMaxes ? JSON.parse(storedMaxes) : null;
 
-    if (isMaxesType(parsed)) {
+    if (isMaxes(parsed)) {
       setMaxes({ ...maxesNeeded, ...parsed });
     } else {
       setMaxes(maxesNeeded);
-      await setStorage('@day_one_maxes', JSON.stringify(maxesNeeded));
+      await setStorage(
+        `@day_one_maxes_${program.name}`,
+        JSON.stringify(maxesNeeded)
+      );
     }
   };
 
   // EFFECTS
   useEffect(() => {
-    loadStoredChecks();
-    loadStoredMaxes();
-  }, []);
+    const currentDay = program.sessions[page - 1]?.day;
+    const index = findIndex(program.sessions, {
+      week: weekOption.id,
+      day: currentDay,
+    });
+    handlePageNav(index + 1);
+  }, [weekOption]);
 
   useEffect(() => {
-    if (page !== undefined) handlePageNav(page);
-  }, [page]);
+    const currentDay = dayOption.id;
+    const index = findIndex(program.sessions, {
+      week: weekOption.id,
+      day: currentDay,
+    });
+    handlePageNav(index + 1);
+  }, [dayOption]);
+
+  useEffect(() => {
+    loadStoredChecks();
+    loadStoredMaxes();
+  }, [program]);
 
   if (page === undefined) {
     return (
@@ -226,15 +257,15 @@ export default function App() {
         <Panel
           onClose={closePanel}
           maxes={maxes}
-          programName={program.name}
           handleReset={handleReset}
           highlightColor={HIGHLIGHT_COLOR}
+          setProgram={setProgram}
+          program={program}
+          programs={programs}
         />
       }
     >
       <SafeAreaView style={[styles.container, { backgroundColor: BASE_BG }]}>
-        <StatusBar style="auto" />
-
         <View style={styles.headerContainer}>
           <Feather
             name={'menu'}
@@ -245,53 +276,52 @@ export default function App() {
         </View>
 
         <Animated.FlatList
-          windowSize={totalPages + 1}
-          initialScrollIndex={page}
+          windowSize={program.sessions.length + 1}
+          keyExtractor={item => `${item.week} + ${item.day}`}
           ref={flatListRef}
           showsHorizontalScrollIndicator={false}
           scrollEventThrottle={16}
           horizontal
           pagingEnabled
-          keyExtractor={item => `${item.week} + ${item.day}`}
           onScroll={onScroll}
           onMomentumScrollEnd={onScrollEnd}
-          data={[
-            {
-              name: program.name,
-              notes: program.notes,
-            },
-            ...program.sessions,
-          ]}
-          renderItem={({ item, index }) => {
+          getItemLayout={(_, index) => ({
+            length: width,
+            offset: width * index,
+            index,
+          })}
+          data={[{}, ...program.sessions]}
+          renderItem={({ item: session, index }) => {
             return index === 0 ? (
               <Intro
-                name={item.name}
-                notes={item.notes}
+                name={program.name}
+                notes={program.notes}
                 index={index}
                 page={page}
                 scrollX={scrollX}
               />
             ) : (
               <Session
-                {...item}
                 index={index}
+                week={session.week}
+                day={session.day}
+                notes={session.notes}
+                lifts={session.lifts}
+                maxes={maxes}
                 page={page}
                 scrollX={scrollX}
-                maxes={maxes}
+                highlightColor={HIGHLIGHT_COLOR}
                 isChecked={checks[index]}
                 handleCheck={() => handleCheck(index)}
-                totalPages={totalPages}
-                totalWeeks={totalWeeks}
-                handleNavPress={handleNavPress}
-                highlightColor={HIGHLIGHT_COLOR}
+                weekOptions={weekOptions}
+                weekOption={weekOption}
+                setWeekOption={setWeekOption}
+                dayOptions={dayOptions}
+                dayOption={dayOption}
+                setDayOption={setDayOption}
               />
             );
           }}
-          getItemLayout={(data, index) => ({
-            length: width,
-            offset: width * index,
-            index,
-          })}
         />
       </SafeAreaView>
     </Drawer>

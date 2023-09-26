@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { exercises } from '../constants';
 import { colors } from '../constants';
-import { SessionType, MaxesType, Mode, Theme } from '../types';
+import { Session, Maxes, Mode, Theme } from '../types';
 
 export const getStorage = async (key: string) => {
   try {
@@ -29,11 +30,19 @@ export const removeStorage = async (key: string) => {
   }
 };
 
+export const clearStorage = async () => {
+  try {
+    await AsyncStorage.clear();
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 export function roundTo(num: number, nearest: number): number {
   return Math.round(num / nearest) * nearest;
 }
 
-export function findMaxesNeeded(sessions: SessionType[]): MaxesType {
+export function findMaxesNeeded(sessions: Session[]): Maxes {
   const liftNamesWithPerc: string[] = [];
 
   for (const session of sessions) {
@@ -48,7 +57,12 @@ export function findMaxesNeeded(sessions: SessionType[]): MaxesType {
   }
 
   const liftNames = Array.from(new Set(liftNamesWithPerc));
-  const maxesNeeded: MaxesType = {};
+  const maxesNeeded: Maxes = {
+    [exercises.SQUAT]: 0,
+    [exercises.BENCH]: 0,
+    [exercises.DEADLIFT]: 0,
+    [exercises.PRESS]: 0,
+  };
 
   for (const liftName of liftNames) {
     maxesNeeded[liftName] = 0;
@@ -57,7 +71,7 @@ export function findMaxesNeeded(sessions: SessionType[]): MaxesType {
   return maxesNeeded;
 }
 
-export function findSession(checks: boolean[]): number {
+export function findLastChecked(checks: boolean[]): number {
   // find the first unchecked session after the last checked session
 
   // if no checks, go to first session
@@ -73,12 +87,13 @@ export function findSession(checks: boolean[]): number {
   // skip the first session (intro page)
   for (let i = checks.length - 1; i >= 1; i--) {
     if (checks[i] === true && checks[i + 1] === false) {
-      return i + 1;
+      return i;
     }
   }
 
   return 0;
 }
+
 export const getColor = (theme: Theme): string => {
   const themes = {
     BG_1: colors.DARK_BLACK,
@@ -90,6 +105,7 @@ export const getColor = (theme: Theme): string => {
     TEXT_2: colors.WHITE,
     TEXT_3: colors.LIGHT_GRAY,
     TEXT_4: colors.DARK_BLACK,
+    TEXT_5: colors.DARK_GRAY,
   };
 
   return themes[theme] || colors.PINK;
@@ -115,24 +131,36 @@ const rgbToHex = (r: number, g: number, b: number): string => {
   );
 };
 
-export const interpolateColors = (
-  n: number,
-  color1: string,
-  color2: string
-): string[] => {
-  const [r1, g1, b1] = hexToRgb(color1);
-  const [r2, g2, b2] = hexToRgb(color2);
+export const interpolateColors = (n: number, colors: string[]): string[] => {
+  if (colors.length < 2)
+    throw new Error('Need at least two colors to interpolate');
 
-  const output = [];
+  const segments = colors.length - 1; // the number of segments between colors
+  const stepsPerSegment = Math.floor(n / segments); // calculate how many steps per each segment
+  const remainder = n - stepsPerSegment * segments; // remainder if n is not divisible by segments
 
-  for (let i = 0; i < n; i++) {
-    const t = i / (n - 1);
+  const output: string[] = [];
 
-    const r = r1 + (r2 - r1) * t;
-    const g = g1 + (g2 - g1) * t;
-    const b = b1 + (b2 - b1) * t;
+  for (let i = 0; i < segments; i++) {
+    const color1 = colors[i];
+    const color2 = colors[i + 1];
 
-    output.push(rgbToHex(Math.round(r), Math.round(g), Math.round(b)));
+    // Calculate how many steps for the current segment, adding remainder to the last segment
+    const steps =
+      i === segments - 1 ? stepsPerSegment + remainder : stepsPerSegment;
+
+    const [r1, g1, b1] = hexToRgb(color1);
+    const [r2, g2, b2] = hexToRgb(color2);
+
+    for (let j = 0; j < steps; j++) {
+      const t = j / (steps - 1);
+
+      const r = r1 + (r2 - r1) * t;
+      const g = g1 + (g2 - g1) * t;
+      const b = b1 + (b2 - b1) * t;
+
+      output.push(rgbToHex(Math.round(r), Math.round(g), Math.round(b)));
+    }
   }
 
   return output;
