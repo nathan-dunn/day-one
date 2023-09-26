@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import TextBlock from './TextBlock';
 import { exercises } from '../constants';
-import { MaxesType, LiftType, Theme } from '../types';
+import { Maxes, Lift, Theme } from '../types';
 import { roundTo, getColor } from '../utils';
 import SessionHeader from './SessionHeader';
 const { width } = Dimensions.get('window');
@@ -21,8 +21,8 @@ type SessionProps = {
   week: number;
   day: number;
   notes: string[];
-  lifts: LiftType[];
-  maxes: MaxesType;
+  lifts: Lift[];
+  maxes: Maxes;
   page: number;
   scrollX: Animated.Value;
   highlightColor: string;
@@ -50,6 +50,8 @@ function Session({
   const BG_2 = getColor(Theme.BG_2);
   const TEXT_2 = getColor(Theme.TEXT_2);
   const TEXT_3 = getColor(Theme.TEXT_3);
+
+  console.log('session...scrollX: ', scrollX);
 
   const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
 

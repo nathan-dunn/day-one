@@ -33,38 +33,38 @@ export enum Theme {
 }
 
 // TYPES
-export type MaxesType = {
+export type Maxes = {
   [key: string]: number;
 };
 
-export type ColorType = {
+export type Color = {
   [key: string]: string;
 };
 
-export type RxType = {
+export type Rx = {
   sets?: number | string;
   reps?: number | string;
   perc?: number;
 };
 
-export type LiftType = {
+export type Lift = {
   name: string;
   notes: string[];
-  rxs: RxType[];
+  rxs: Rx[];
 };
 
-export type SessionType = {
+export type Session = {
   week: number;
   day: number;
   notes: string[];
-  lifts: LiftType[];
+  lifts: Lift[];
 };
 
-export type ProgramType = {
+export type Program = {
   name: string;
   shortName?: string;
   notes: string[];
-  sessions: SessionType[];
+  sessions: Session[];
 };
 
 // TYPE GUARDS
@@ -72,7 +72,7 @@ export function isMode(value: any): value is Mode {
   return Object.values(Mode).includes(value);
 }
 
-export function isMaxesType(obj: any): obj is MaxesType {
+export function isMaxes(obj: any): obj is Maxes {
   if (typeof obj !== 'object' || obj === null) {
     return false;
   }

@@ -40,8 +40,8 @@ export const colors = {
 };
 // as const;
 
-// type ColorTypes = (typeof colors)[keyof typeof colors];
+// type Colors = (typeof colors)[keyof typeof colors];
 
 // export type Colors = {
-//   [key: string]: ColorTypes;
+//   [key: string]: Colors;
 // };

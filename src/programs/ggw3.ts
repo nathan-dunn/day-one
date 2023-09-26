@@ -1,4 +1,4 @@
-import { ProgramType } from '../types';
+import { Program } from '../types';
 import { exercises } from '../constants';
 
 const {
@@ -13,7 +13,7 @@ const {
   ARMS,
 } = exercises;
 
-const program: ProgramType = {
+const program: Program = {
   name: 'Garage Gym Warrior III',
   shortName: 'GGW III',
   notes: ['Coming Soon...'],

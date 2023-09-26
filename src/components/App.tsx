@@ -19,7 +19,6 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
-import { findIndex } from 'lodash';
 import Session from './Session';
 import Intro from './Intro';
 import Panel from './Panel';
@@ -34,7 +33,7 @@ import {
   getColor,
   interpolateColors,
 } from '../utils';
-import { MaxesType, isMaxesType, Theme, ProgramType } from '../types';
+import { Maxes, isMaxes, Theme, Program } from '../types';
 
 const { width } = Dimensions.get('window');
 
@@ -45,19 +44,16 @@ const drawerStyles = {
   mainOverlay: {},
 };
 
-const ANIMATED_VALUE: Animated.Value = new Animated.Value(0);
+// const ANIMATED_VALUE: Animated.Value = new Animated.Value(0);
 
 export default function App() {
   // PROGRAM & MAXES
-  const [program, setProgram] = useState<ProgramType>(programs[1]);
-  const maxesNeeded: MaxesType = useMemo(
+  const [program, setProgram] = useState<Program>(programs[1]);
+  const maxesNeeded: Maxes = useMemo(
     () => findMaxesNeeded(program.sessions),
     [program]
   );
-  const [maxes, setMaxes] = useState<MaxesType>(maxesNeeded);
-  // const totalWeeks = program.sessions.length
-  //   ? program.sessions.at(-1)?.week
-  //   : 0;
+  const [maxes, setMaxes] = useState<Maxes>(maxesNeeded);
 
   // PAGE & CHECKS
   const totalPages = program.sessions.length + 1;
@@ -80,9 +76,11 @@ export default function App() {
   const BASE_TEXT = getColor(Theme.TEXT_1);
 
   // REFS
-  const scrollX = useRef(ANIMATED_VALUE).current;
+  const scrollX = useRef(new Animated.Value(0)).current;
   const drawerRef = useRef<Drawer>(null);
   const flatListRef = useRef<FlatList>(null);
+
+  console.log('app....scrollX: ', scrollX);
 
   // HANDLERS
   const onScrollEnd = useCallback(
@@ -135,21 +133,6 @@ export default function App() {
     }
   }, []);
 
-  // const handleNavPress = useCallback(
-  //   (weekIndex: number) => {
-  //     if (page !== undefined) {
-  //       const currentDay = program.sessions[page - 1].day;
-  //       const sessionIndex = findIndex(program.sessions, {
-  //         week: weekIndex + 1,
-  //         day: currentDay,
-  //       });
-
-  //       handlePageNav(sessionIndex + 1);
-  //     }
-  //   },
-  //   [page]
-  // );
-
   const handleReset = useCallback(async () => {
     await clearStorage();
     loadStoredChecks();
@@ -181,7 +164,7 @@ export default function App() {
     const storedMaxes = await getStorage(`@day_one_maxes_${program.name}`);
     const parsed = storedMaxes ? JSON.parse(storedMaxes) : null;
 
-    if (isMaxesType(parsed)) {
+    if (isMaxes(parsed)) {
       setMaxes({ ...maxesNeeded, ...parsed });
     } else {
       setMaxes(maxesNeeded);

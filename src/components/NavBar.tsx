@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { findLast } from 'lodash';
 import { colors } from '../constants';
-import { ProgramType } from '../types';
+import { Program } from '../types';
 
 type NavBarProps = {
   highlightColor: string;
@@ -18,7 +18,7 @@ type NavBarProps = {
   totalPages: number;
   week: number;
   width: number;
-  program: ProgramType;
+  program: Program;
   page: number;
 };
 

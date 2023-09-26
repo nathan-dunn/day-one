@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { exercises } from '../constants';
 import { colors } from '../constants';
-import { SessionType, MaxesType, Mode, Theme } from '../types';
+import { Session, Maxes, Mode, Theme } from '../types';
 
 export const getStorage = async (key: string) => {
   try {
@@ -42,7 +42,7 @@ export function roundTo(num: number, nearest: number): number {
   return Math.round(num / nearest) * nearest;
 }
 
-export function findMaxesNeeded(sessions: SessionType[]): MaxesType {
+export function findMaxesNeeded(sessions: Session[]): Maxes {
   const liftNamesWithPerc: string[] = [];
 
   for (const session of sessions) {
@@ -57,7 +57,7 @@ export function findMaxesNeeded(sessions: SessionType[]): MaxesType {
   }
 
   const liftNames = Array.from(new Set(liftNamesWithPerc));
-  const maxesNeeded: MaxesType = {
+  const maxesNeeded: Maxes = {
     [exercises.SQUAT]: 0,
     [exercises.BENCH]: 0,
     [exercises.DEADLIFT]: 0,
@@ -161,6 +161,5 @@ export const interpolateColors = (n: number, colors: string[]): string[] => {
     }
   }
 
-  console.log('output:', output);
   return output;
 };

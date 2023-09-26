@@ -10,16 +10,16 @@ import { Feather } from '@expo/vector-icons';
 import SelectBox from 'react-native-multi-selectbox';
 import MaxInput from './MaxInput';
 import { colors } from '../constants';
-import { MaxesType, ProgramType } from '../types';
+import { Maxes, Program } from '../types';
 
 type PanelProps = {
   highlightColor: string;
-  maxes: MaxesType;
-  programs: ProgramType[];
-  program: ProgramType;
+  maxes: Maxes;
+  programs: Program[];
+  program: Program;
   handleReset: () => void;
   onClose: () => void;
-  setProgram: (program: ProgramType) => void;
+  setProgram: (program: Program) => void;
 };
 
 export default function Panel({

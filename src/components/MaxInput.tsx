@@ -6,14 +6,14 @@ import {
   TextStyle,
   Keyboard,
 } from 'react-native';
-import { MaxesType, ProgramType } from '../types';
+import { Maxes, Program } from '../types';
 import { getStorage, setStorage } from '../utils';
 
 type MaxInputProps = {
-  lift: keyof MaxesType;
+  lift: keyof Maxes;
   style: StyleProp<TextStyle>;
-  maxes: MaxesType;
-  program: ProgramType;
+  maxes: Maxes;
+  program: Program;
 };
 
 export default function MaxInput({
