@@ -4,37 +4,37 @@ import SelectBox from 'react-native-multi-selectbox';
 import { Theme, Option } from '../types';
 import { getColor } from '../utils';
 import Checkbox from './Checkbox';
+import program from '../programs/ggw1';
 
 type SessionHeaderProps = {
-  index: number;
-  day: number;
-  weekOption: Option;
-  weekOptions: Option[];
-  handleCheck: () => void;
-  highlightColor: string;
   complete: boolean;
+  day: number;
+  dayOptions: Option[];
+  handleComplete: () => void;
+  highlightColor: string;
+  index: number;
+  onDayChange: (dayOption: Option) => void;
+  onWeekChange: (weekOption: Option) => void;
   opacity: Animated.AnimatedInterpolation<number>;
   translateFast: Animated.AnimatedInterpolation<number>;
   translateSlow: Animated.AnimatedInterpolation<number>;
-  setWeekOption: (week: Option) => void;
-  dayOptions: Option[];
-  dayOption: Option;
-  setDayOption: (day: Option) => void;
+  week: number;
+  weekOptions: Option[];
 };
 
 export default function SessionHeader({
-  handleCheck,
-  highlightColor,
   complete,
+  day,
+  dayOptions,
+  handleComplete,
+  highlightColor,
+  onDayChange,
+  onWeekChange,
   opacity,
   translateFast,
   translateSlow,
-  setWeekOption,
-  weekOption,
+  week,
   weekOptions,
-  dayOptions,
-  dayOption,
-  setDayOption,
 }: SessionHeaderProps) {
   const TEXT_4 = getColor(Theme.TEXT_4);
   const TEXT_5 = getColor(Theme.TEXT_5);
@@ -51,8 +51,8 @@ export default function SessionHeader({
           <SelectBox
             label=""
             options={weekOptions}
-            value={weekOption}
-            onChange={(val: Option) => setWeekOption(val)}
+            value={{ id: week, item: `Week ${week}` }}
+            onChange={onWeekChange}
             hideInputFilter
             arrowIconColor={'transparent'}
             labelStyle={{ height: 0 }}
@@ -67,9 +67,9 @@ export default function SessionHeader({
           />
         </View>
         <Checkbox
-          complete={complete}
-          handleCheck={handleCheck}
           color={TEXT_4}
+          complete={complete}
+          handleComplete={handleComplete}
         />
       </Animated.View>
 
@@ -82,8 +82,8 @@ export default function SessionHeader({
         <SelectBox
           label=""
           options={dayOptions}
-          value={dayOption}
-          onChange={(val: Option) => setDayOption(val)}
+          value={{ id: day, item: `Day ${day}` }}
+          onChange={onDayChange}
           hideInputFilter
           arrowIconColor={'transparent'}
           labelStyle={{ height: 0 }}

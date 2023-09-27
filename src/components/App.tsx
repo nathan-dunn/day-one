@@ -19,13 +19,12 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
-import { findIndex, cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash';
 import Session from './Session';
 import Intro from './Intro';
 import Panel from './Panel';
 import programs from '../programs';
 import {
-  findMaxesNeeded,
   findLastChecked,
   getStorage,
   clearStorage,
@@ -33,17 +32,17 @@ import {
   getColor,
   interpolateColors,
 } from '../utils';
-import { Day, Theme, Program, Option, Colors } from '../types';
+import { Theme, Program, Option, Colors } from '../types';
 
-const log = console.log;
 const { width } = Dimensions.get('window');
 
 const defaultProgram = programs[1];
 
 export default function App() {
+  // PAGE
   const [pageLoaded, setPageLoaded] = useState<boolean>(false);
 
-  // PROGRAM & MAXES
+  // PROGRAM
   const [program, setProgram] = useState<Program>(defaultProgram);
 
   // PAGE & CHECKS
@@ -55,19 +54,17 @@ export default function App() {
     .filter(session => session.day === 1)
     .map(session => ({
       id: session.week,
-      item: `Week ${session.week}`,
+      item: String(session.week),
     }));
-  const [weekOption, setWeekOption] = useState<Option>(weekOptions[0]);
 
   // DAYS
   const dayOptions: Option[] = [
-    { id: 1, item: Day.monday },
-    { id: 2, item: Day.wednesday },
-    { id: 3, item: Day.friday },
+    { id: 1, item: String(1) },
+    { id: 2, item: String(2) },
+    { id: 3, item: String(3) },
   ];
-  const [dayOption, setDayOption] = useState<Option>(dayOptions[0]);
 
-  // Colors
+  // COLORS
   const gradient = useMemo(
     () =>
       interpolateColors(totalPages, [
@@ -77,7 +74,6 @@ export default function App() {
       ]),
     [totalPages]
   );
-
   const HIGHLIGHT_COLOR = page ? gradient[page] : Colors.PALE_BLUE;
   const BASE_BG = getColor(Theme.BG_1);
   const BASE_TEXT = getColor(Theme.TEXT_1);
@@ -93,21 +89,6 @@ export default function App() {
       const contentOffset = e.nativeEvent.contentOffset;
       const viewSize = e.nativeEvent.layoutMeasurement;
       const pageNum = Math.floor(contentOffset.x / viewSize.width);
-
-      if (pageNum > 0) {
-        const session = program.sessions[pageNum - 1];
-        // alert(
-        //   `page: ${pageNum} week: ${session.week} day: ${session.day} weekOption: ${weekOption.id} dayOption: ${dayOption.id}`
-        // );
-
-        if (dayOption.id !== session.week) {
-          setWeekOption(weekOptions[session.week - 1]);
-        }
-
-        if (weekOption.id !== session.day) {
-          setDayOption(dayOptions[session.day - 1]);
-        }
-      }
 
       setPage(pageNum);
     },
@@ -141,17 +122,38 @@ export default function App() {
   };
 
   const handleReset = async () => {
-    log(`CLEARING STORAGE (${program.name})`);
     await clearStorage();
-    log(`STORAGE CLEARED`);
     closePanel();
     alert('App Reset');
     loadStorage(defaultProgram);
   };
 
-  const handleCheck = async (sessionIndex: number) => {
-    log('sessionIndex:', sessionIndex);
+  const handleWeekChange = (weekOption: Option) => {
+    const currentSession = program.sessions[page - 1];
+    const currentWeek = currentSession.week;
+    const week = weekOption.id;
+    const numberOfDays = dayOptions.length;
 
+    if (week > currentWeek) {
+      handlePageNav(page + (week - currentWeek) * numberOfDays);
+    } else if (week < currentWeek) {
+      handlePageNav(page - (currentWeek - week) * numberOfDays);
+    }
+  };
+
+  const handleDayChange = (dayOption: Option) => {
+    const currentSession = program.sessions[page - 1];
+    const currentDay = currentSession.day;
+    const day = dayOption.id;
+
+    if (day > currentDay) {
+      handlePageNav(page + (day - currentDay));
+    } else if (day < currentDay) {
+      handlePageNav(page - (currentDay - day));
+    }
+  };
+
+  const handleComplete = async (sessionIndex: number) => {
     const updated = cloneDeep(program);
     updated.sessions[sessionIndex - 1].complete =
       !updated.sessions[sessionIndex - 1].complete;
@@ -177,35 +179,22 @@ export default function App() {
   };
 
   const handleProgramChange = async (selectedProgram: Program) => {
-    log(`PROGRAM CHANGE TO ${selectedProgram.name}`);
-
-    const shouldChange = selectedProgram.name !== program.name;
-    log(
-      `SHOULD CHANGE: ${shouldChange} (OLD: ${program.name}) vs. NEW ${selectedProgram.name}) `
-    );
-
-    if (shouldChange) {
+    if (selectedProgram.name !== program.name) {
       loadStorage(selectedProgram);
     }
   };
 
   // LOADERS
   const loadStorage = async (selectedProgram: Program) => {
-    log('CHECKING FOR:', selectedProgram.name);
-
     const storedProgram = await getStorage(
       `@day_one_program_${selectedProgram.name}`
     );
     const parsedProgram = storedProgram ? JSON.parse(storedProgram) : null;
 
-    log(`${selectedProgram.name} IS ${parsedProgram ? '' : 'NOT'} STORED`);
-
     if (parsedProgram) {
-      log(`SETTING ${parsedProgram.name}`);
       setProgram(parsedProgram);
       setPageLoaded(true);
     } else {
-      log(`CLONING ${selectedProgram.name}`);
       const _program = cloneDeep(selectedProgram);
       _program.sessions = _program.sessions.map(session => ({
         ...session,
@@ -215,46 +204,19 @@ export default function App() {
           complete: false,
         })),
       }));
-      log(`NOW STORING ${_program.name}`);
       await setStorage(
         `@day_one_program_${_program.name}`,
         JSON.stringify(_program)
       );
-      log(`AND SETTING ${_program.name}`);
       setProgram(_program);
       setPageLoaded(true);
     }
   };
 
   // EFFECTS
-  // useEffect(() => {
-  //   const currentDay = program.sessions[page - 1]?.day;
-  //   const index = findIndex(program.sessions, {
-  //     week: weekOption.id,
-  //     day: currentDay,
-  //   });
-  //   if (page !== index + 1) {
-  //     handlePageNav(index + 1);
-  //   }
-  // }, [weekOption]);
-
-  // useEffect(() => {
-  //   const currentDay = dayOption.id;
-  //   const index = findIndex(program.sessions, {
-  //     week: weekOption.id,
-  //     day: currentDay,
-  //   });
-  //   if (page !== index + 1) {
-  //     handlePageNav(index + 1);
-  //   }
-  // }, [dayOption]);
-
   useEffect(() => {
-    log('INIT...');
     loadStorage(program);
   }, []);
-
-  log('RENDERED:', program.name);
 
   if (!pageLoaded) {
     return (
@@ -336,6 +298,8 @@ export default function App() {
               />
             ) : (
               <Session
+                onDayChange={handleDayChange}
+                onWeekChange={handleWeekChange}
                 program={program}
                 index={index}
                 week={session.week}
@@ -346,13 +310,9 @@ export default function App() {
                 page={page}
                 scrollX={scrollX}
                 highlightColor={HIGHLIGHT_COLOR}
-                handleCheck={() => handleCheck(index)}
+                handleComplete={() => handleComplete(index)}
                 weekOptions={weekOptions}
-                weekOption={weekOption}
-                setWeekOption={setWeekOption}
                 dayOptions={dayOptions}
-                dayOption={dayOption}
-                setDayOption={setDayOption}
               />
             );
           }}

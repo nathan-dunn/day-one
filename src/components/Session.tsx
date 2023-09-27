@@ -16,42 +16,39 @@ import SessionHeader from './SessionHeader';
 const { width } = Dimensions.get('window');
 
 type SessionProps = {
-  program: Program;
-  index: number;
-  week: number;
-  day: number;
-  notes: string[];
-  lifts: Lift[];
-  page: number;
-  scrollX: Animated.Value;
-  highlightColor: string;
-  handleCheck: () => void;
-  weekOptions: Option[];
-  weekOption: Option;
-  setWeekOption: (week: Option) => void;
-  dayOptions: Option[];
-  dayOption: Option;
-  setDayOption: (day: Option) => void;
   complete: boolean;
+  day: number;
+  dayOptions: Option[];
+  handleComplete: () => void;
+  highlightColor: string;
+  index: number;
+  lifts: Lift[];
+  notes: string[];
+  onDayChange: (dayOption: Option) => void;
+  onWeekChange: (weekOption: Option) => void;
+  page: number;
+  program: Program;
+  scrollX: Animated.Value;
+  week: number;
+  weekOptions: Option[];
 };
 
 function Session({
-  index,
-  day,
-  notes,
-  lifts,
-  page,
-  scrollX,
-  highlightColor,
-  handleCheck,
-  weekOptions,
-  weekOption,
-  setWeekOption,
-  dayOptions,
-  dayOption,
-  setDayOption,
-  program,
   complete,
+  day,
+  dayOptions,
+  handleComplete,
+  highlightColor,
+  index,
+  lifts,
+  notes,
+  onDayChange,
+  onWeekChange,
+  page,
+  program,
+  scrollX,
+  week,
+  weekOptions,
 }: SessionProps) {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [scrollPosition, setScrollPosition] = useState<number>(0);
@@ -109,20 +106,19 @@ function Session({
       <View style={[styles.content, { width: _width }]}>
         {/* HEADER */}
         <SessionHeader
-          index={index}
-          setWeekOption={setWeekOption}
-          weekOptions={weekOptions}
-          weekOption={weekOption}
-          day={day}
           complete={complete}
+          day={day}
+          dayOptions={dayOptions}
+          handleComplete={handleComplete}
           highlightColor={highlightColor}
-          handleCheck={handleCheck}
+          index={index}
+          onDayChange={onDayChange}
+          onWeekChange={onWeekChange}
           opacity={opacity}
           translateFast={translateFast}
           translateSlow={translateSlow}
-          dayOptions={dayOptions}
-          dayOption={dayOption}
-          setDayOption={setDayOption}
+          week={week}
+          weekOptions={weekOptions}
         />
 
         <View style={[styles.liftsContainer]}>

@@ -5,17 +5,17 @@ import { Feather } from '@expo/vector-icons';
 type CheckboxProps = {
   color: string;
   complete: boolean;
-  handleCheck: () => void;
+  handleComplete: () => void;
 };
 
 export default function Checkbox({
   color,
   complete,
-  handleCheck,
+  handleComplete,
 }: CheckboxProps) {
   return (
     <View style={[styles.checkbox]}>
-      <TouchableHighlight onPress={handleCheck} underlayColor="transparent">
+      <TouchableHighlight onPress={handleComplete} underlayColor="transparent">
         <Feather
           name={complete ? 'check-circle' : 'circle'}
           size={30}
