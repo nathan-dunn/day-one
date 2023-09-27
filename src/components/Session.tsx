@@ -169,33 +169,37 @@ function Session({
                   })}
                 </View>
 
-                {liftNotes
-                  .filter(note => note)
-                  .map((note, noteIndex) => {
-                    return (
-                      <View key={noteIndex} style={[styles.liftNoteContainer]}>
-                        <TextBlock
-                          text={'•'}
-                          style={[styles.bullet, { color: TEXT_3 }]}
-                          opacity={opacity}
-                          translateX={translateFast}
-                        />
+                {!complete &&
+                  liftNotes
+                    .filter(note => note)
+                    .map((note, noteIndex) => {
+                      return (
+                        <View
+                          key={noteIndex}
+                          style={[styles.liftNoteContainer]}
+                        >
+                          <TextBlock
+                            text={'•'}
+                            style={[styles.bullet, { color: TEXT_3 }]}
+                            opacity={opacity}
+                            translateX={translateFast}
+                          />
 
-                        <TextBlock
-                          text={note.replace(/\.$/, '').trim()}
-                          style={[styles.liftNote, { color: TEXT_3 }]}
-                          opacity={opacity}
-                          translateX={translateFast}
-                        />
-                      </View>
-                    );
-                  })}
+                          <TextBlock
+                            text={note.replace(/\.$/, '').trim()}
+                            style={[styles.liftNote, { color: TEXT_3 }]}
+                            opacity={opacity}
+                            translateX={translateFast}
+                          />
+                        </View>
+                      );
+                    })}
               </View>
             );
           })}
         </View>
 
-        {!!notes.filter(note => note).length && (
+        {!complete && !!notes.filter(note => note).length && (
           <View
             style={[styles.sessionNotesContainer, { backgroundColor: BG_2 }]}
           >
@@ -238,16 +242,16 @@ const styles = StyleSheet.create({
   liftContainer: {
     padding: 15,
     borderRadius: 5,
+    gap: 10,
   },
   liftName: {
     textTransform: 'uppercase',
     textAlign: 'left',
     fontSize: 20,
-    marginBottom: 10,
     fontFamily: 'Archivo Black',
   },
   rxContainer: {
-    paddingBottom: 10,
+    //
   },
   rx: {
     textAlign: 'left',
