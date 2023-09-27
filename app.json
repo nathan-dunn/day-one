@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/__splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#242424"
     },
@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.tru36rit.dayone",
-      "buildNumber": "28",
+      "buildNumber": "000",
       "config": {
         "usesNonExemptEncryption": false
       },

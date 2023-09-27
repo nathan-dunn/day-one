@@ -72,14 +72,7 @@ export default function App() {
   const BG_2 = getColor(Theme.BG_2);
 
   const gradient = useMemo(
-    () =>
-      interpolateColors(totalPages, [
-        // Colors.PALE_BLUE,
-        // Colors.PALE_VIOLET,
-        // Colors.PALE_GREEN,
-        BG_2,
-        BH_1,
-      ]),
+    () => interpolateColors(totalPages, [BG_2, BH_1]),
     [totalPages]
   );
   const HIGHLIGHT_COLOR = page ? gradient[page] : BG_2;
@@ -230,7 +223,7 @@ export default function App() {
         style={[styles.container, { backgroundColor: getColor(Theme.BG_1) }]}
       >
         <Image
-          source={require('../../assets/_splash.png')}
+          source={require('../../assets/__splash.png')}
           style={[styles.splashImage, { width: width * 0.85 }]}
         />
       </SafeAreaView>
