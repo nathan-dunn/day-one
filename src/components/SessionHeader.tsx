@@ -23,7 +23,6 @@ type SessionHeaderProps = {
 };
 
 export default function SessionHeader({
-  //   day,
   handleCheck,
   highlightColor,
   complete,
@@ -68,11 +67,8 @@ export default function SessionHeader({
           />
         </View>
         <Checkbox
-          style={[styles.checkbox, { color: TEXT_4 }]}
           complete={complete}
           handleCheck={handleCheck}
-          opacity={opacity}
-          translateX={translateSlow}
           color={TEXT_4}
         />
       </Animated.View>
