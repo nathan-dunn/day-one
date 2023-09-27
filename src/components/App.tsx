@@ -111,7 +111,7 @@ export default function App() {
 
       setPage(pageNum);
     },
-    []
+    [program]
   );
 
   const onScroll = Animated.event(
@@ -140,20 +140,6 @@ export default function App() {
     if (!pageLoaded) setPageLoaded(true);
   };
 
-  const handleCheck = useCallback(async (index: number) => {
-    // const storedChecks = await getStorage(`@day_one_checks_${program.name}`);
-    // const parsed = storedChecks ? JSON.parse(storedChecks) : null;
-    // if (parsed) {
-    //   const updatedChecks = [...parsed];
-    //   updatedChecks[index] = !updatedChecks[index];
-    //   setChecks(updatedChecks);
-    //   setStorage(
-    //     `@day_one_checks_${program.name}`,
-    //     JSON.stringify(updatedChecks)
-    //   );
-    // }
-  }, []);
-
   const handleReset = async () => {
     log(`CLEARING STORAGE (${program.name})`);
     await clearStorage();
@@ -161,6 +147,21 @@ export default function App() {
     closePanel();
     alert('App Reset');
     loadStorage(defaultProgram);
+  };
+
+  const handleCheck = async (sessionIndex: number) => {
+    log('sessionIndex:', sessionIndex);
+
+    const updated = cloneDeep(program);
+    updated.sessions[sessionIndex - 1].complete =
+      !updated.sessions[sessionIndex - 1].complete;
+
+    await setStorage(
+      `@day_one_program_${program.name}`,
+      JSON.stringify(updated)
+    );
+
+    setProgram(updated);
   };
 
   const handleMaxChange = async (lift: string, max: number) => {
@@ -335,8 +336,8 @@ export default function App() {
               />
             ) : (
               <Session
+                program={program}
                 index={index}
-                maxes={program.maxes}
                 week={session.week}
                 complete={session.complete}
                 day={session.day}

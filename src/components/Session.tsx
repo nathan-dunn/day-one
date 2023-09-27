@@ -10,18 +10,18 @@ import {
   View,
 } from 'react-native';
 import TextBlock from './TextBlock';
-import { Maxes, Lift, Theme, Option } from '../types';
+import { Maxes, Program, Lift, Theme, Option } from '../types';
 import { roundTo, getColor, findIncrement } from '../utils';
 import SessionHeader from './SessionHeader';
 const { width } = Dimensions.get('window');
 
 type SessionProps = {
+  program: Program;
   index: number;
   week: number;
   day: number;
   notes: string[];
   lifts: Lift[];
-  maxes: Maxes;
   page: number;
   scrollX: Animated.Value;
   highlightColor: string;
@@ -40,7 +40,6 @@ function Session({
   day,
   notes,
   lifts,
-  maxes,
   page,
   scrollX,
   highlightColor,
@@ -51,11 +50,13 @@ function Session({
   dayOptions,
   dayOption,
   setDayOption,
+  program,
   complete,
 }: SessionProps) {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [scrollPosition, setScrollPosition] = useState<number>(0);
-  const isChecked = complete;
+
+  const maxes: Maxes = program.maxes;
 
   const _width = width * 0.85;
   const BG_2 = getColor(Theme.BG_2);
@@ -113,7 +114,7 @@ function Session({
           weekOptions={weekOptions}
           weekOption={weekOption}
           day={day}
-          isChecked={isChecked}
+          complete={complete}
           highlightColor={highlightColor}
           handleCheck={handleCheck}
           opacity={opacity}
@@ -307,4 +308,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(Session);
+export default Session;

@@ -8,8 +8,8 @@ import {
 import { Feather } from '@expo/vector-icons';
 
 type CheckboxProps = {
-  onPress: () => void;
-  isChecked: boolean;
+  handleCheck: () => void;
+  complete: boolean;
   style: StyleProp<TextStyle>;
   opacity: Animated.AnimatedInterpolation<number>;
   translateX: Animated.AnimatedInterpolation<number>;
@@ -17,8 +17,8 @@ type CheckboxProps = {
 };
 
 export default function Checkbox({
-  onPress,
-  isChecked,
+  handleCheck,
+  complete,
   style,
   opacity,
   translateX,
@@ -26,9 +26,9 @@ export default function Checkbox({
 }: CheckboxProps) {
   return (
     <Animated.View style={[style, { opacity, transform: [{ translateX }] }]}>
-      <TouchableHighlight onPress={onPress} underlayColor="transparent">
+      <TouchableHighlight onPress={handleCheck} underlayColor="transparent">
         <Feather
-          name={isChecked ? 'check-circle' : 'circle'}
+          name={complete ? 'check-circle' : 'circle'}
           size={30}
           color={color}
         />

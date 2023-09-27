@@ -91,7 +91,6 @@ export default function Panel({
         <View style={styles.maxes}>
           {Object.entries(maxes).map(([lift]) => {
             const max = program.maxes[lift];
-            console.log('max', lift, max);
             const increment = findIncrement(lift);
             const range = makeRange(25, 500, increment);
             const maxOptions = range.map(num => ({
@@ -215,13 +214,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     paddingVertical: 10,
     fontFamily: 'Archivo Black',
+    textTransform: 'uppercase',
   },
   rowValue: {
     fontSize: 18,
     paddingVertical: 10,
     textAlign: 'center',
     fontFamily: 'Archivo Black',
-    textTransform: 'uppercase',
   },
   input: {
     height: 40,

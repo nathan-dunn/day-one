@@ -1,8 +1,7 @@
 import React from 'react';
-import { Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Animated, StyleSheet, View } from 'react-native';
 import SelectBox from 'react-native-multi-selectbox';
-import TextBlock from './TextBlock';
-import { Day, Theme, Option } from '../types';
+import { Theme, Option } from '../types';
 import { getColor } from '../utils';
 import Checkbox from './Checkbox';
 
@@ -13,7 +12,7 @@ type SessionHeaderProps = {
   weekOptions: Option[];
   handleCheck: () => void;
   highlightColor: string;
-  isChecked: boolean;
+  complete: boolean;
   opacity: Animated.AnimatedInterpolation<number>;
   translateFast: Animated.AnimatedInterpolation<number>;
   translateSlow: Animated.AnimatedInterpolation<number>;
@@ -27,7 +26,7 @@ export default function SessionHeader({
   //   day,
   handleCheck,
   highlightColor,
-  isChecked,
+  complete,
   opacity,
   translateFast,
   translateSlow,
@@ -70,8 +69,8 @@ export default function SessionHeader({
         </View>
         <Checkbox
           style={[styles.checkbox, { color: TEXT_4 }]}
-          isChecked={isChecked}
-          onPress={handleCheck}
+          complete={complete}
+          handleCheck={handleCheck}
           opacity={opacity}
           translateX={translateSlow}
           color={TEXT_4}
