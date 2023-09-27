@@ -3,8 +3,8 @@ import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import SelectBox from 'react-native-multi-selectbox';
 import programs from '../programs';
-import { Maxes, Program, Colors, Option } from '../types';
-import { findIncrement, makeRange } from '../utils';
+import { Maxes, Program, Colors, Option, Theme } from '../types';
+import { findIncrement, makeRange, getColor } from '../utils';
 
 type PanelProps = {
   program: Program;
@@ -22,12 +22,20 @@ export default function Panel({
   onMaxChange,
 }: PanelProps) {
   const maxes: Maxes = program.maxes;
-  const BG_1 = Colors.DARK_BLACK;
-  const TEXT_1 = Colors.WHITE;
-  const TEXT_2 = Colors.MED_GRAY;
+  const BG_2 = getColor(Theme.BG_2);
+  const TEXT_1 = getColor(Theme.TEXT_1);
+  const TEXT_2 = getColor(Theme.TEXT_2);
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        {
+          // backgroundColor: BG_2,
+          backgroundColor: BG_2,
+        },
+      ]}
+    >
       {/* HEADER */}
       <View style={[styles.headerContainer]}>
         <Feather

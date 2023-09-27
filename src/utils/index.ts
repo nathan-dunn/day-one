@@ -95,15 +95,19 @@ export function findLastCompleted(program: Program): number {
 export const getColor = (theme: Theme): string => {
   const themes = {
     BG_1: Colors.DARK_BLACK,
-    BG_2: Colors.DARK_GRAY,
+    // BG_2: Colors.DARK_GRAY,
+    BG_2: Colors.SPACE_DARK,
     BG_3: Colors.PALE_VIOLET,
     BG_4: Colors.PALE_BLUE,
 
     TEXT_1: Colors.WHITE,
     TEXT_2: Colors.WHITE,
-    TEXT_3: Colors.LIGHT_GRAY,
-    TEXT_4: Colors.DARK_BLACK,
-    TEXT_5: Colors.DARK_GRAY,
+    // TEXT_3: Colors.LIGHT_GRAY,
+    TEXT_3: Colors.WHITE,
+    // TEXT_4: Colors.DARK_BLACK,
+    TEXT_4: Colors.WHITE,
+    // TEXT_5: Colors.DARK_GRAY,
+    TEXT_5: Colors.WHITE,
   };
 
   return themes[theme] || Colors.PINK;

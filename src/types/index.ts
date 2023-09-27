@@ -31,6 +31,7 @@ export enum Colors {
   PALE_VIOLET = '#D1D7EC',
   PALE_GREEN = '#B8D8BE',
   PALE_RED = '#E5BEBD',
+  SPACE_DARK = '#394473',
 }
 
 export enum Mode {

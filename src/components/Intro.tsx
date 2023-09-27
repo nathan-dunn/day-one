@@ -9,7 +9,7 @@ import {
 import TextBlock from './TextBlock';
 import { Colors } from '../types';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 type IntroProps = {
   index: number;
@@ -58,34 +58,36 @@ export default function Intro({
     });
 
   return (
-    <ScrollView contentContainerStyle={[styles.container, { width }]}>
-      <View style={styles.header}>
-        <TextBlock
-          text={name}
-          style={[
-            styles.headerText,
-            { width: width * 0.75, color: PRIMARY_COLOR },
-          ]}
-          opacity={opacity}
-          translateX={translateSlow}
-        />
-      </View>
-
-      {notes
-        .filter(note => note)
-        .map((note, noteIndex) => (
+    <View style={{ height, width, padding: 0, margin: 0 }}>
+      <ScrollView contentContainerStyle={[styles.container, { width }]}>
+        <View style={styles.header}>
           <TextBlock
-            key={noteIndex}
-            text={note.trim()}
+            text={name}
             style={[
-              styles.note,
-              { width: width * 0.85, color: SECONDARY_COLOR },
+              styles.headerText,
+              { width: width * 0.75, color: PRIMARY_COLOR },
             ]}
             opacity={opacity}
-            translateX={translateFast}
+            translateX={translateSlow}
           />
-        ))}
-    </ScrollView>
+        </View>
+
+        {notes
+          .filter(note => note)
+          .map((note, noteIndex) => (
+            <TextBlock
+              key={noteIndex}
+              text={note.trim()}
+              style={[
+                styles.note,
+                { width: width * 0.85, color: SECONDARY_COLOR },
+              ]}
+              opacity={opacity}
+              translateX={translateFast}
+            />
+          ))}
+      </ScrollView>
+    </View>
   );
 }
 

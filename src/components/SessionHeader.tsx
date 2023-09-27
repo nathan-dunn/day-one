@@ -1,10 +1,9 @@
 import React from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
 import SelectBox from 'react-native-multi-selectbox';
-import { Theme, Option } from '../types';
+import { Day, Theme, Option } from '../types';
 import { getColor } from '../utils';
 import Checkbox from './Checkbox';
-import program from '../programs/ggw1';
 
 type SessionHeaderProps = {
   complete: boolean;
@@ -38,6 +37,9 @@ export default function SessionHeader({
 }: SessionHeaderProps) {
   const TEXT_4 = getColor(Theme.TEXT_4);
   const TEXT_5 = getColor(Theme.TEXT_5);
+
+  const dayText =
+    day === 1 ? Day.monday : day === 2 ? Day.wednesday : Day.friday;
 
   return (
     <View style={[styles.headerContainer, { backgroundColor: highlightColor }]}>
@@ -82,7 +84,7 @@ export default function SessionHeader({
         <SelectBox
           label=""
           options={dayOptions}
-          value={{ id: day, item: `Day ${day}` }}
+          value={{ id: day, item: dayText }}
           onChange={onDayChange}
           hideInputFilter
           arrowIconColor={'transparent'}

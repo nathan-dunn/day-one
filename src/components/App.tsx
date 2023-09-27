@@ -19,6 +19,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
+import LottieView from 'lottie-react-native';
 import { cloneDeep } from 'lodash';
 import Session from './Session';
 import Intro from './Intro';
@@ -32,13 +33,15 @@ import {
   getColor,
   interpolateColors,
 } from '../utils';
-import { Theme, Program, Option, Colors } from '../types';
+import { Theme, Day, Program, Option, Colors } from '../types';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const defaultProgram = programs[1];
 
 export default function App() {
+  const [showLottie, setShowLottie] = useState<boolean>(true);
+
   // PAGE
   const [pageLoaded, setPageLoaded] = useState<boolean>(false);
 
@@ -54,23 +57,25 @@ export default function App() {
     .filter(session => session.day === 1)
     .map(session => ({
       id: session.week,
-      item: String(session.week),
+      item: `Week ${session.week}`,
     }));
 
   // DAYS
   const dayOptions: Option[] = [
-    { id: 1, item: String(1) },
-    { id: 2, item: String(2) },
-    { id: 3, item: String(3) },
+    { id: 1, item: Day.monday },
+    { id: 2, item: Day.wednesday },
+    { id: 3, item: Day.friday },
   ];
 
   // COLORS
   const gradient = useMemo(
     () =>
       interpolateColors(totalPages, [
-        Colors.PALE_BLUE,
-        Colors.PALE_VIOLET,
-        Colors.PALE_GREEN,
+        // Colors.PALE_BLUE,
+        // Colors.PALE_VIOLET,
+        // Colors.PALE_GREEN,
+        Colors.SPACE_DARK,
+        Colors.SPACE_DARK,
       ]),
     [totalPages]
   );
@@ -234,13 +239,20 @@ export default function App() {
     <Drawer
       ref={drawerRef}
       styles={{
-        main: {},
-        drawer: {},
+        main: {
+          backgroundColor: 'transparent',
+        },
+        drawer: {
+          backgroundColor: 'transparent',
+        },
         drawerOverlay: {
           borderRightColor: HIGHLIGHT_COLOR,
           borderRightWidth: 1,
+          backgroundColor: 'transparent',
         },
-        mainOverlay: {},
+        mainOverlay: {
+          backgroundColor: 'transparent',
+        },
       }}
       type="static"
       tapToClose={true}
@@ -261,6 +273,26 @@ export default function App() {
       }
     >
       <SafeAreaView style={[styles.container, { backgroundColor: BASE_BG }]}>
+        {showLottie && (
+          <LottieView
+            style={{
+              top: -180,
+              flex: 1,
+              flexGrow: 1,
+              width: width * 1.33,
+              height: height * 1.33,
+              padding: 0,
+              margin: 0,
+              position: 'absolute',
+            }}
+            source={require('../../assets/animations/data_2.json')}
+            autoPlay={true}
+            loop={true}
+            onAnimationFailure={e => {
+              console.log('Error ', { e });
+            }}
+          />
+        )}
         <View style={styles.headerContainer}>
           <Feather
             name={'menu'}
