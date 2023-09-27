@@ -94,9 +94,9 @@ export function findLastCompleted(program: Program): number {
 
 export const getColor = (theme: Theme): string => {
   const themes = {
-    BG_1: Colors.DARK_BLACK,
+    BG_1: Colors.LIGHT_SPACE,
     // BG_2: Colors.DARK_GRAY,
-    BG_2: Colors.SPACE_DARK,
+    BG_2: Colors.DARK_SPACE,
     BG_3: Colors.PALE_VIOLET,
     BG_4: Colors.PALE_BLUE,
 

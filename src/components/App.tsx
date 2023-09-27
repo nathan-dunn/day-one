@@ -68,19 +68,21 @@ export default function App() {
   ];
 
   // COLORS
+  const BH_1 = getColor(Theme.BG_1);
+  const BG_2 = getColor(Theme.BG_2);
+
   const gradient = useMemo(
     () =>
       interpolateColors(totalPages, [
         // Colors.PALE_BLUE,
         // Colors.PALE_VIOLET,
         // Colors.PALE_GREEN,
-        Colors.SPACE_DARK,
-        Colors.SPACE_DARK,
+        BG_2,
+        BH_1,
       ]),
     [totalPages]
   );
-  const HIGHLIGHT_COLOR = page ? gradient[page] : Colors.PALE_BLUE;
-  const BASE_BG = getColor(Theme.BG_1);
+  const HIGHLIGHT_COLOR = page ? gradient[page] : BG_2;
   const BASE_TEXT = getColor(Theme.TEXT_1);
 
   // REFS
@@ -272,7 +274,7 @@ export default function App() {
         />
       }
     >
-      <SafeAreaView style={[styles.container, { backgroundColor: BASE_BG }]}>
+      <SafeAreaView style={[styles.container, { backgroundColor: BH_1 }]}>
         {showLottie && (
           <LottieView
             style={{

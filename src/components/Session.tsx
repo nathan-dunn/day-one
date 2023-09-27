@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     fontSize: 18,
     lineHeight: 16 * 1.5,
+    fontWeight: '600',
   },
   bullet: {
     fontWeight: '600',
@@ -272,7 +273,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   liftNote: {
-    fontWeight: '600',
+    fontWeight: '300',
     textAlign: 'left',
     marginRight: 10,
     fontSize: 16,
@@ -299,7 +300,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   sessionNote: {
-    fontWeight: '600',
+    fontWeight: '300',
     textAlign: 'justify',
     marginRight: 10,
     fontSize: 16,
