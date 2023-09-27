@@ -1,120 +1,180 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import SelectBox from 'react-native-multi-selectbox';
-import MaxInput from './MaxInput';
-import { colors } from '../constants';
-import { Maxes, Program } from '../types';
+import programs from '../programs';
+import { Maxes, Program, Colors, Option } from '../types';
+import { findIncrement, makeRange } from '../utils';
 
 type PanelProps = {
-  highlightColor: string;
-  maxes: Maxes;
-  programs: Program[];
   program: Program;
   handleReset: () => void;
   onClose: () => void;
-  setProgram: (program: Program) => void;
+  onProgramChange: (program: Program) => void;
+  onMaxChange: (lift: string, max: number) => void;
 };
 
 export default function Panel({
   onClose,
-  maxes,
   handleReset,
-  highlightColor,
-  programs,
   program,
-  setProgram,
+  onProgramChange,
+  onMaxChange,
 }: PanelProps) {
-  const BG_1 = colors.DARK_BLACK;
-  const TEXT_1 = colors.WHITE;
-  const TEXT_2 = colors.MED_GRAY;
+  const maxes: Maxes = program.maxes;
+  const BG_1 = Colors.DARK_BLACK;
+  const TEXT_1 = Colors.WHITE;
+  const TEXT_2 = Colors.MED_GRAY;
 
   return (
-    <SafeAreaView
-      style={[
-        styles.container,
-        { backgroundColor: BG_1, borderRightColor: highlightColor },
-      ]}
-    >
-      <TouchableOpacity style={styles.content} onPress={onClose}>
-        {/* HEADER */}
-        <View style={[styles.headerContainer]}>
-          <Feather
-            name={'x'}
-            size={24}
-            color={TEXT_1}
-            alignSelf="flex-end"
-            padding={20}
-            onPress={onClose}
-            onLongPress={handleReset}
-          />
+    <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
+      {/* HEADER */}
+      <View style={[styles.headerContainer]}>
+        <Feather
+          name={'x'}
+          size={24}
+          color={TEXT_1}
+          alignSelf="flex-end"
+          padding={20}
+          onPress={onClose}
+          onLongPress={handleReset}
+        />
+      </View>
+
+      <View style={[styles.sectionContainer]}>
+        {/* PROGRAM */}
+        <View style={[styles.row, {}]}>
+          <Text style={[styles.rowKey, { color: TEXT_1, fontSize: 20 }]}>
+            PROGRAM
+          </Text>
         </View>
 
-        <View style={[styles.sectionContainer]}>
-          {/* PROGRAM */}
-          <View style={[styles.row, {}]}>
-            <Text style={[styles.rowKey, { color: TEXT_1, fontSize: 20 }]}>
-              PROGRAM
-            </Text>
-          </View>
+        <SelectBox
+          label=""
+          options={programs.map(program => ({
+            id: program.name,
+            item: program.name,
+            ...program,
+          }))}
+          value={{ id: program.name, item: program.name }}
+          onChange={onProgramChange}
+          hideInputFilter
+          arrowIconColor={TEXT_1}
+          containerStyle={{
+            paddingLeft: 5,
+            borderTopWidth: 0,
+            borderBottomWidth: 1,
+            borderBottomColor: TEXT_2,
+          }}
+          labelStyle={{ height: 0 }}
+          optionContainerStyle={{
+            paddingLeft: 5,
+            borderTopWidth: 0,
+            borderBottomWidth: 1,
+            borderBottomColor: TEXT_2,
+          }}
+          optionsLabelStyle={{
+            color: TEXT_2,
+          }}
+          selectedItemStyle={{ color: TEXT_1 }}
+        />
+      </View>
 
-          <SelectBox
-            label=""
-            options={programs.map(program => ({
-              item: program.name,
-              id: program.name,
-              ...program,
-            }))}
-            value={{ id: program.name, item: program.name }}
-            onChange={setProgram}
-            hideInputFilter
-            arrowIconColor={TEXT_1}
-            containerStyle={{
-              paddingLeft: 5,
-              borderTopWidth: 0,
-              borderBottomWidth: 0,
-            }}
-            labelStyle={{ height: 0 }}
-            optionContainerStyle={{
-              paddingLeft: 5,
-              borderTopWidth: 0,
-              borderBottomWidth: 1,
-              borderBottomColor: TEXT_2,
-            }}
-            optionsLabelStyle={{ color: TEXT_2 }}
-            selectedItemStyle={{ color: TEXT_1 }}
-          />
+      {/* MAXES */}
+      <View style={[styles.sectionContainer, { flexGrow: 1 }]}>
+        <View style={[styles.row, {}]}>
+          <Text style={[styles.rowKey, { color: TEXT_1, fontSize: 20 }]}>
+            MAXES
+          </Text>
         </View>
 
-        {/* MAXES */}
-        <View style={[styles.sectionContainer, { flexGrow: 1 }]}>
-          <View style={[styles.row, {}]}>
-            <Text style={[styles.rowKey, { color: TEXT_1, fontSize: 20 }]}>
-              MAXES
-            </Text>
-          </View>
-
+        <View style={styles.maxes}>
           {Object.entries(maxes).map(([lift]) => {
+            const max = program.maxes[lift];
+            console.log('max', lift, max);
+            const increment = findIncrement(lift);
+            const range = makeRange(25, 500, increment);
+            const maxOptions = range.map(num => ({
+              id: num,
+              item: String(num),
+            }));
+
             return (
-              <View key={lift} style={[styles.row]}>
-                <Text style={[styles.rowKey, { color: TEXT_1 }]}>{lift}</Text>
-                <MaxInput
-                  program={program}
-                  maxes={maxes}
-                  lift={lift}
-                  style={[styles.input, { color: TEXT_1, borderColor: TEXT_1 }]}
-                />
+              <View
+                key={lift}
+                style={[
+                  {
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    alignItems: 'flex-start',
+                    borderBottomWidth: 1,
+                    borderBottomColor: TEXT_2,
+                    paddingBottom: 0,
+                    paddingTop: 0,
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.rowKey,
+                    {
+                      paddingLeft: 10,
+                      color: TEXT_1,
+                      fontSize: 16,
+                      width: '60%',
+                    },
+                  ]}
+                >
+                  {lift}
+                </Text>
+
+                <View
+                  style={[
+                    styles.rowValue,
+                    {
+                      flexGrow: 1,
+                      padding: 0,
+                      paddingTop: 0,
+                      paddingBottom: 0,
+                      margin: 0,
+                      marginTop: 0,
+                      marginBottom: 0,
+                    },
+                  ]}
+                >
+                  <SelectBox
+                    label=""
+                    options={maxOptions}
+                    value={{ id: max, item: String(max) }}
+                    onChange={(val: Option) => onMaxChange(lift, val.id)}
+                    hideInputFilter
+                    arrowIconColor={TEXT_1}
+                    containerStyle={{
+                      paddingLeft: 15,
+                      borderTopWidth: 0,
+                      borderBottomWidth: 0,
+                    }}
+                    labelStyle={{ height: 0 }}
+                    optionContainerStyle={{
+                      paddingLeft: 5,
+                      borderTopWidth: 0,
+                      borderBottomWidth: 1,
+                      borderBottomColor: TEXT_2,
+                    }}
+                    optionsLabelStyle={{
+                      color: TEXT_2,
+                      textAlign: 'right',
+                      paddingLeft: 10,
+                      width: '100%',
+                    }}
+                    selectedItemStyle={{ color: TEXT_1 }}
+                  />
+                </View>
               </View>
             );
           })}
         </View>
-      </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -154,7 +214,6 @@ const styles = StyleSheet.create({
   rowKey: {
     fontSize: 18,
     paddingVertical: 10,
-    textTransform: 'uppercase',
     fontFamily: 'Archivo Black',
   },
   rowValue: {
@@ -162,6 +221,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     textAlign: 'center',
     fontFamily: 'Archivo Black',
+    textTransform: 'uppercase',
   },
   input: {
     height: 40,
@@ -171,5 +231,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     borderRadius: 2,
+  },
+  maxes: {
+    gap: 20,
   },
 });

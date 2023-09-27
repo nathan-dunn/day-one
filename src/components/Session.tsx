@@ -10,9 +10,8 @@ import {
   View,
 } from 'react-native';
 import TextBlock from './TextBlock';
-import { exercises } from '../constants';
 import { Maxes, Lift, Theme, Option } from '../types';
-import { roundTo, getColor } from '../utils';
+import { roundTo, getColor, findIncrement } from '../utils';
 import SessionHeader from './SessionHeader';
 const { width } = Dimensions.get('window');
 
@@ -26,7 +25,6 @@ type SessionProps = {
   page: number;
   scrollX: Animated.Value;
   highlightColor: string;
-  isChecked: boolean;
   handleCheck: () => void;
   weekOptions: Option[];
   weekOption: Option;
@@ -34,6 +32,7 @@ type SessionProps = {
   dayOptions: Option[];
   dayOption: Option;
   setDayOption: (day: Option) => void;
+  complete: boolean;
 };
 
 function Session({
@@ -45,7 +44,6 @@ function Session({
   page,
   scrollX,
   highlightColor,
-  isChecked,
   handleCheck,
   weekOptions,
   weekOption,
@@ -53,9 +51,11 @@ function Session({
   dayOptions,
   dayOption,
   setDayOption,
+  complete,
 }: SessionProps) {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [scrollPosition, setScrollPosition] = useState<number>(0);
+  const isChecked = complete;
 
   const _width = width * 0.85;
   const BG_2 = getColor(Theme.BG_2);
@@ -147,11 +147,7 @@ function Session({
                         : 'set';
                     const repsText =
                       reps === 'AMRAP' ? '' : reps == 1 ? 'rep' : 'reps';
-                    const rounded = [exercises.BENCH, exercises.PRESS].includes(
-                      name
-                    )
-                      ? 2.5
-                      : 5;
+                    const rounded = findIncrement(name);
                     const rxText =
                       max && perc
                         ? `${sets} ${setsText} x ${reps} ${repsText} @ ${roundTo(

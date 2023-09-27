@@ -1,7 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { exercises } from '../constants';
-import { colors } from '../constants';
-import { Session, Maxes, Mode, Theme } from '../types';
+import { Session, Maxes, Colors, Exercises, Theme } from '../types';
 
 export const getStorage = async (key: string) => {
   try {
@@ -58,10 +56,10 @@ export function findMaxesNeeded(sessions: Session[]): Maxes {
 
   const liftNames = Array.from(new Set(liftNamesWithPerc));
   const maxesNeeded: Maxes = {
-    [exercises.SQUAT]: 0,
-    [exercises.BENCH]: 0,
-    [exercises.DEADLIFT]: 0,
-    [exercises.PRESS]: 0,
+    [Exercises.SQUAT]: 0,
+    [Exercises.BENCH]: 0,
+    [Exercises.DEADLIFT]: 0,
+    [Exercises.PRESS]: 0,
   };
 
   for (const liftName of liftNames) {
@@ -96,19 +94,19 @@ export function findLastChecked(checks: boolean[]): number {
 
 export const getColor = (theme: Theme): string => {
   const themes = {
-    BG_1: colors.DARK_BLACK,
-    BG_2: colors.DARK_GRAY,
-    BG_3: colors.PALE_VIOLET,
-    BG_4: colors.PALE_BLUE,
+    BG_1: Colors.DARK_BLACK,
+    BG_2: Colors.DARK_GRAY,
+    BG_3: Colors.PALE_VIOLET,
+    BG_4: Colors.PALE_BLUE,
 
-    TEXT_1: colors.WHITE,
-    TEXT_2: colors.WHITE,
-    TEXT_3: colors.LIGHT_GRAY,
-    TEXT_4: colors.DARK_BLACK,
-    TEXT_5: colors.DARK_GRAY,
+    TEXT_1: Colors.WHITE,
+    TEXT_2: Colors.WHITE,
+    TEXT_3: Colors.LIGHT_GRAY,
+    TEXT_4: Colors.DARK_BLACK,
+    TEXT_5: Colors.DARK_GRAY,
   };
 
-  return themes[theme] || colors.PINK;
+  return themes[theme] || Colors.PINK;
 };
 
 const hexToRgb = (hex: string): [number, number, number] => {
@@ -131,19 +129,19 @@ const rgbToHex = (r: number, g: number, b: number): string => {
   );
 };
 
-export const interpolateColors = (n: number, colors: string[]): string[] => {
-  if (colors.length < 2)
-    throw new Error('Need at least two colors to interpolate');
+export const interpolateColors = (n: number, Colors: string[]): string[] => {
+  if (Colors.length < 2)
+    throw new Error('Need at least two Colors to interpolate');
 
-  const segments = colors.length - 1; // the number of segments between colors
+  const segments = Colors.length - 1; // the number of segments between Colors
   const stepsPerSegment = Math.floor(n / segments); // calculate how many steps per each segment
   const remainder = n - stepsPerSegment * segments; // remainder if n is not divisible by segments
 
   const output: string[] = [];
 
   for (let i = 0; i < segments; i++) {
-    const color1 = colors[i];
-    const color2 = colors[i + 1];
+    const color1 = Colors[i];
+    const color2 = Colors[i + 1];
 
     // Calculate how many steps for the current segment, adding remainder to the last segment
     const steps =
@@ -164,4 +162,34 @@ export const interpolateColors = (n: number, colors: string[]): string[] => {
   }
 
   return output;
+};
+
+export const findIncrement = (exercise: string): number => {
+  if (['BENCH', 'PRESS'].includes(exercise)) return 2.5;
+  if (['SQUAT', 'DEADLIFT'].includes(exercise)) return 5;
+  return 5;
+};
+
+export const makeRange = (
+  start: number,
+  end: number,
+  increment: number
+): number[] => {
+  // Validate the arguments
+  if (increment === 0) throw new Error('Increment cannot be 0');
+  if ((start < end && increment < 0) || (start > end && increment > 0))
+    throw new Error('Invalid increment value for the given range');
+
+  const result: number[] = [];
+  if (start < end) {
+    for (let i = start; i <= end; i += increment) {
+      result.push(i);
+    }
+  } else {
+    for (let i = start; i >= end; i += increment) {
+      result.push(i);
+    }
+  }
+
+  return result;
 };

@@ -19,12 +19,11 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
-import { findIndex, set } from 'lodash';
+import { findIndex, cloneDeep } from 'lodash';
 import Session from './Session';
 import Intro from './Intro';
 import Panel from './Panel';
 import programs from '../programs';
-import { colors } from '../constants';
 import {
   findMaxesNeeded,
   findLastChecked,
@@ -34,42 +33,22 @@ import {
   getColor,
   interpolateColors,
 } from '../utils';
-import { Day, Maxes, isMaxes, Theme, Program, Option } from '../types';
+import { Day, Theme, Program, Option, Colors } from '../types';
 
+const log = console.log;
 const { width } = Dimensions.get('window');
 
-const drawerStyles = {
-  main: {},
-  drawer: {},
-  drawerOverlay: {},
-  mainOverlay: {},
-};
-
-// const weekOptions: Option[] = [
-//   { id: 1, item: 'Week 1' },
-//   { id: 2, item: 'Week 2' },
-//   { id: 3, item: 'Week 3' },
-//   { id: 4, item: 'Week 4' },
-//   { id: 5, item: 'Week 5' },
-//   { id: 6, item: 'Week 6' },
-//   { id: 7, item: 'Week 7' },
-// ];
-
-// const ANIMATED_VALUE: Animated.Value = new Animated.Value(0);
+const defaultProgram = programs[1];
 
 export default function App() {
+  const [pageLoaded, setPageLoaded] = useState<boolean>(false);
+
   // PROGRAM & MAXES
-  const [program, setProgram] = useState<Program>(programs[1]);
-  const maxesNeeded: Maxes = useMemo(
-    () => findMaxesNeeded(program.sessions),
-    [program]
-  );
-  const [maxes, setMaxes] = useState<Maxes>(maxesNeeded);
+  const [program, setProgram] = useState<Program>(defaultProgram);
 
   // PAGE & CHECKS
   const totalPages = program.sessions.length + 1;
   const [page, setPage] = useState<number>(0);
-  const [checks, setChecks] = useState<boolean[]>([]);
 
   // WEEKS
   const weekOptions: Option[] = program.sessions
@@ -88,18 +67,18 @@ export default function App() {
   ];
   const [dayOption, setDayOption] = useState<Option>(dayOptions[0]);
 
-  // COLORS
+  // Colors
   const gradient = useMemo(
     () =>
       interpolateColors(totalPages, [
-        colors.PALE_BLUE,
-        colors.PALE_VIOLET,
-        colors.PALE_GREEN,
+        Colors.PALE_BLUE,
+        Colors.PALE_VIOLET,
+        Colors.PALE_GREEN,
       ]),
     [totalPages]
   );
 
-  const HIGHLIGHT_COLOR = page ? gradient[page] : colors.PALE_BLUE;
+  const HIGHLIGHT_COLOR = page ? gradient[page] : Colors.PALE_BLUE;
   const BASE_BG = getColor(Theme.BG_1);
   const BASE_TEXT = getColor(Theme.TEXT_1);
 
@@ -114,6 +93,21 @@ export default function App() {
       const contentOffset = e.nativeEvent.contentOffset;
       const viewSize = e.nativeEvent.layoutMeasurement;
       const pageNum = Math.floor(contentOffset.x / viewSize.width);
+
+      if (pageNum > 0) {
+        const session = program.sessions[pageNum - 1];
+        // alert(
+        //   `page: ${pageNum} week: ${session.week} day: ${session.day} weekOption: ${weekOption.id} dayOption: ${dayOption.id}`
+        // );
+
+        if (dayOption.id !== session.week) {
+          setWeekOption(weekOptions[session.week - 1]);
+        }
+
+        if (weekOption.id !== session.day) {
+          setDayOption(dayOptions[session.day - 1]);
+        }
+      }
 
       setPage(pageNum);
     },
@@ -143,89 +137,125 @@ export default function App() {
       animated: true,
     });
     setPage(index);
+    if (!pageLoaded) setPageLoaded(true);
   };
 
   const handleCheck = useCallback(async (index: number) => {
-    const storedChecks = await getStorage(`@day_one_checks_${program.name}`);
-    const parsed = storedChecks ? JSON.parse(storedChecks) : null;
-    if (parsed) {
-      const updatedChecks = [...parsed];
-      updatedChecks[index] = !updatedChecks[index];
-      setChecks(updatedChecks);
-      setStorage(
-        `@day_one_checks_${program.name}`,
-        JSON.stringify(updatedChecks)
-      );
-    }
+    // const storedChecks = await getStorage(`@day_one_checks_${program.name}`);
+    // const parsed = storedChecks ? JSON.parse(storedChecks) : null;
+    // if (parsed) {
+    //   const updatedChecks = [...parsed];
+    //   updatedChecks[index] = !updatedChecks[index];
+    //   setChecks(updatedChecks);
+    //   setStorage(
+    //     `@day_one_checks_${program.name}`,
+    //     JSON.stringify(updatedChecks)
+    //   );
+    // }
   }, []);
 
-  const handleReset = useCallback(async () => {
+  const handleReset = async () => {
+    log(`CLEARING STORAGE (${program.name})`);
     await clearStorage();
-    loadStoredChecks();
-    loadStoredMaxes();
+    log(`STORAGE CLEARED`);
+    closePanel();
     alert('App Reset');
-  }, []);
+    loadStorage(defaultProgram);
+  };
 
-  // LOADERS
-  const loadStoredChecks = async () => {
-    const storedChecks = await getStorage(`@day_one_checks_${program.name}`);
-    const parsed = storedChecks ? JSON.parse(storedChecks) : null;
+  const handleMaxChange = async (lift: string, max: number) => {
+    const updated = cloneDeep(program);
+    updated.maxes[lift] = max;
 
-    if (parsed) {
-      setChecks(parsed);
-      const currentSession = findLastChecked(parsed);
-      handlePageNav(currentSession);
-    } else {
-      const _checks = new Array(totalPages).fill(false);
-      setChecks(_checks);
-      handlePageNav(0);
-      await setStorage(
-        `@day_one_checks_${program.name}`,
-        JSON.stringify(_checks)
-      );
+    await setStorage(
+      `@day_one_program_${program.name}`,
+      JSON.stringify(updated)
+    );
+
+    setProgram(updated);
+  };
+
+  const handleProgramChange = async (selectedProgram: Program) => {
+    log(`PROGRAM CHANGE TO ${selectedProgram.name}`);
+
+    const shouldChange = selectedProgram.name !== program.name;
+    log(
+      `SHOULD CHANGE: ${shouldChange} (OLD: ${program.name}) vs. NEW ${selectedProgram.name}) `
+    );
+
+    if (shouldChange) {
+      loadStorage(selectedProgram);
     }
   };
 
-  const loadStoredMaxes = async () => {
-    const storedMaxes = await getStorage(`@day_one_maxes_${program.name}`);
-    const parsed = storedMaxes ? JSON.parse(storedMaxes) : null;
+  // LOADERS
+  const loadStorage = async (selectedProgram: Program) => {
+    log('CHECKING FOR:', selectedProgram.name);
 
-    if (isMaxes(parsed)) {
-      setMaxes({ ...maxesNeeded, ...parsed });
+    const storedProgram = await getStorage(
+      `@day_one_program_${selectedProgram.name}`
+    );
+    const parsedProgram = storedProgram ? JSON.parse(storedProgram) : null;
+
+    log(`${selectedProgram.name} IS ${parsedProgram ? '' : 'NOT'} STORED`);
+
+    if (parsedProgram) {
+      log(`SETTING ${parsedProgram.name}`);
+      setProgram(parsedProgram);
+      setPageLoaded(true);
     } else {
-      setMaxes(maxesNeeded);
+      log(`CLONING ${selectedProgram.name}`);
+      const _program = cloneDeep(selectedProgram);
+      _program.sessions = _program.sessions.map(session => ({
+        ...session,
+        complete: false,
+        lifts: session.lifts.map(lift => ({
+          ...lift,
+          complete: false,
+        })),
+      }));
+      log(`NOW STORING ${_program.name}`);
       await setStorage(
-        `@day_one_maxes_${program.name}`,
-        JSON.stringify(maxesNeeded)
+        `@day_one_program_${_program.name}`,
+        JSON.stringify(_program)
       );
+      log(`AND SETTING ${_program.name}`);
+      setProgram(_program);
+      setPageLoaded(true);
     }
   };
 
   // EFFECTS
-  useEffect(() => {
-    const currentDay = program.sessions[page - 1]?.day;
-    const index = findIndex(program.sessions, {
-      week: weekOption.id,
-      day: currentDay,
-    });
-    handlePageNav(index + 1);
-  }, [weekOption]);
+  // useEffect(() => {
+  //   const currentDay = program.sessions[page - 1]?.day;
+  //   const index = findIndex(program.sessions, {
+  //     week: weekOption.id,
+  //     day: currentDay,
+  //   });
+  //   if (page !== index + 1) {
+  //     handlePageNav(index + 1);
+  //   }
+  // }, [weekOption]);
+
+  // useEffect(() => {
+  //   const currentDay = dayOption.id;
+  //   const index = findIndex(program.sessions, {
+  //     week: weekOption.id,
+  //     day: currentDay,
+  //   });
+  //   if (page !== index + 1) {
+  //     handlePageNav(index + 1);
+  //   }
+  // }, [dayOption]);
 
   useEffect(() => {
-    const currentDay = dayOption.id;
-    const index = findIndex(program.sessions, {
-      week: weekOption.id,
-      day: currentDay,
-    });
-    handlePageNav(index + 1);
-  }, [dayOption]);
+    log('INIT...');
+    loadStorage(program);
+  }, []);
 
-  useEffect(() => {
-    loadStoredChecks();
-    loadStoredMaxes();
-  }, [program]);
+  log('RENDERED:', program.name);
 
-  if (page === undefined) {
+  if (!pageLoaded) {
     return (
       <SafeAreaView
         style={[styles.container, { backgroundColor: getColor(Theme.BG_1) }]}
@@ -240,28 +270,31 @@ export default function App() {
 
   return (
     <Drawer
-      type="static"
       ref={drawerRef}
-      styles={drawerStyles}
+      styles={{
+        main: {},
+        drawer: {},
+        drawerOverlay: {
+          borderRightColor: HIGHLIGHT_COLOR,
+          borderRightWidth: 1,
+        },
+        mainOverlay: {},
+      }}
+      type="static"
       tapToClose={true}
       panCloseMask={0.2}
       openDrawerOffset={0.2}
       tweenHandler={ratio => ({
         main: { transform: [{ translateX: ratio * 0 }] },
       })}
-      onClose={() => {
-        loadStoredMaxes();
-        Keyboard.dismiss();
-      }}
+      onClose={Keyboard.dismiss}
       content={
         <Panel
           onClose={closePanel}
-          maxes={maxes}
           handleReset={handleReset}
-          highlightColor={HIGHLIGHT_COLOR}
-          setProgram={setProgram}
           program={program}
-          programs={programs}
+          onProgramChange={handleProgramChange}
+          onMaxChange={handleMaxChange}
         />
       }
     >
@@ -303,15 +336,15 @@ export default function App() {
             ) : (
               <Session
                 index={index}
+                maxes={program.maxes}
                 week={session.week}
+                complete={session.complete}
                 day={session.day}
                 notes={session.notes}
                 lifts={session.lifts}
-                maxes={maxes}
                 page={page}
                 scrollX={scrollX}
                 highlightColor={HIGHLIGHT_COLOR}
-                isChecked={checks[index]}
                 handleCheck={() => handleCheck(index)}
                 weekOptions={weekOptions}
                 weekOption={weekOption}

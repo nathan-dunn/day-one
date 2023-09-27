@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import TextBlock from './TextBlock';
-import { colors } from '../constants';
+import { Colors } from '../types';
 
 const { width } = Dimensions.get('window');
 
@@ -25,8 +25,8 @@ export default function Intro({
   notes,
   scrollX,
 }: IntroProps) {
-  const PRIMARY_COLOR = colors.WHITE;
-  const SECONDARY_COLOR = colors.LIGHT_GRAY;
+  const PRIMARY_COLOR = Colors.WHITE;
+  const SECONDARY_COLOR = Colors.LIGHT_GRAY;
 
   const inputRange = [
     (sessionIndex - 1) * width,
