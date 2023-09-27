@@ -25,11 +25,11 @@ type SessionHeaderProps = {
 
 export default function SessionHeader({
   //   day,
-  //   translateFast,
   handleCheck,
   highlightColor,
   isChecked,
   opacity,
+  translateFast,
   translateSlow,
   setWeekOption,
   weekOption,
@@ -43,7 +43,12 @@ export default function SessionHeader({
 
   return (
     <View style={[styles.headerContainer, { backgroundColor: highlightColor }]}>
-      <View style={[styles.headerTopRow]}>
+      <Animated.View
+        style={[
+          styles.headerTopRow,
+          { opacity, transform: [{ translateX: translateSlow }] },
+        ]}
+      >
         <View style={styles.selectContainer}>
           <SelectBox
             label=""
@@ -71,25 +76,32 @@ export default function SessionHeader({
           translateX={translateSlow}
           color={TEXT_4}
         />
-      </View>
+      </Animated.View>
 
-      <SelectBox
-        label=""
-        options={dayOptions}
-        value={dayOption}
-        onChange={(val: Option) => setDayOption(val)}
-        hideInputFilter
-        arrowIconColor={'transparent'}
-        labelStyle={{ height: 0 }}
-        containerStyle={{ ...styles.day, paddingBottom: 10 }}
-        selectedItemStyle={{ ...styles.day, color: TEXT_4 }}
-        optionContainerStyle={{
-          paddingLeft: 5,
-          borderBottomWidth: 1,
-          borderBottomColor: TEXT_4,
-        }}
-        optionsLabelStyle={{ color: TEXT_5 }}
-      />
+      <Animated.View
+        style={[
+          styles.headerBottomRow,
+          { opacity, transform: [{ translateX: translateFast }] },
+        ]}
+      >
+        <SelectBox
+          label=""
+          options={dayOptions}
+          value={dayOption}
+          onChange={(val: Option) => setDayOption(val)}
+          hideInputFilter
+          arrowIconColor={'transparent'}
+          labelStyle={{ height: 0 }}
+          containerStyle={{ ...styles.day, paddingBottom: 10 }}
+          selectedItemStyle={{ ...styles.day, color: TEXT_4 }}
+          optionContainerStyle={{
+            paddingLeft: 5,
+            borderBottomWidth: 1,
+            borderBottomColor: TEXT_4,
+          }}
+          optionsLabelStyle={{ color: TEXT_5 }}
+        />
+      </Animated.View>
     </View>
   );
 }
@@ -104,7 +116,12 @@ const styles = StyleSheet.create({
   headerTopRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+  },
+  headerBottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   week: {
     textTransform: 'uppercase',
