@@ -25,7 +25,7 @@ import Intro from './Intro';
 import Panel from './Panel';
 import programs from '../programs';
 import {
-  findLastChecked,
+  findLastCompleted,
   getStorage,
   clearStorage,
   setStorage,
@@ -84,16 +84,13 @@ export default function App() {
   const flatListRef = useRef<FlatList>(null);
 
   // HANDLERS
-  const onScrollEnd = useCallback(
-    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const contentOffset = e.nativeEvent.contentOffset;
-      const viewSize = e.nativeEvent.layoutMeasurement;
-      const pageNum = Math.floor(contentOffset.x / viewSize.width);
+  const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const contentOffset = e.nativeEvent.contentOffset;
+    const viewSize = e.nativeEvent.layoutMeasurement;
+    const pageNum = Math.floor(contentOffset.x / viewSize.width);
 
-      setPage(pageNum);
-    },
-    [program]
-  );
+    setPage(pageNum);
+  };
 
   const onScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { x: scrollX } } }],
@@ -193,6 +190,8 @@ export default function App() {
 
     if (parsedProgram) {
       setProgram(parsedProgram);
+      const lastCompleted = findLastCompleted(parsedProgram);
+      handlePageNav(lastCompleted + 1);
       setPageLoaded(true);
     } else {
       const _program = cloneDeep(selectedProgram);
@@ -272,9 +271,10 @@ export default function App() {
         </View>
 
         <Animated.FlatList
-          windowSize={program.sessions.length + 1}
           keyExtractor={item => `${item.week} + ${item.day}`}
           ref={flatListRef}
+          windowSize={program.sessions.length + 1}
+          initialScrollIndex={page}
           showsHorizontalScrollIndicator={false}
           scrollEventThrottle={16}
           horizontal
@@ -287,6 +287,7 @@ export default function App() {
             index,
           })}
           data={[{}, ...program.sessions]}
+          extraData={[program, page]}
           renderItem={({ item: session, index }) => {
             return index === 0 ? (
               <Intro

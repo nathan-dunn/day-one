@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Session, Maxes, Colors, Exercises, Theme } from '../types';
+import { Program, Session, Maxes, Colors, Exercises, Theme } from '../types';
 
 export const getStorage = async (key: string) => {
   try {
@@ -69,22 +69,22 @@ export function findMaxesNeeded(sessions: Session[]): Maxes {
   return maxesNeeded;
 }
 
-export function findLastChecked(checks: boolean[]): number {
-  // find the first unchecked session after the last checked session
+export function findLastCompleted(program: Program): number {
+  const { sessions } = program;
 
-  // if no checks, go to first session
-  if (checks.every(check => check === false)) {
+  // if none completed return first session
+  if (sessions.every(session => !session.complete)) {
     return 0;
   }
 
-  // if last session checked, go to first session
-  if (checks[checks.length - 1] === true) {
+  // if last session is complete return first session
+  if (sessions[sessions.length - 1].complete) {
     return 0;
   }
 
-  // skip the first session (intro page)
-  for (let i = checks.length - 1; i >= 1; i--) {
-    if (checks[i] === true && checks[i + 1] === false) {
+  // find the last completed session
+  for (let i = sessions.length - 1; i >= 1; i--) {
+    if (sessions[i].complete) {
       return i;
     }
   }
