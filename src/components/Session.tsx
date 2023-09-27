@@ -1,73 +1,73 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   Animated,
   Dimensions,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   ScrollView,
-  TouchableOpacity,
+  StyleSheet,
+  Text,
   View,
 } from 'react-native';
-import AnimatedText from './AnimatedText';
-import AnimatedLine from './AnimatedLine';
-import { WHITE, LIGHT_BLACK, GRAY } from '../constants';
-import { roundTo } from '../utils';
-import styles from '../styles';
-
+import TextBlock from './TextBlock';
+import { exercises } from '../constants';
+import { Maxes, Lift, Theme, Option } from '../types';
+import { roundTo, getColor } from '../utils';
+import SessionHeader from './SessionHeader';
 const { width } = Dimensions.get('window');
 
-type MaxesType = {
-  [key: string]: number;
-};
-
-enum Mode {
-  dark = 'dark',
-  light = 'light',
-}
-
-type RxType = {
-  sets?: number | string;
-  reps: number | string;
-  perc?: number;
-};
-
-type LiftType = {
-  name: string;
-  notes: string[];
-  rxs: RxType[];
-};
-
 type SessionProps = {
-  date: [number, number];
-  notes: string[];
-  lifts: LiftType[];
   index: number;
+  week: number;
+  day: number;
+  notes: string[];
+  lifts: Lift[];
+  maxes: Maxes;
+  page: number;
   scrollX: Animated.Value;
-  mode: Mode;
-  maxes: MaxesType;
+  highlightColor: string;
+  isChecked: boolean;
+  handleCheck: () => void;
+  weekOptions: Option[];
+  weekOption: Option;
+  setWeekOption: (week: Option) => void;
+  dayOptions: Option[];
+  dayOption: Option;
+  setDayOption: (day: Option) => void;
 };
 
-export default function Session({
-  date,
+function Session({
+  index,
+  day,
   notes,
   lifts,
-  scrollX,
-  index: sessionIndex,
-  mode,
   maxes,
+  page,
+  scrollX,
+  highlightColor,
+  isChecked,
+  handleCheck,
+  weekOptions,
+  weekOption,
+  setWeekOption,
+  dayOptions,
+  dayOption,
+  setDayOption,
 }: SessionProps) {
-  const [week, day] = date;
-  const PRIMARY_TEXT = mode === Mode.light ? LIGHT_BLACK : WHITE;
-  const SECONDARY_TEXT = mode === Mode.light ? GRAY : GRAY;
+  const scrollViewRef = useRef<ScrollView | null>(null);
+  const [scrollPosition, setScrollPosition] = useState<number>(0);
 
-  const inputRange = [
-    (sessionIndex - 1) * width,
-    sessionIndex * width,
-    (sessionIndex + 1) * width,
-  ];
+  const _width = width * 0.85;
+  const BG_2 = getColor(Theme.BG_2);
+  const TEXT_2 = getColor(Theme.TEXT_2);
+  const TEXT_3 = getColor(Theme.TEXT_3);
+
+  const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
 
   const opacityInputRange = [
-    (sessionIndex - 0.4) * width,
-    sessionIndex * width,
-    (sessionIndex + 0.4) * width,
+    (index - 0.4) * width,
+    index * width,
+    (index + 0.4) * width,
   ];
 
   const opacity: Animated.AnimatedInterpolation<number> = scrollX.interpolate({
@@ -81,45 +81,59 @@ export default function Session({
       outputRange: [width * 0.1, 0, -width * 0.1],
     });
 
-  const trasnlateFast: Animated.AnimatedInterpolation<number> =
+  const translateFast: Animated.AnimatedInterpolation<number> =
     scrollX.interpolate({
       inputRange,
       outputRange: [width, 0, -width],
     });
 
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const scrollPosition = event.nativeEvent.contentOffset.y;
+    setScrollPosition(scrollPosition);
+  };
+
+  useEffect(() => {
+    if (scrollPosition > 0) {
+      scrollViewRef.current?.scrollTo({ y: 0, animated: false });
+    }
+  }, [page]);
+
   return (
-    <ScrollView contentContainerStyle={[styles.sessionContainer, { width }]}>
-      <View style={styles.textContainer}>
-        <TouchableOpacity>
-          <AnimatedText
-            text={`Week ${week}`}
-            style={[styles.week, { color: PRIMARY_TEXT }]}
-            opacity={opacity}
-            translateX={translateSlow}
-          />
-        </TouchableOpacity>
-        <AnimatedText
-          text={`Day ${day}`}
-          style={[styles.day, { width: width * 0.75, color: SECONDARY_TEXT }]}
+    <ScrollView
+      ref={scrollViewRef}
+      onScroll={handleScroll}
+      scrollEventThrottle={16}
+      contentContainerStyle={[styles.container, { width }]}
+    >
+      <View style={[styles.content, { width: _width }]}>
+        {/* HEADER */}
+        <SessionHeader
+          index={index}
+          setWeekOption={setWeekOption}
+          weekOptions={weekOptions}
+          weekOption={weekOption}
+          day={day}
+          isChecked={isChecked}
+          highlightColor={highlightColor}
+          handleCheck={handleCheck}
           opacity={opacity}
-          translateX={trasnlateFast}
-        />
-        <AnimatedLine
-          style={[styles.line, { width: width * 0.8, backgroundColor: GRAY }]}
-          opacity={opacity}
-          translateX={trasnlateFast}
+          translateFast={translateFast}
+          translateSlow={translateSlow}
+          dayOptions={dayOptions}
+          dayOption={dayOption}
+          setDayOption={setDayOption}
         />
 
-        <View style={styles.liftContainer}>
-          {lifts.map(({ name, notes, rxs }, liftIndex) => {
+        <View style={[styles.liftsContainer]}>
+          {lifts.map(({ name, notes: liftNotes, rxs }, liftIndex) => {
             return (
               <View
-                style={[styles.liftSubContainer, { paddingBottom: 50 }]}
+                style={[styles.liftContainer, { backgroundColor: BG_2 }]}
                 key={liftIndex}
               >
-                <AnimatedText
+                <TextBlock
                   text={name}
-                  style={[styles.lift, { color: PRIMARY_TEXT }]}
+                  style={[styles.liftName, { color: TEXT_2 }]}
                   opacity={opacity}
                   translateX={translateSlow}
                 />
@@ -131,13 +145,18 @@ export default function Session({
                       typeof sets === 'string'
                         ? 'sets'
                         : 'set';
-                    const repsText = reps === 'AMRAP' ? '' : 'reps';
-
+                    const repsText =
+                      reps === 'AMRAP' ? '' : reps == 1 ? 'rep' : 'reps';
+                    const rounded = [exercises.BENCH, exercises.PRESS].includes(
+                      name
+                    )
+                      ? 2.5
+                      : 5;
                     const rxText =
                       max && perc
                         ? `${sets} ${setsText} x ${reps} ${repsText} @ ${roundTo(
                             max * perc,
-                            5
+                            rounded
                           )} lbs`
                         : perc
                         ? `${sets} ${setsText} x ${reps} ${repsText} @ ${
@@ -146,77 +165,150 @@ export default function Session({
                         : `${sets} ${setsText} x ${reps} ${repsText}`;
 
                     return (
-                      <AnimatedText
+                      <TextBlock
                         key={rxIndex}
                         text={rxText}
-                        style={[
-                          styles.rx,
-                          { width: width * 0.75, color: SECONDARY_TEXT },
-                        ]}
+                        style={[styles.rx, { color: TEXT_2 }]}
                         opacity={opacity}
-                        translateX={trasnlateFast}
+                        translateX={translateFast}
                       />
                     );
                   })}
                 </View>
 
-                <View style={styles.notesContainer}>
-                  {notes
-                    .filter(note => note)
-                    .map((note, noteIndex) => {
-                      return (
-                        <View key={noteIndex} style={styles.subNotesContainer}>
-                          <AnimatedText
-                            text={'•'}
-                            style={[styles.bullet, { color: SECONDARY_TEXT }]}
-                            opacity={opacity}
-                            translateX={trasnlateFast}
-                          />
+                {liftNotes
+                  .filter(note => note)
+                  .map((note, noteIndex) => {
+                    return (
+                      <View key={noteIndex} style={[styles.liftNoteContainer]}>
+                        <TextBlock
+                          text={'•'}
+                          style={[styles.bullet, { color: TEXT_3 }]}
+                          opacity={opacity}
+                          translateX={translateFast}
+                        />
 
-                          <AnimatedText
-                            text={note.trim()}
-                            style={[
-                              styles.note,
-                              { width: width * 0.75, color: SECONDARY_TEXT },
-                            ]}
-                            opacity={opacity}
-                            translateX={trasnlateFast}
-                          />
-                        </View>
-                      );
-                    })}
-                </View>
+                        <TextBlock
+                          text={note.replace(/\.$/, '').trim()}
+                          style={[styles.liftNote, { color: TEXT_3 }]}
+                          opacity={opacity}
+                          translateX={translateFast}
+                        />
+                      </View>
+                    );
+                  })}
               </View>
             );
           })}
         </View>
 
-        <AnimatedLine
-          style={[styles.line, { width: width * 0.8, backgroundColor: GRAY }]}
-          opacity={opacity}
-          translateX={translateSlow}
-        />
-
-        <View style={styles.notesContainer}>
-          {notes
-            .filter(note => note)
-            .map((note, noteIndex) => {
-              return (
-                <View key={noteIndex} style={styles.sessionNotesContainer}>
-                  <AnimatedText
-                    text={note.trim()}
-                    style={[
-                      styles.note,
-                      { width: width * 0.75, color: SECONDARY_TEXT },
-                    ]}
-                    opacity={opacity}
-                    translateX={trasnlateFast}
-                  />
-                </View>
-              );
-            })}
-        </View>
+        {!!notes.filter(note => note).length && (
+          <View
+            style={[styles.sessionNotesContainer, { backgroundColor: BG_2 }]}
+          >
+            <Text style={[styles.sessionNoteHeader, { color: TEXT_2 }]}>
+              Session Notes
+            </Text>
+            {notes
+              .filter(note => note)
+              .map((note, noteIndex) => {
+                return (
+                  <View key={noteIndex} style={[styles.sessionNoteContainer]}>
+                    <TextBlock
+                      text={note.trim()}
+                      style={[styles.sessionNote, { color: TEXT_3 }]}
+                      opacity={opacity}
+                      translateX={translateFast}
+                    />
+                  </View>
+                );
+              })}
+          </View>
+        )}
       </View>
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    gap: 20,
+  },
+  liftsContainer: {
+    gap: 20,
+  },
+  liftContainer: {
+    padding: 15,
+    borderRadius: 5,
+  },
+  liftName: {
+    textTransform: 'uppercase',
+    textAlign: 'left',
+    fontSize: 20,
+    marginBottom: 10,
+    fontFamily: 'Archivo Black',
+  },
+  rxContainer: {
+    paddingBottom: 10,
+  },
+  rx: {
+    textAlign: 'left',
+    marginRight: 10,
+    fontSize: 18,
+    lineHeight: 16 * 1.5,
+  },
+  bullet: {
+    fontWeight: '600',
+    marginRight: 10,
+    fontSize: 16,
+    lineHeight: 24,
+    width: 10,
+    textAlign: 'center',
+  },
+  liftNoteContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  liftNote: {
+    fontWeight: '600',
+    textAlign: 'left',
+    marginRight: 10,
+    fontSize: 16,
+    lineHeight: 24,
+    marginLeft: -6,
+  },
+  line: {
+    height: 1,
+    marginVertical: 30,
+  },
+  sessionNotesContainer: {
+    padding: 15,
+    borderRadius: 5,
+  },
+  sessionNoteHeader: {
+    textTransform: 'uppercase',
+    textAlign: 'left',
+    fontSize: 20,
+    marginBottom: 10,
+    fontFamily: 'Archivo Black',
+  },
+  sessionNoteContainer: {
+    paddingBottom: 10,
+    paddingHorizontal: 8,
+  },
+  sessionNote: {
+    fontWeight: '600',
+    textAlign: 'justify',
+    marginRight: 10,
+    fontSize: 16,
+    lineHeight: 16 * 1.5,
+    marginLeft: -6,
+  },
+});
+
+export default React.memo(Session);
