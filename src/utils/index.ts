@@ -74,7 +74,7 @@ export function findLastCompleted(program: Program): number {
 
   // if none completed return first session
   if (sessions.every(session => !session.complete)) {
-    return 0;
+    return -1;
   }
 
   // if last session is complete return first session

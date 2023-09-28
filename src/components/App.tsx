@@ -122,7 +122,6 @@ export default function App() {
   const handleWeekChange = (week: number) => {
     const currentSession = program.sessions[page - 1];
     const currentWeek = currentSession.week;
-    // const week = weekOption.id;
     const numberOfDays = dayOptions.length;
 
     if (week > currentWeek) {
@@ -135,7 +134,6 @@ export default function App() {
   const handleDayChange = (day: number) => {
     const currentSession = program.sessions[page - 1];
     const currentDay = currentSession.day;
-    // const day = dayOption.id;
 
     if (day > currentDay) {
       handlePageNav(page + (day - currentDay));
@@ -250,8 +248,6 @@ export default function App() {
       type="overlay"
       tapToClose
       panCloseMask={0.2}
-      // openDrawerOffset={0.2}
-      // openDrawerOffset={viewport => viewport.width - 260}
       tweenHandler={ratio => ({
         main: { transform: [{ translateX: ratio * 0 }] },
       })}
