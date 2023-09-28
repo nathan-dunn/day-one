@@ -43,7 +43,6 @@ export default function SessionHeader({
   week,
   weekOptions,
 }: SessionHeaderProps) {
-  const BG_1 = getColor(Theme.BG_1);
   const TEXT_4 = getColor(Theme.TEXT_4);
 
   const weekText = `Week ${weekOptions[week - 1]}`;
@@ -57,45 +56,71 @@ export default function SessionHeader({
   return (
     <View
       style={[
-        styles.headerContainer,
+        styles.container,
         { backgroundColor: highlightBG, opacity: 0.85 },
       ]}
     >
+      {/* WEEK */}
       {!showDayPicker && (
-        <Animated.View
-          style={[
-            styles.headerTopRow,
-            { opacity, transform: [{ translateX: translateSlow }] },
-          ]}
-        >
-          <View style={styles.selectContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                setShowDayPicker(false);
-                setShowWeekPicker(p => !p);
+        <>
+          <Animated.View
+            style={[
+              styles.headerTopRow,
+              { opacity, transform: [{ translateX: translateSlow }] },
+            ]}
+          >
+            <View style={styles.selectContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowDayPicker(false);
+                  setShowWeekPicker(p => !p);
+                }}
+              >
+                <Text style={[styles.week, { color: highlightColor }]}>
+                  {weekText}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <Checkbox
+              color={TEXT_4}
+              complete={complete}
+              handleComplete={handleComplete}
+            />
+          </Animated.View>
+
+          {showWeekPicker && (
+            <Picker
+              itemStyle={{ fontSize: 20, color: TEXT_4 }}
+              style={{ borderRadius: 3 }}
+              selectedValue={String(week)}
+              onValueChange={(value: string) => {
+                onWeekChange(Number(value));
+                setShowWeekPicker(false);
               }}
             >
-              <Text style={[styles.week, { color: highlightColor }]}>
-                {weekText}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <Checkbox
-            color={TEXT_4}
-            complete={complete}
-            handleComplete={handleComplete}
-          />
-        </Animated.View>
+              {weekOptions.map((week: number, index: number) => {
+                return (
+                  <Picker.Item
+                    key={String(week) + index}
+                    label={`Week ${week}`}
+                    value={week}
+                  />
+                );
+              })}
+            </Picker>
+          )}
+        </>
       )}
 
+      {/* DAY */}
       {!showWeekPicker && (
-        <Animated.View
-          style={[
-            styles.headerBottomRow,
-            { opacity, transform: [{ translateX: translateFast }] },
-          ]}
-        >
-          {!showWeekPicker && (
+        <>
+          <Animated.View
+            style={[
+              styles.headerBottomRow,
+              { opacity, transform: [{ translateX: translateFast }] },
+            ]}
+          >
             <TouchableOpacity
               onPress={() => {
                 setShowWeekPicker(false);
@@ -106,71 +131,43 @@ export default function SessionHeader({
                 {dayText}
               </Text>
             </TouchableOpacity>
+          </Animated.View>
+
+          {showDayPicker && (
+            <Picker
+              itemStyle={{ fontSize: 20, color: TEXT_4 }}
+              style={{ borderRadius: 3 }}
+              selectedValue={String(day)}
+              onValueChange={(value: string) => {
+                onDayChange(Number(value));
+                setShowDayPicker(false);
+              }}
+            >
+              {dayOptions.map((day: number, index: number) => {
+                return (
+                  <Picker.Item
+                    key={String(day) + index}
+                    label={
+                      day === 1
+                        ? Day.monday
+                        : day === 2
+                        ? Day.wednesday
+                        : Day.friday
+                    }
+                    value={day}
+                  />
+                );
+              })}
+            </Picker>
           )}
-        </Animated.View>
-      )}
-
-      {showWeekPicker && (
-        <Picker
-          itemStyle={{ fontSize: 20, color: TEXT_4 }}
-          style={{
-            borderRadius: 3,
-            // backgroundColor: BG_1,
-          }}
-          selectedValue={String(week)}
-          onValueChange={(value: string) => {
-            onWeekChange(Number(value));
-            setShowWeekPicker(false);
-          }}
-        >
-          {weekOptions.map((week: number, index: number) => {
-            return (
-              <Picker.Item
-                key={String(week) + index}
-                label={`Week ${week}`}
-                value={week}
-              />
-            );
-          })}
-        </Picker>
-      )}
-
-      {showDayPicker && (
-        <Picker
-          itemStyle={{ fontSize: 20, color: TEXT_4 }}
-          style={{
-            borderRadius: 3,
-            // backgroundColor: BG_1,
-          }}
-          selectedValue={String(day)}
-          onValueChange={(value: string) => {
-            onDayChange(Number(value));
-            setShowDayPicker(false);
-          }}
-        >
-          {dayOptions.map((day: number, index: number) => {
-            return (
-              <Picker.Item
-                key={String(day) + index}
-                label={
-                  day === 1
-                    ? Day.monday
-                    : day === 2
-                    ? Day.wednesday
-                    : Day.friday
-                }
-                value={day}
-              />
-            );
-          })}
-        </Picker>
+        </>
       )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  headerContainer: {
+  container: {
     padding: 15,
     borderRadius: 3,
     fontFamily: 'Archivo Black',
