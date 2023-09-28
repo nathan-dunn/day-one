@@ -10,6 +10,7 @@ type SessionHeaderProps = {
   day: number;
   dayOptions: Option[];
   handleComplete: () => void;
+  highlightBG: string;
   highlightColor: string;
   index: number;
   onDayChange: (dayOption: Option) => void;
@@ -26,6 +27,7 @@ export default function SessionHeader({
   day,
   dayOptions,
   handleComplete,
+  highlightBG,
   highlightColor,
   onDayChange,
   onWeekChange,
@@ -42,7 +44,12 @@ export default function SessionHeader({
     day === 1 ? Day.monday : day === 2 ? Day.wednesday : Day.friday;
 
   return (
-    <View style={[styles.headerContainer, { backgroundColor: highlightColor }]}>
+    <View
+      style={[
+        styles.headerContainer,
+        { backgroundColor: highlightBG, opacity: 0.85 },
+      ]}
+    >
       <Animated.View
         style={[
           styles.headerTopRow,
@@ -58,12 +65,20 @@ export default function SessionHeader({
             hideInputFilter
             arrowIconColor={'transparent'}
             labelStyle={{ height: 0 }}
-            containerStyle={{ ...styles.week, paddingBottom: 10 }}
-            selectedItemStyle={{ ...styles.week, color: TEXT_4 }}
+            containerStyle={{
+              ...styles.week,
+              paddingBottom: 10,
+            }}
+            selectedItemStyle={{
+              ...styles.week,
+              color: highlightColor,
+            }}
             optionContainerStyle={{
               paddingLeft: 5,
               borderBottomWidth: 1,
               borderBottomColor: TEXT_4,
+              opacity: 0.85,
+              color: highlightColor,
             }}
             optionsLabelStyle={{ color: TEXT_5 }}
           />
@@ -90,11 +105,16 @@ export default function SessionHeader({
           arrowIconColor={'transparent'}
           labelStyle={{ height: 0 }}
           containerStyle={{ ...styles.day, paddingBottom: 10 }}
-          selectedItemStyle={{ ...styles.day, color: TEXT_4 }}
+          selectedItemStyle={{
+            ...styles.day,
+            color: highlightColor,
+          }}
           optionContainerStyle={{
             paddingLeft: 5,
             borderBottomWidth: 1,
             borderBottomColor: TEXT_4,
+            opacity: 0.85,
+            color: highlightColor,
           }}
           optionsLabelStyle={{ color: TEXT_5 }}
         />

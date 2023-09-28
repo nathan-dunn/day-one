@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
   Animated,
   Dimensions,
@@ -34,14 +28,13 @@ import {
   interpolateColors,
 } from '../utils';
 import { Theme, Day, Program, Option, Colors } from '../types';
+import spaceAnimation from '../../assets/animations/data_2.json';
 
 const { width, height } = Dimensions.get('window');
-
+const LOADING_DELAY = 2000;
 const defaultProgram = programs[1];
 
 export default function App() {
-  const [showLottie, setShowLottie] = useState<boolean>(true);
-
   // PAGE
   const [pageLoaded, setPageLoaded] = useState<boolean>(false);
 
@@ -68,14 +61,20 @@ export default function App() {
   ];
 
   // COLORS
-  const BH_1 = getColor(Theme.BG_1);
-  const BG_2 = getColor(Theme.BG_2);
+  const BG_1 = Colors.DARK_SPACE;
+  const BG_2 = Colors.LIGHT_SPACE;
 
-  const gradient = useMemo(
-    () => interpolateColors(totalPages, [BG_2, BH_1]),
+  const gradientBG = useMemo(
+    () => interpolateColors(totalPages, [BG_1, BG_2]),
     [totalPages]
   );
-  const HIGHLIGHT_COLOR = page ? gradient[page] : BG_2;
+  const gradientColor = useMemo(
+    () => interpolateColors(totalPages, [Colors.WHITE, Colors.WHITE]),
+    [totalPages]
+  );
+
+  const HIGHLIGHT_BG = page ? gradientBG[page] : BG_2;
+  const HIGHLIGHT_COLOR = page ? gradientColor[page] : 'white';
   const BASE_TEXT = getColor(Theme.TEXT_1);
 
   // REFS
@@ -97,17 +96,17 @@ export default function App() {
     { useNativeDriver: true }
   );
 
-  const openPanel = useCallback(() => {
+  const openPanel = () => {
     if (drawerRef.current) {
       drawerRef.current.open();
     }
-  }, []);
+  };
 
-  const closePanel = useCallback(() => {
+  const closePanel = () => {
     if (drawerRef.current) {
       drawerRef.current.close();
     }
-  }, []);
+  };
 
   const handlePageNav = (index: number) => {
     flatListRef.current?.scrollToOffset({
@@ -115,7 +114,11 @@ export default function App() {
       animated: true,
     });
     setPage(index);
-    if (!pageLoaded) setPageLoaded(true);
+    if (!pageLoaded) {
+      setTimeout(() => {
+        setPageLoaded(true);
+      }, LOADING_DELAY);
+    }
   };
 
   const handleReset = async () => {
@@ -192,7 +195,9 @@ export default function App() {
       setProgram(parsedProgram);
       const lastCompleted = findLastCompleted(parsedProgram);
       handlePageNav(lastCompleted + 1);
-      setPageLoaded(true);
+      setTimeout(() => {
+        setPageLoaded(true);
+      }, LOADING_DELAY);
     } else {
       const _program = cloneDeep(selectedProgram);
       _program.sessions = _program.sessions.map(session => ({
@@ -208,7 +213,9 @@ export default function App() {
         JSON.stringify(_program)
       );
       setProgram(_program);
-      setPageLoaded(true);
+      setTimeout(() => {
+        setPageLoaded(true);
+      }, LOADING_DELAY);
     }
   };
 
@@ -222,9 +229,18 @@ export default function App() {
       <SafeAreaView
         style={[styles.container, { backgroundColor: getColor(Theme.BG_1) }]}
       >
+        <LottieView
+          style={{ ...styles.lottie, width: width * 1.33, height }}
+          source={spaceAnimation}
+          autoPlay={true}
+          loop={true}
+        />
         <Image
-          source={require('../../assets/__splash.png')}
-          style={[styles.splashImage, { width: width * 0.85 }]}
+          source={require('../../assets/splash_transparent.png')}
+          style={[
+            styles.splashImage,
+            { marginBottom: 150, width: width * 0.85 },
+          ]}
         />
       </SafeAreaView>
     );
@@ -234,25 +250,16 @@ export default function App() {
     <Drawer
       ref={drawerRef}
       styles={{
-        main: {
-          backgroundColor: 'transparent',
-        },
-        drawer: {
-          backgroundColor: 'transparent',
-        },
-        drawerOverlay: {
-          borderRightColor: HIGHLIGHT_COLOR,
-          borderRightWidth: 1,
-          backgroundColor: 'transparent',
-        },
-        mainOverlay: {
-          backgroundColor: 'transparent',
-        },
+        main: {},
+        drawer: {},
+        drawerOverlay: {},
+        mainOverlay: {},
       }}
-      type="static"
-      tapToClose={true}
+      type="overlay"
+      tapToClose
       panCloseMask={0.2}
-      openDrawerOffset={0.2}
+      // openDrawerOffset={0.2}
+      // openDrawerOffset={viewport => viewport.width - 260}
       tweenHandler={ratio => ({
         main: { transform: [{ translateX: ratio * 0 }] },
       })}
@@ -267,27 +274,14 @@ export default function App() {
         />
       }
     >
-      <SafeAreaView style={[styles.container, { backgroundColor: BH_1 }]}>
-        {showLottie && (
-          <LottieView
-            style={{
-              top: -180,
-              flex: 1,
-              flexGrow: 1,
-              width: width * 1.33,
-              height: height * 1.33,
-              padding: 0,
-              margin: 0,
-              position: 'absolute',
-            }}
-            source={require('../../assets/animations/data_2.json')}
-            autoPlay={true}
-            loop={true}
-            onAnimationFailure={e => {
-              console.log('Error ', { e });
-            }}
-          />
-        )}
+      <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
+        <LottieView
+          style={{ ...styles.lottie, width: width * 1.33, height }}
+          source={spaceAnimation}
+          autoPlay={true}
+          loop={true}
+        />
+
         <View style={styles.headerContainer}>
           <Feather
             name={'menu'}
@@ -337,6 +331,7 @@ export default function App() {
                 lifts={session.lifts}
                 page={page}
                 scrollX={scrollX}
+                highlightBG={HIGHLIGHT_BG}
                 highlightColor={HIGHLIGHT_COLOR}
                 handleComplete={() => handleComplete(index)}
                 weekOptions={weekOptions}
@@ -367,5 +362,11 @@ const styles = StyleSheet.create({
   },
   splashImage: {
     resizeMode: 'contain',
+  },
+  lottie: {
+    overflow: 'hidden',
+    padding: 0,
+    margin: 0,
+    position: 'absolute',
   },
 });

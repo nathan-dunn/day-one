@@ -20,6 +20,7 @@ type SessionProps = {
   day: number;
   dayOptions: Option[];
   handleComplete: () => void;
+  highlightBG: string;
   highlightColor: string;
   index: number;
   lifts: Lift[];
@@ -38,6 +39,7 @@ function Session({
   day,
   dayOptions,
   handleComplete,
+  highlightBG,
   highlightColor,
   index,
   lifts,
@@ -110,6 +112,7 @@ function Session({
           day={day}
           dayOptions={dayOptions}
           handleComplete={handleComplete}
+          highlightBG={highlightBG}
           highlightColor={highlightColor}
           index={index}
           onDayChange={onDayChange}
@@ -125,7 +128,13 @@ function Session({
           {lifts.map(({ name, notes: liftNotes, rxs }, liftIndex) => {
             return (
               <View
-                style={[styles.liftContainer, { backgroundColor: BG_2 }]}
+                style={[
+                  styles.liftContainer,
+                  {
+                    backgroundColor: highlightBG,
+                    opacity: 0.85,
+                  },
+                ]}
                 key={liftIndex}
               >
                 <TextBlock

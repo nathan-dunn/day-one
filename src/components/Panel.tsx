@@ -1,10 +1,12 @@
 import React from 'react';
-import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, Dimensions } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import SelectBox from 'react-native-multi-selectbox';
 import programs from '../programs';
-import { Maxes, Program, Colors, Option, Theme } from '../types';
+import { Maxes, Program, Option, Theme } from '../types';
 import { findIncrement, makeRange, getColor } from '../utils';
+
+const { width } = Dimensions.get('window');
 
 type PanelProps = {
   program: Program;
@@ -21,6 +23,7 @@ export default function Panel({
   onProgramChange,
   onMaxChange,
 }: PanelProps) {
+  const _width = width * 0.85;
   const maxes: Maxes = program.maxes;
   const BG_2 = getColor(Theme.BG_2);
   const TEXT_1 = getColor(Theme.TEXT_1);
@@ -31,8 +34,9 @@ export default function Panel({
       style={[
         styles.container,
         {
-          // backgroundColor: BG_2,
+          width: _width,
           backgroundColor: BG_2,
+          borderRightWidth: 0,
         },
       ]}
     >
