@@ -80,6 +80,8 @@ export default function Panel({
               },
             ]}
             onPress={() => {
+              setSelectedLift('');
+              setShowMaxPicker(false);
               setShowProgramPicker(p => !p);
             }}
           >
@@ -108,6 +110,7 @@ export default function Panel({
                 style={[styles.row, {}]}
                 onPress={() => {
                   setTimeout(() => {
+                    setShowProgramPicker(false);
                     setSelectedLift(p => (p === lift ? '' : lift));
                     setShowMaxPicker(p =>
                       p === false || lift !== selectedLift ? true : false
@@ -143,7 +146,10 @@ export default function Panel({
       {showProgramPicker && (
         <Picker
           itemStyle={{ fontSize: 20, color: TEXT_1 }}
-          style={{ borderRadius: 3, backgroundColor: BG_1 }}
+          style={{
+            borderRadius: 3,
+            // backgroundColor: BG_1,
+          }}
           selectedValue={program.name} // working ?
           onValueChange={(_, index) => {
             setShowProgramPicker(false);
@@ -164,7 +170,10 @@ export default function Panel({
       {showMaxPicker && (
         <Picker
           itemStyle={{ fontSize: 20, color: TEXT_1 }}
-          style={{ borderRadius: 3, backgroundColor: BG_1 }}
+          style={{
+            borderRadius: 3,
+            // backgroundColor: BG_1,
+          }}
           selectedValue={String(maxes[selectedLift] || '')} // working ?
           onValueChange={(value: string) => {
             onMaxChange(selectedLift, Number(value));

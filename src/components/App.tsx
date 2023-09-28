@@ -64,7 +64,7 @@ export default function App() {
     [totalPages]
   );
 
-  const HIGHLIGHT_BG = page ? gradientBG[page] : BG_2;
+  const HIGHLIGHT_BG = page ? gradientBG[page] : BG_1;
   const HIGHLIGHT_COLOR = page ? gradientColor[page] : 'white';
   const BASE_TEXT = getColor(Theme.TEXT_1);
 
