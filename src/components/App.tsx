@@ -27,7 +27,7 @@ import {
   getColor,
   interpolateColors,
 } from '../utils';
-import { Theme, Day, Program, Option, Colors } from '../types';
+import { Theme, Program, Colors } from '../types';
 import spaceAnimation from '../../assets/animations/data_2.json';
 
 const { width, height } = Dimensions.get('window');
@@ -45,20 +45,11 @@ export default function App() {
   const totalPages = program.sessions.length + 1;
   const [page, setPage] = useState<number>(0);
 
-  // WEEKS
-  const weekOptions: Option[] = program.sessions
+  const weekOptions: number[] = program.sessions
     .filter(session => session.day === 1)
-    .map(session => ({
-      id: session.week,
-      item: `Week ${session.week}`,
-    }));
+    .map(session => session.week);
 
-  // DAYS
-  const dayOptions: Option[] = [
-    { id: 1, item: Day.monday },
-    { id: 2, item: Day.wednesday },
-    { id: 3, item: Day.friday },
-  ];
+  const dayOptions: number[] = [1, 2, 3];
 
   // COLORS
   const BG_1 = Colors.DARK_SPACE;
@@ -128,10 +119,10 @@ export default function App() {
     loadStorage(defaultProgram);
   };
 
-  const handleWeekChange = (weekOption: Option) => {
+  const handleWeekChange = (week: number) => {
     const currentSession = program.sessions[page - 1];
     const currentWeek = currentSession.week;
-    const week = weekOption.id;
+    // const week = weekOption.id;
     const numberOfDays = dayOptions.length;
 
     if (week > currentWeek) {
@@ -141,10 +132,10 @@ export default function App() {
     }
   };
 
-  const handleDayChange = (dayOption: Option) => {
+  const handleDayChange = (day: number) => {
     const currentSession = program.sessions[page - 1];
     const currentDay = currentSession.day;
-    const day = dayOption.id;
+    // const day = dayOption.id;
 
     if (day > currentDay) {
       handlePageNav(page + (day - currentDay));

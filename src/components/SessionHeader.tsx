@@ -1,6 +1,12 @@
-import React from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
-import SelectBox from 'react-native-multi-selectbox';
+import React, { useState } from 'react';
+import {
+  Animated,
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { Day, Theme, Option } from '../types';
 import { getColor } from '../utils';
 import Checkbox from './Checkbox';
@@ -8,18 +14,18 @@ import Checkbox from './Checkbox';
 type SessionHeaderProps = {
   complete: boolean;
   day: number;
-  dayOptions: Option[];
+  dayOptions: number[];
   handleComplete: () => void;
   highlightBG: string;
   highlightColor: string;
   index: number;
-  onDayChange: (dayOption: Option) => void;
-  onWeekChange: (weekOption: Option) => void;
+  onDayChange: (dayOption: number) => void;
+  onWeekChange: (weekOption: number) => void;
   opacity: Animated.AnimatedInterpolation<number>;
   translateFast: Animated.AnimatedInterpolation<number>;
   translateSlow: Animated.AnimatedInterpolation<number>;
   week: number;
-  weekOptions: Option[];
+  weekOptions: number[];
 };
 
 export default function SessionHeader({
@@ -37,11 +43,16 @@ export default function SessionHeader({
   week,
   weekOptions,
 }: SessionHeaderProps) {
+  const BG_1 = getColor(Theme.BG_1);
   const TEXT_4 = getColor(Theme.TEXT_4);
-  const TEXT_5 = getColor(Theme.TEXT_5);
+
+  const weekText = `Week ${weekOptions[week - 1]}`;
 
   const dayText =
     day === 1 ? Day.monday : day === 2 ? Day.wednesday : Day.friday;
+
+  const [showWeekPicker, setShowWeekPicker] = useState(false);
+  const [showDayPicker, setShowDayPicker] = useState(false);
 
   return (
     <View
@@ -50,75 +61,110 @@ export default function SessionHeader({
         { backgroundColor: highlightBG, opacity: 0.85 },
       ]}
     >
-      <Animated.View
-        style={[
-          styles.headerTopRow,
-          { opacity, transform: [{ translateX: translateSlow }] },
-        ]}
-      >
-        <View style={styles.selectContainer}>
-          <SelectBox
-            label=""
-            options={weekOptions}
-            value={{ id: week, item: `Week ${week}` }}
-            onChange={onWeekChange}
-            hideInputFilter
-            arrowIconColor={'transparent'}
-            labelStyle={{ height: 0 }}
-            containerStyle={{
-              ...styles.week,
-              paddingBottom: 10,
-            }}
-            selectedItemStyle={{
-              ...styles.week,
-              color: highlightColor,
-            }}
-            optionContainerStyle={{
-              paddingLeft: 5,
-              borderBottomWidth: 1,
-              borderBottomColor: TEXT_4,
-              opacity: 0.85,
-              color: highlightColor,
-            }}
-            optionsLabelStyle={{ color: TEXT_5 }}
+      {!showDayPicker && (
+        <Animated.View
+          style={[
+            styles.headerTopRow,
+            { opacity, transform: [{ translateX: translateSlow }] },
+          ]}
+        >
+          <View style={styles.selectContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                setShowDayPicker(false);
+                setShowWeekPicker(p => !p);
+              }}
+            >
+              <Text style={[styles.week, { color: highlightColor }]}>
+                {weekText}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <Checkbox
+            color={TEXT_4}
+            complete={complete}
+            handleComplete={handleComplete}
           />
-        </View>
-        <Checkbox
-          color={TEXT_4}
-          complete={complete}
-          handleComplete={handleComplete}
-        />
-      </Animated.View>
+        </Animated.View>
+      )}
 
-      <Animated.View
-        style={[
-          styles.headerBottomRow,
-          { opacity, transform: [{ translateX: translateFast }] },
-        ]}
-      >
-        <SelectBox
-          label=""
-          options={dayOptions}
-          value={{ id: day, item: dayText }}
-          onChange={onDayChange}
-          hideInputFilter
-          arrowIconColor={'transparent'}
-          labelStyle={{ height: 0 }}
-          containerStyle={{ ...styles.day, paddingBottom: 10 }}
-          selectedItemStyle={{
-            ...styles.day,
-            color: highlightColor,
+      {!showWeekPicker && (
+        <Animated.View
+          style={[
+            styles.headerBottomRow,
+            { opacity, transform: [{ translateX: translateFast }] },
+          ]}
+        >
+          {!showWeekPicker && (
+            <TouchableOpacity
+              onPress={() => {
+                setShowWeekPicker(false);
+                setShowDayPicker(p => !p);
+              }}
+            >
+              <Text style={[styles.day, { color: highlightColor }]}>
+                {dayText}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </Animated.View>
+      )}
+
+      {showWeekPicker && (
+        <Picker
+          itemStyle={{ fontSize: 20, color: TEXT_4 }}
+          style={{
+            borderRadius: 3,
+            // backgroundColor: BG_1,
           }}
-          optionContainerStyle={{
-            paddingLeft: 5,
-            borderBottomWidth: 1,
-            borderBottomColor: TEXT_4,
-            opacity: 0.85,
-            color: highlightColor,
+          selectedValue={String(week)}
+          onValueChange={(value: string) => {
+            onWeekChange(Number(value));
+            setShowWeekPicker(false);
           }}
-          optionsLabelStyle={{ color: TEXT_5 }}
-        />
-      </Animated.View>
+        >
+          {weekOptions.map((week: number, index: number) => {
+            return (
+              <Picker.Item
+                key={String(week) + index}
+                label={`Week ${week}`}
+                value={week}
+              />
+            );
+          })}
+        </Picker>
+      )}
+
+      {showDayPicker && (
+        <Picker
+          itemStyle={{ fontSize: 20, color: TEXT_4 }}
+          style={{
+            borderRadius: 3,
+            // backgroundColor: BG_1,
+          }}
+          selectedValue={String(day)}
+          onValueChange={(value: string) => {
+            onDayChange(Number(value));
+            setShowDayPicker(false);
+          }}
+        >
+          {dayOptions.map((day: number, index: number) => {
+            return (
+              <Picker.Item
+                key={String(day) + index}
+                label={
+                  day === 1
+                    ? Day.monday
+                    : day === 2
+                    ? Day.wednesday
+                    : Day.friday
+                }
+                value={day}
+              />
+            );
+          })}
+        </Picker>
+      )}
     </View>
   );
 }
@@ -126,9 +172,10 @@ export default function SessionHeader({
 const styles = StyleSheet.create({
   headerContainer: {
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 3,
     fontFamily: 'Archivo Black',
     justifyContent: 'space-evenly',
+    gap: 20,
   },
   headerTopRow: {
     flexDirection: 'row',
@@ -146,23 +193,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '800',
     letterSpacing: 2,
-
-    borderTopWidth: 0,
-    borderBottomWidth: 0,
-    paddingTop: 0,
-    paddingLeft: 0,
   },
   day: {
     fontWeight: '600',
     marginRight: 10,
     fontSize: 20,
     lineHeight: 16 * 1.5,
-
-    borderTopWidth: 0,
-    borderBottomWidth: 0,
-    paddingBottom: 0,
-    paddingTop: 0,
-    paddingLeft: 0,
   },
   checkbox: {
     //

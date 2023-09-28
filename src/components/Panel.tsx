@@ -10,7 +10,7 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import programs from '../programs';
-import { Maxes, Program, Colors, Theme } from '../types';
+import { Maxes, Program, Theme } from '../types';
 import { findIncrement, makeRange, getColor } from '../utils';
 
 const { width } = Dimensions.get('window');
@@ -128,6 +128,7 @@ export default function Panel({
                       borderColor: TEXT_COLOR,
                       borderWidth: 1,
                       padding: 10,
+                      borderRadius: 3,
                     },
                   ]}
                 >
@@ -141,8 +142,8 @@ export default function Panel({
 
       {showProgramPicker && (
         <Picker
-          itemStyle={{ fontFamily: 'Ebrima', fontSize: 17, color: TEXT_1 }}
-          style={{ borderRadius: 5 }}
+          itemStyle={{ fontSize: 20, color: TEXT_1 }}
+          style={{ borderRadius: 3, backgroundColor: BG_1 }}
           selectedValue={program.name} // working ?
           onValueChange={(_, index) => {
             setShowProgramPicker(false);
@@ -163,7 +164,7 @@ export default function Panel({
       {showMaxPicker && (
         <Picker
           itemStyle={{ fontSize: 20, color: TEXT_1 }}
-          style={{ borderRadius: 5, backgroundColor: BG_1 }}
+          style={{ borderRadius: 3, backgroundColor: BG_1 }}
           selectedValue={String(maxes[selectedLift] || '')} // working ?
           onValueChange={(value: string) => {
             onMaxChange(selectedLift, Number(value));

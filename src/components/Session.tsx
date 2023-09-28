@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import TextBlock from './TextBlock';
-import { Maxes, Program, Lift, Theme, Option } from '../types';
+import { Maxes, Program, Lift, Theme } from '../types';
 import { roundTo, getColor, findIncrement } from '../utils';
 import SessionHeader from './SessionHeader';
 const { width } = Dimensions.get('window');
@@ -18,20 +18,20 @@ const { width } = Dimensions.get('window');
 type SessionProps = {
   complete: boolean;
   day: number;
-  dayOptions: Option[];
+  dayOptions: number[];
   handleComplete: () => void;
   highlightBG: string;
   highlightColor: string;
   index: number;
   lifts: Lift[];
   notes: string[];
-  onDayChange: (dayOption: Option) => void;
-  onWeekChange: (weekOption: Option) => void;
+  onDayChange: (day: number) => void;
+  onWeekChange: (week: number) => void;
   page: number;
   program: Program;
   scrollX: Animated.Value;
   week: number;
-  weekOptions: Option[];
+  weekOptions: number[];
 };
 
 function Session({
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   },
   liftContainer: {
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 3,
     gap: 10,
   },
   liftName: {
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
   },
   sessionNotesContainer: {
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 3,
   },
   sessionNoteHeader: {
     textTransform: 'uppercase',
