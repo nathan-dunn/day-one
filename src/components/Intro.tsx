@@ -7,7 +7,8 @@ import {
   View,
 } from 'react-native';
 import TextBlock from './TextBlock';
-import { colors } from '../constants';
+import { Theme } from '../types';
+import { getColor } from '../utils';
 
 const { width } = Dimensions.get('window');
 
@@ -25,8 +26,7 @@ export default function Intro({
   notes,
   scrollX,
 }: IntroProps) {
-  const PRIMARY_COLOR = colors.WHITE;
-  const SECONDARY_COLOR = colors.LIGHT_GRAY;
+  const TEXT_2 = getColor(Theme.TEXT_2);
 
   const inputRange = [
     (sessionIndex - 1) * width,
@@ -62,10 +62,7 @@ export default function Intro({
       <View style={styles.header}>
         <TextBlock
           text={name}
-          style={[
-            styles.headerText,
-            { width: width * 0.75, color: PRIMARY_COLOR },
-          ]}
+          style={[styles.headerText, { width: width * 0.75, color: TEXT_2 }]}
           opacity={opacity}
           translateX={translateSlow}
         />
@@ -77,10 +74,7 @@ export default function Intro({
           <TextBlock
             key={noteIndex}
             text={note.trim()}
-            style={[
-              styles.note,
-              { width: width * 0.85, color: SECONDARY_COLOR },
-            ]}
+            style={[styles.note, { width: width * 0.85, color: TEXT_2 }]}
             opacity={opacity}
             translateX={translateFast}
           />
@@ -100,12 +94,12 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: '600',
     textAlign: 'center',
     fontFamily: 'Archivo Black',
   },
   note: {
-    fontWeight: '600',
+    fontWeight: '300',
     textAlign: 'justify',
     marginRight: 10,
     fontSize: 16,

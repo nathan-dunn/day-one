@@ -10,52 +10,52 @@ import {
   View,
 } from 'react-native';
 import TextBlock from './TextBlock';
-import { exercises } from '../constants';
-import { Maxes, Lift, Theme, Option } from '../types';
-import { roundTo, getColor } from '../utils';
+import { Maxes, Program, Lift, Theme } from '../types';
+import { roundTo, getColor, findIncrement } from '../utils';
 import SessionHeader from './SessionHeader';
 const { width } = Dimensions.get('window');
 
 type SessionProps = {
-  index: number;
-  week: number;
+  complete: boolean;
   day: number;
-  notes: string[];
-  lifts: Lift[];
-  maxes: Maxes;
-  page: number;
-  scrollX: Animated.Value;
+  dayOptions: number[];
+  handleComplete: () => void;
+  highlightBG: string;
   highlightColor: string;
-  isChecked: boolean;
-  handleCheck: () => void;
-  weekOptions: Option[];
-  weekOption: Option;
-  setWeekOption: (week: Option) => void;
-  dayOptions: Option[];
-  dayOption: Option;
-  setDayOption: (day: Option) => void;
+  index: number;
+  lifts: Lift[];
+  notes: string[];
+  onDayChange: (day: number) => void;
+  onWeekChange: (week: number) => void;
+  page: number;
+  program: Program;
+  scrollX: Animated.Value;
+  week: number;
+  weekOptions: number[];
 };
 
 function Session({
-  index,
+  complete,
   day,
-  notes,
-  lifts,
-  maxes,
-  page,
-  scrollX,
-  highlightColor,
-  isChecked,
-  handleCheck,
-  weekOptions,
-  weekOption,
-  setWeekOption,
   dayOptions,
-  dayOption,
-  setDayOption,
+  handleComplete,
+  highlightBG,
+  highlightColor,
+  index,
+  lifts,
+  notes,
+  onDayChange,
+  onWeekChange,
+  page,
+  program,
+  scrollX,
+  week,
+  weekOptions,
 }: SessionProps) {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [scrollPosition, setScrollPosition] = useState<number>(0);
+
+  const maxes: Maxes = program.maxes;
 
   const _width = width * 0.85;
   const BG_2 = getColor(Theme.BG_2);
@@ -108,27 +108,33 @@ function Session({
       <View style={[styles.content, { width: _width }]}>
         {/* HEADER */}
         <SessionHeader
-          index={index}
-          setWeekOption={setWeekOption}
-          weekOptions={weekOptions}
-          weekOption={weekOption}
+          complete={complete}
           day={day}
-          isChecked={isChecked}
+          dayOptions={dayOptions}
+          handleComplete={handleComplete}
+          highlightBG={highlightBG}
           highlightColor={highlightColor}
-          handleCheck={handleCheck}
+          index={index}
+          onDayChange={onDayChange}
+          onWeekChange={onWeekChange}
           opacity={opacity}
           translateFast={translateFast}
           translateSlow={translateSlow}
-          dayOptions={dayOptions}
-          dayOption={dayOption}
-          setDayOption={setDayOption}
+          week={week}
+          weekOptions={weekOptions}
         />
 
         <View style={[styles.liftsContainer]}>
           {lifts.map(({ name, notes: liftNotes, rxs }, liftIndex) => {
             return (
               <View
-                style={[styles.liftContainer, { backgroundColor: BG_2 }]}
+                style={[
+                  styles.liftContainer,
+                  {
+                    backgroundColor: highlightBG,
+                    opacity: 0.85,
+                  },
+                ]}
                 key={liftIndex}
               >
                 <TextBlock
@@ -147,11 +153,7 @@ function Session({
                         : 'set';
                     const repsText =
                       reps === 'AMRAP' ? '' : reps == 1 ? 'rep' : 'reps';
-                    const rounded = [exercises.BENCH, exercises.PRESS].includes(
-                      name
-                    )
-                      ? 2.5
-                      : 5;
+                    const rounded = findIncrement(name);
                     const rxText =
                       max && perc
                         ? `${sets} ${setsText} x ${reps} ${repsText} @ ${roundTo(
@@ -176,33 +178,37 @@ function Session({
                   })}
                 </View>
 
-                {liftNotes
-                  .filter(note => note)
-                  .map((note, noteIndex) => {
-                    return (
-                      <View key={noteIndex} style={[styles.liftNoteContainer]}>
-                        <TextBlock
-                          text={'•'}
-                          style={[styles.bullet, { color: TEXT_3 }]}
-                          opacity={opacity}
-                          translateX={translateFast}
-                        />
+                {!complete &&
+                  liftNotes
+                    .filter(note => note)
+                    .map((note, noteIndex) => {
+                      return (
+                        <View
+                          key={noteIndex}
+                          style={[styles.liftNoteContainer]}
+                        >
+                          <TextBlock
+                            text={'•'}
+                            style={[styles.bullet, { color: TEXT_3 }]}
+                            opacity={opacity}
+                            translateX={translateFast}
+                          />
 
-                        <TextBlock
-                          text={note.replace(/\.$/, '').trim()}
-                          style={[styles.liftNote, { color: TEXT_3 }]}
-                          opacity={opacity}
-                          translateX={translateFast}
-                        />
-                      </View>
-                    );
-                  })}
+                          <TextBlock
+                            text={note.replace(/\.$/, '').trim()}
+                            style={[styles.liftNote, { color: TEXT_3 }]}
+                            opacity={opacity}
+                            translateX={translateFast}
+                          />
+                        </View>
+                      );
+                    })}
               </View>
             );
           })}
         </View>
 
-        {!!notes.filter(note => note).length && (
+        {!complete && !!notes.filter(note => note).length && (
           <View
             style={[styles.sessionNotesContainer, { backgroundColor: BG_2 }]}
           >
@@ -244,23 +250,24 @@ const styles = StyleSheet.create({
   },
   liftContainer: {
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 3,
+    gap: 10,
   },
   liftName: {
     textTransform: 'uppercase',
     textAlign: 'left',
     fontSize: 20,
-    marginBottom: 10,
     fontFamily: 'Archivo Black',
   },
   rxContainer: {
-    paddingBottom: 10,
+    //
   },
   rx: {
     textAlign: 'left',
     marginRight: 10,
     fontSize: 18,
     lineHeight: 16 * 1.5,
+    fontWeight: '600',
   },
   bullet: {
     fontWeight: '600',
@@ -275,7 +282,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   liftNote: {
-    fontWeight: '600',
+    fontWeight: '300',
     textAlign: 'left',
     marginRight: 10,
     fontSize: 16,
@@ -288,7 +295,7 @@ const styles = StyleSheet.create({
   },
   sessionNotesContainer: {
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 3,
   },
   sessionNoteHeader: {
     textTransform: 'uppercase',
@@ -302,7 +309,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   sessionNote: {
-    fontWeight: '600',
+    fontWeight: '300',
     textAlign: 'justify',
     marginRight: 10,
     fontSize: 16,
@@ -311,4 +318,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(Session);
+export default Session;

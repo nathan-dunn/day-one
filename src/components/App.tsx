@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
   Animated,
   Dimensions,
@@ -19,88 +13,59 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
-import { findIndex, set } from 'lodash';
+import LottieView from 'lottie-react-native';
+import { cloneDeep } from 'lodash';
 import Session from './Session';
 import Intro from './Intro';
 import Panel from './Panel';
 import programs from '../programs';
-import { colors } from '../constants';
 import {
-  findMaxesNeeded,
-  findLastChecked,
+  findLastCompleted,
   getStorage,
   clearStorage,
   setStorage,
   getColor,
   interpolateColors,
 } from '../utils';
-import { Day, Maxes, isMaxes, Theme, Program, Option } from '../types';
+import { Theme, Program, Colors } from '../types';
+import spaceAnimation from '../../assets/animations/data_2.json';
 
-const { width } = Dimensions.get('window');
-
-const drawerStyles = {
-  main: {},
-  drawer: {},
-  drawerOverlay: {},
-  mainOverlay: {},
-};
-
-// const weekOptions: Option[] = [
-//   { id: 1, item: 'Week 1' },
-//   { id: 2, item: 'Week 2' },
-//   { id: 3, item: 'Week 3' },
-//   { id: 4, item: 'Week 4' },
-//   { id: 5, item: 'Week 5' },
-//   { id: 6, item: 'Week 6' },
-//   { id: 7, item: 'Week 7' },
-// ];
-
-// const ANIMATED_VALUE: Animated.Value = new Animated.Value(0);
+const { width, height } = Dimensions.get('window');
+const LOADING_DELAY = 1000;
+const defaultProgram = programs[1];
 
 export default function App() {
-  // PROGRAM & MAXES
-  const [program, setProgram] = useState<Program>(programs[1]);
-  const maxesNeeded: Maxes = useMemo(
-    () => findMaxesNeeded(program.sessions),
-    [program]
-  );
-  const [maxes, setMaxes] = useState<Maxes>(maxesNeeded);
+  // PAGE
+  const [pageLoaded, setPageLoaded] = useState<boolean>(false);
+
+  // PROGRAM
+  const [program, setProgram] = useState<Program>(defaultProgram);
 
   // PAGE & CHECKS
   const totalPages = program.sessions.length + 1;
   const [page, setPage] = useState<number>(0);
-  const [checks, setChecks] = useState<boolean[]>([]);
 
-  // WEEKS
-  const weekOptions: Option[] = program.sessions
+  const weekOptions: number[] = program.sessions
     .filter(session => session.day === 1)
-    .map(session => ({
-      id: session.week,
-      item: `Week ${session.week}`,
-    }));
-  const [weekOption, setWeekOption] = useState<Option>(weekOptions[0]);
+    .map(session => session.week);
 
-  // DAYS
-  const dayOptions: Option[] = [
-    { id: 1, item: Day.monday },
-    { id: 2, item: Day.wednesday },
-    { id: 3, item: Day.friday },
-  ];
-  const [dayOption, setDayOption] = useState<Option>(dayOptions[0]);
+  const dayOptions: number[] = [1, 2, 3];
 
   // COLORS
-  const gradient = useMemo(
-    () =>
-      interpolateColors(totalPages, [
-        colors.PALE_BLUE,
-        colors.PALE_VIOLET,
-        colors.PALE_GREEN,
-      ]),
+  const BG_1 = Colors.DARK_SPACE;
+  const BG_2 = Colors.LIGHT_SPACE;
+
+  const gradientBG = useMemo(
+    () => interpolateColors(totalPages, [BG_1, BG_2]),
+    [totalPages]
+  );
+  const gradientColor = useMemo(
+    () => interpolateColors(totalPages, [Colors.WHITE, Colors.WHITE]),
     [totalPages]
   );
 
-  const HIGHLIGHT_COLOR = page ? gradient[page] : colors.PALE_BLUE;
-  const BASE_BG = getColor(Theme.BG_1);
+  const HIGHLIGHT_BG = page ? gradientBG[page] : BG_1;
+  const HIGHLIGHT_COLOR = page ? gradientColor[page] : 'white';
   const BASE_TEXT = getColor(Theme.TEXT_1);
 
   // REFS
@@ -109,33 +74,30 @@ export default function App() {
   const flatListRef = useRef<FlatList>(null);
 
   // HANDLERS
-  const onScrollEnd = useCallback(
-    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const contentOffset = e.nativeEvent.contentOffset;
-      const viewSize = e.nativeEvent.layoutMeasurement;
-      const pageNum = Math.floor(contentOffset.x / viewSize.width);
+  const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const contentOffset = e.nativeEvent.contentOffset;
+    const viewSize = e.nativeEvent.layoutMeasurement;
+    const pageNum = Math.floor(contentOffset.x / viewSize.width);
 
-      setPage(pageNum);
-    },
-    []
-  );
+    setPage(pageNum);
+  };
 
   const onScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { x: scrollX } } }],
     { useNativeDriver: true }
   );
 
-  const openPanel = useCallback(() => {
+  const openPanel = () => {
     if (drawerRef.current) {
       drawerRef.current.open();
     }
-  }, []);
+  };
 
-  const closePanel = useCallback(() => {
+  const closePanel = () => {
     if (drawerRef.current) {
       drawerRef.current.close();
     }
-  }, []);
+  };
 
   const handlePageNav = (index: number) => {
     flatListRef.current?.scrollToOffset({
@@ -143,96 +105,132 @@ export default function App() {
       animated: true,
     });
     setPage(index);
+    if (!pageLoaded) {
+      setTimeout(() => {
+        setPageLoaded(true);
+      }, LOADING_DELAY);
+    }
   };
 
-  const handleCheck = useCallback(async (index: number) => {
-    const storedChecks = await getStorage(`@day_one_checks_${program.name}`);
-    const parsed = storedChecks ? JSON.parse(storedChecks) : null;
-    if (parsed) {
-      const updatedChecks = [...parsed];
-      updatedChecks[index] = !updatedChecks[index];
-      setChecks(updatedChecks);
-      setStorage(
-        `@day_one_checks_${program.name}`,
-        JSON.stringify(updatedChecks)
-      );
-    }
-  }, []);
-
-  const handleReset = useCallback(async () => {
+  const handleReset = async () => {
     await clearStorage();
-    loadStoredChecks();
-    loadStoredMaxes();
+    closePanel();
     alert('App Reset');
-  }, []);
+    loadStorage(defaultProgram);
+  };
+
+  const handleWeekChange = (week: number) => {
+    const currentSession = program.sessions[page - 1];
+    const currentWeek = currentSession.week;
+    const numberOfDays = dayOptions.length;
+
+    if (week > currentWeek) {
+      handlePageNav(page + (week - currentWeek) * numberOfDays);
+    } else if (week < currentWeek) {
+      handlePageNav(page - (currentWeek - week) * numberOfDays);
+    }
+  };
+
+  const handleDayChange = (day: number) => {
+    const currentSession = program.sessions[page - 1];
+    const currentDay = currentSession.day;
+
+    if (day > currentDay) {
+      handlePageNav(page + (day - currentDay));
+    } else if (day < currentDay) {
+      handlePageNav(page - (currentDay - day));
+    }
+  };
+
+  const handleComplete = async (sessionIndex: number) => {
+    const updated = cloneDeep(program);
+    updated.sessions[sessionIndex - 1].complete =
+      !updated.sessions[sessionIndex - 1].complete;
+
+    await setStorage(
+      `@day_one_program_${program.name}`,
+      JSON.stringify(updated)
+    );
+
+    setProgram(updated);
+  };
+
+  const handleMaxChange = async (lift: string, max: number) => {
+    const updated = cloneDeep(program);
+    updated.maxes[lift] = max;
+
+    await setStorage(
+      `@day_one_program_${program.name}`,
+      JSON.stringify(updated)
+    );
+
+    setProgram(updated);
+  };
+
+  const handleProgramChange = async (selectedProgram: Program) => {
+    console.log('selectedProgram:', selectedProgram.name);
+    if (selectedProgram.name !== program.name) {
+      loadStorage(selectedProgram);
+    }
+  };
 
   // LOADERS
-  const loadStoredChecks = async () => {
-    const storedChecks = await getStorage(`@day_one_checks_${program.name}`);
-    const parsed = storedChecks ? JSON.parse(storedChecks) : null;
+  const loadStorage = async (selectedProgram: Program) => {
+    const storedProgram = await getStorage(
+      `@day_one_program_${selectedProgram.name}`
+    );
+    const parsedProgram = storedProgram ? JSON.parse(storedProgram) : null;
 
-    if (parsed) {
-      setChecks(parsed);
-      const currentSession = findLastChecked(parsed);
-      handlePageNav(currentSession);
+    if (parsedProgram) {
+      setProgram(parsedProgram);
+      const lastCompleted = findLastCompleted(parsedProgram);
+      handlePageNav(lastCompleted + 1);
+      setTimeout(() => {
+        setPageLoaded(true);
+      }, LOADING_DELAY);
     } else {
-      const _checks = new Array(totalPages).fill(false);
-      setChecks(_checks);
-      handlePageNav(0);
+      const _program = cloneDeep(selectedProgram);
+      _program.sessions = _program.sessions.map(session => ({
+        ...session,
+        complete: false,
+        lifts: session.lifts.map(lift => ({
+          ...lift,
+          complete: false,
+        })),
+      }));
       await setStorage(
-        `@day_one_checks_${program.name}`,
-        JSON.stringify(_checks)
+        `@day_one_program_${_program.name}`,
+        JSON.stringify(_program)
       );
-    }
-  };
-
-  const loadStoredMaxes = async () => {
-    const storedMaxes = await getStorage(`@day_one_maxes_${program.name}`);
-    const parsed = storedMaxes ? JSON.parse(storedMaxes) : null;
-
-    if (isMaxes(parsed)) {
-      setMaxes({ ...maxesNeeded, ...parsed });
-    } else {
-      setMaxes(maxesNeeded);
-      await setStorage(
-        `@day_one_maxes_${program.name}`,
-        JSON.stringify(maxesNeeded)
-      );
+      setProgram(_program);
+      setTimeout(() => {
+        setPageLoaded(true);
+      }, LOADING_DELAY);
     }
   };
 
   // EFFECTS
   useEffect(() => {
-    const currentDay = program.sessions[page - 1]?.day;
-    const index = findIndex(program.sessions, {
-      week: weekOption.id,
-      day: currentDay,
-    });
-    handlePageNav(index + 1);
-  }, [weekOption]);
+    loadStorage(program);
+  }, []);
 
-  useEffect(() => {
-    const currentDay = dayOption.id;
-    const index = findIndex(program.sessions, {
-      week: weekOption.id,
-      day: currentDay,
-    });
-    handlePageNav(index + 1);
-  }, [dayOption]);
-
-  useEffect(() => {
-    loadStoredChecks();
-    loadStoredMaxes();
-  }, [program]);
-
-  if (page === undefined) {
+  if (!pageLoaded) {
     return (
       <SafeAreaView
         style={[styles.container, { backgroundColor: getColor(Theme.BG_1) }]}
       >
+        <LottieView
+          style={{ ...styles.lottie, width: width * 1.33, height }}
+          source={spaceAnimation}
+          autoPlay={true}
+          loop={true}
+        />
         <Image
-          source={require('../../assets/_splash.png')}
-          style={[styles.splashImage, { width: width * 0.85 }]}
+          source={require('../../assets/splash_transparent.png')}
+          style={[
+            styles.splashImage,
+            { marginBottom: 150, width: width * 0.85 },
+          ]}
         />
       </SafeAreaView>
     );
@@ -240,32 +238,38 @@ export default function App() {
 
   return (
     <Drawer
-      type="static"
       ref={drawerRef}
-      styles={drawerStyles}
-      tapToClose={true}
+      styles={{
+        main: {},
+        drawer: {},
+        drawerOverlay: {},
+        mainOverlay: {},
+      }}
+      type="overlay"
+      tapToClose
       panCloseMask={0.2}
-      openDrawerOffset={0.2}
       tweenHandler={ratio => ({
         main: { transform: [{ translateX: ratio * 0 }] },
       })}
-      onClose={() => {
-        loadStoredMaxes();
-        Keyboard.dismiss();
-      }}
+      onClose={Keyboard.dismiss}
       content={
         <Panel
           onClose={closePanel}
-          maxes={maxes}
           handleReset={handleReset}
-          highlightColor={HIGHLIGHT_COLOR}
-          setProgram={setProgram}
           program={program}
-          programs={programs}
+          onProgramChange={handleProgramChange}
+          onMaxChange={handleMaxChange}
         />
       }
     >
-      <SafeAreaView style={[styles.container, { backgroundColor: BASE_BG }]}>
+      <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
+        <LottieView
+          style={{ ...styles.lottie, width: width * 1.33, height }}
+          source={spaceAnimation}
+          autoPlay={true}
+          loop={true}
+        />
+
         <View style={styles.headerContainer}>
           <Feather
             name={'menu'}
@@ -276,9 +280,10 @@ export default function App() {
         </View>
 
         <Animated.FlatList
-          windowSize={program.sessions.length + 1}
           keyExtractor={item => `${item.week} + ${item.day}`}
           ref={flatListRef}
+          windowSize={program.sessions.length + 1}
+          initialScrollIndex={page}
           showsHorizontalScrollIndicator={false}
           scrollEventThrottle={16}
           horizontal
@@ -291,6 +296,7 @@ export default function App() {
             index,
           })}
           data={[{}, ...program.sessions]}
+          extraData={[program, page]}
           renderItem={({ item: session, index }) => {
             return index === 0 ? (
               <Intro
@@ -302,23 +308,22 @@ export default function App() {
               />
             ) : (
               <Session
+                onDayChange={handleDayChange}
+                onWeekChange={handleWeekChange}
+                program={program}
                 index={index}
                 week={session.week}
+                complete={session.complete}
                 day={session.day}
                 notes={session.notes}
                 lifts={session.lifts}
-                maxes={maxes}
                 page={page}
                 scrollX={scrollX}
+                highlightBG={HIGHLIGHT_BG}
                 highlightColor={HIGHLIGHT_COLOR}
-                isChecked={checks[index]}
-                handleCheck={() => handleCheck(index)}
+                handleComplete={() => handleComplete(index)}
                 weekOptions={weekOptions}
-                weekOption={weekOption}
-                setWeekOption={setWeekOption}
                 dayOptions={dayOptions}
-                dayOption={dayOption}
-                setDayOption={setDayOption}
               />
             );
           }}
@@ -345,5 +350,11 @@ const styles = StyleSheet.create({
   },
   splashImage: {
     resizeMode: 'contain',
+  },
+  lottie: {
+    overflow: 'hidden',
+    padding: 0,
+    margin: 0,
+    position: 'absolute',
   },
 });

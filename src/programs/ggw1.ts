@@ -1,5 +1,4 @@
-import { Program } from '../types';
-import { exercises } from '../constants';
+import { Program, Exercises } from '../types';
 
 const {
   SQUAT,
@@ -11,12 +10,13 @@ const {
   DIPS_OR_PUSHUPS,
   CHINS_OR_PULLUPS,
   ARMS,
-} = exercises;
+} = Exercises;
 
 const program: Program = {
   name: 'Garage Gym Warrior I',
   shortName: 'GGW I',
   notes: ['Coming Soon...'],
+  maxes: { [SQUAT]: 0, [BENCH]: 0, [DEADLIFT]: 0, [PRESS]: 0 },
   sessions: [],
 };
 export default program;

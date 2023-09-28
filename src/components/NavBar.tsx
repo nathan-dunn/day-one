@@ -8,8 +8,7 @@ import {
   StyleProp,
 } from 'react-native';
 import { findLast } from 'lodash';
-import { colors } from '../constants';
-import { Program } from '../types';
+import { Program, Colors } from '../types';
 
 type NavBarProps = {
   highlightColor: string;
@@ -66,7 +65,7 @@ export default function NavBar({
                     height: isCurrent ? 5 : 3,
                     backgroundColor: isCurrent
                       ? highlightColor
-                      : colors.LIGHT_GRAY,
+                      : Colors.LIGHT_GRAY,
                   },
                 ]}
               />
@@ -94,7 +93,7 @@ export default function NavBar({
                     height: isCurrent ? 5 : 3,
                     backgroundColor: isCurrent
                       ? highlightColor
-                      : colors.LIGHT_GRAY,
+                      : Colors.LIGHT_GRAY,
                   },
                 ]}
               />
