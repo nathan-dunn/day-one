@@ -1,9 +1,16 @@
-import React from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import {
+  Dimensions,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import SelectBox from 'react-native-multi-selectbox';
+import { Picker } from '@react-native-picker/picker';
 import programs from '../programs';
-import { Maxes, Program, Option, Theme } from '../types';
+import { Maxes, Program, Colors, Theme } from '../types';
 import { findIncrement, makeRange, getColor } from '../utils';
 
 const { width } = Dimensions.get('window');
@@ -26,18 +33,19 @@ export default function Panel({
   const _width = width * 0.85;
   const maxes: Maxes = program.maxes;
   const BG_2 = getColor(Theme.BG_2);
+  const BG_1 = getColor(Theme.BG_1);
   const TEXT_1 = getColor(Theme.TEXT_1);
-  const TEXT_2 = getColor(Theme.TEXT_2);
+  const TEXT_6 = getColor(Theme.TEXT_6);
+
+  const [showProgramPicker, setShowProgramPicker] = useState(false);
+  const [showMaxPicker, setShowMaxPicker] = useState(false);
+  const [selectedLift, setSelectedLift] = useState<string>('');
 
   return (
     <SafeAreaView
       style={[
         styles.container,
-        {
-          width: _width,
-          backgroundColor: BG_2,
-          borderRightWidth: 0,
-        },
+        { width: _width, backgroundColor: BG_2, borderRightWidth: 0 },
       ]}
     >
       {/* HEADER */}
@@ -48,144 +56,132 @@ export default function Panel({
           color={TEXT_1}
           alignSelf="flex-end"
           padding={20}
-          onPress={onClose}
+          onPress={() => {
+            setSelectedLift('');
+            setShowProgramPicker(false);
+            setShowMaxPicker(false);
+            onClose();
+          }}
           onLongPress={handleReset}
         />
       </View>
 
       <View style={[styles.sectionContainer]}>
         {/* PROGRAM */}
+        <Text style={[styles.rowHeader, { fontSize: 20, color: TEXT_1 }]}>
+          PROGRAM
+        </Text>
         <View style={[styles.row, {}]}>
-          <Text style={[styles.rowKey, { color: TEXT_1, fontSize: 20 }]}>
-            PROGRAM
+          <Text
+            style={[
+              styles.rowKey,
+              {
+                color: selectedLift ? TEXT_6 : TEXT_1,
+              },
+            ]}
+            onPress={() => {
+              setShowProgramPicker(p => !p);
+            }}
+          >
+            {program.name}
           </Text>
         </View>
-
-        <SelectBox
-          label=""
-          options={programs.map(program => ({
-            id: program.name,
-            item: program.name,
-            ...program,
-          }))}
-          value={{ id: program.name, item: program.name }}
-          onChange={onProgramChange}
-          hideInputFilter
-          arrowIconColor={TEXT_1}
-          containerStyle={{
-            paddingLeft: 5,
-            borderTopWidth: 0,
-            borderBottomWidth: 1,
-            borderBottomColor: TEXT_2,
-          }}
-          labelStyle={{ height: 0 }}
-          optionContainerStyle={{
-            paddingLeft: 5,
-            borderTopWidth: 0,
-            borderBottomWidth: 1,
-            borderBottomColor: TEXT_2,
-          }}
-          optionsLabelStyle={{
-            color: TEXT_2,
-          }}
-          selectedItemStyle={{ color: TEXT_1 }}
-        />
       </View>
 
       {/* MAXES */}
       <View style={[styles.sectionContainer, { flexGrow: 1 }]}>
-        <View style={[styles.row, {}]}>
-          <Text style={[styles.rowKey, { color: TEXT_1, fontSize: 20 }]}>
-            MAXES
-          </Text>
-        </View>
+        <Text style={[styles.rowHeader, { color: TEXT_1, fontSize: 20 }]}>
+          MAXES
+        </Text>
 
-        <View style={styles.maxes}>
+        <View style={[styles.maxes]}>
           {Object.entries(maxes).map(([lift]) => {
             const max = program.maxes[lift];
-            const increment = findIncrement(lift);
-            const range = makeRange(25, 500, increment);
-            const maxOptions = range.map(num => ({
-              id: num,
-              item: String(num),
-            }));
+            const TEXT_COLOR =
+              showProgramPicker || (selectedLift && selectedLift !== lift)
+                ? TEXT_6
+                : TEXT_1;
 
             return (
-              <View
+              <TouchableOpacity
                 key={lift}
-                style={[
-                  {
-                    justifyContent: 'space-between',
-                    flexDirection: 'row',
-                    alignItems: 'flex-start',
-                    borderBottomWidth: 1,
-                    borderBottomColor: TEXT_2,
-                    paddingBottom: 0,
-                    paddingTop: 0,
-                  },
-                ]}
+                style={[styles.row, {}]}
+                onPress={() => {
+                  setTimeout(() => {
+                    setSelectedLift(p => (p === lift ? '' : lift));
+                    setShowMaxPicker(p =>
+                      p === false || lift !== selectedLift ? true : false
+                    );
+                  }, 0);
+                }}
               >
-                <Text
-                  style={[
-                    styles.rowKey,
-                    {
-                      paddingLeft: 10,
-                      color: TEXT_1,
-                      fontSize: 16,
-                      width: '60%',
-                    },
-                  ]}
-                >
+                <Text style={[styles.rowKey, { color: TEXT_COLOR }]}>
                   {lift}
                 </Text>
 
-                <View
+                <Text
                   style={[
                     styles.rowValue,
                     {
-                      flexGrow: 1,
-                      padding: 0,
-                      paddingTop: 0,
-                      paddingBottom: 0,
-                      margin: 0,
-                      marginTop: 0,
-                      marginBottom: 0,
+                      width: '30%',
+                      color: TEXT_COLOR,
+                      borderColor: TEXT_COLOR,
+                      borderWidth: 1,
+                      padding: 10,
                     },
                   ]}
                 >
-                  <SelectBox
-                    label=""
-                    options={maxOptions}
-                    value={{ id: max, item: String(max) }}
-                    onChange={(val: Option) => onMaxChange(lift, val.id)}
-                    hideInputFilter
-                    arrowIconColor={TEXT_1}
-                    containerStyle={{
-                      paddingLeft: 15,
-                      borderTopWidth: 0,
-                      borderBottomWidth: 0,
-                    }}
-                    labelStyle={{ height: 0 }}
-                    optionContainerStyle={{
-                      paddingLeft: 5,
-                      borderTopWidth: 0,
-                      borderBottomWidth: 1,
-                      borderBottomColor: TEXT_2,
-                    }}
-                    optionsLabelStyle={{
-                      color: TEXT_2,
-                      textAlign: 'right',
-                      paddingLeft: 10,
-                      width: '100%',
-                    }}
-                    selectedItemStyle={{ color: TEXT_1 }}
-                  />
-                </View>
-              </View>
+                  {max}
+                </Text>
+              </TouchableOpacity>
             );
           })}
         </View>
       </View>
+
+      {showProgramPicker && (
+        <Picker
+          itemStyle={{ fontFamily: 'Ebrima', fontSize: 17, color: TEXT_1 }}
+          style={{ borderRadius: 5 }}
+          selectedValue={program.name} // working ?
+          onValueChange={(_, index) => {
+            setShowProgramPicker(false);
+            onProgramChange(programs[index]);
+          }}
+        >
+          {programs.map((program: Program, index: number) => {
+            return (
+              <Picker.Item
+                key={program.name + index}
+                label={program.name}
+                value={program.name}
+              />
+            );
+          })}
+        </Picker>
+      )}
+      {showMaxPicker && (
+        <Picker
+          itemStyle={{ fontSize: 20, color: TEXT_1 }}
+          style={{ borderRadius: 5, backgroundColor: BG_1 }}
+          selectedValue={String(maxes[selectedLift] || '')} // working ?
+          onValueChange={(value: string) => {
+            onMaxChange(selectedLift, Number(value));
+          }}
+        >
+          {makeRange(25, 500, findIncrement(selectedLift)).map(
+            (weight: number, index: number) => {
+              return (
+                <Picker.Item
+                  key={String(weight) + index}
+                  label={String(weight)}
+                  value={String(weight)}
+                />
+              );
+            }
+          )}
+        </Picker>
+      )}
     </SafeAreaView>
   );
 }
@@ -208,31 +204,26 @@ const styles = StyleSheet.create({
   sectionContainer: {
     padding: 20,
   },
-  rows: {
-    justifyContent: 'flex-start',
-    alignSelf: 'flex-start',
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingVertical: 10,
-    width: '100%',
-  },
-  row: {
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  rowKey: {
+  rowHeader: {
     fontSize: 18,
     paddingVertical: 10,
     fontFamily: 'Archivo Black',
     textTransform: 'uppercase',
   },
+  row: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 5,
+  },
+  rowKey: {
+    fontSize: 18,
+    paddingLeft: 10,
+    textTransform: 'uppercase',
+  },
   rowValue: {
     fontSize: 18,
-    paddingVertical: 10,
     textAlign: 'center',
-    fontFamily: 'Archivo Black',
   },
   input: {
     height: 40,
@@ -244,6 +235,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   maxes: {
-    gap: 20,
+    gap: 10,
+    paddingRight: 40,
   },
 });

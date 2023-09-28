@@ -68,6 +68,7 @@ export enum Theme {
   TEXT_3 = 'TEXT_3',
   TEXT_4 = 'TEXT_4',
   TEXT_5 = 'TEXT_5',
+  TEXT_6 = 'TEXT_6',
 }
 
 // TYPES

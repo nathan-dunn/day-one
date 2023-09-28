@@ -108,6 +108,7 @@ export const getColor = (theme: Theme): string => {
     TEXT_4: Colors.WHITE,
     // TEXT_5: Colors.DARK_GRAY,
     TEXT_5: Colors.WHITE,
+    TEXT_6: Colors.MED_GRAY,
   };
 
   return themes[theme] || Colors.PINK;
@@ -169,8 +170,8 @@ export const interpolateColors = (n: number, Colors: string[]): string[] => {
 };
 
 export const findIncrement = (exercise: string): number => {
-  if (['BENCH', 'PRESS'].includes(exercise)) return 2.5;
-  if (['SQUAT', 'DEADLIFT'].includes(exercise)) return 5;
+  if (['BENCH', 'PRESS'].includes(exercise.toUpperCase())) return 2.5;
+  if (['SQUAT', 'DEADLIFT'].includes(exercise.toUpperCase())) return 5;
   return 5;
 };
 

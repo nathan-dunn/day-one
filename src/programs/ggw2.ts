@@ -724,7 +724,6 @@ const program: Program = {
         },
       ],
     },
-
     {
       week: 7,
       day: 1,

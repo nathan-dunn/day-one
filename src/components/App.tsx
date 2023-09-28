@@ -31,7 +31,7 @@ import { Theme, Day, Program, Option, Colors } from '../types';
 import spaceAnimation from '../../assets/animations/data_2.json';
 
 const { width, height } = Dimensions.get('window');
-const LOADING_DELAY = 2000;
+const LOADING_DELAY = 1000;
 const defaultProgram = programs[1];
 
 export default function App() {
@@ -179,6 +179,7 @@ export default function App() {
   };
 
   const handleProgramChange = async (selectedProgram: Program) => {
+    console.log('selectedProgram:', selectedProgram.name);
     if (selectedProgram.name !== program.name) {
       loadStorage(selectedProgram);
     }
