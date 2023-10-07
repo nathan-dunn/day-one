@@ -7,8 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { Day, Theme, Option } from '../types';
-import { getColor } from '../utils';
+import { Day } from '../types';
 import Checkbox from './Checkbox';
 
 type SessionHeaderProps = {
@@ -16,8 +15,10 @@ type SessionHeaderProps = {
   day: number;
   dayOptions: number[];
   handleComplete: () => void;
-  highlightBG: string;
-  highlightColor: string;
+  BG_1: string;
+  BG_2: string;
+  TEXT_1: string;
+  TEXT_2: string;
   index: number;
   onDayChange: (dayOption: number) => void;
   onWeekChange: (weekOption: number) => void;
@@ -33,8 +34,10 @@ export default function SessionHeader({
   day,
   dayOptions,
   handleComplete,
-  highlightBG,
-  highlightColor,
+  BG_1,
+  BG_2,
+  TEXT_1,
+  TEXT_2,
   onDayChange,
   onWeekChange,
   opacity,
@@ -43,8 +46,6 @@ export default function SessionHeader({
   week,
   weekOptions,
 }: SessionHeaderProps) {
-  const TEXT_4 = getColor(Theme.TEXT_4);
-
   const weekText = `Week ${weekOptions[week - 1]}`;
 
   const dayText =
@@ -54,12 +55,7 @@ export default function SessionHeader({
   const [showDayPicker, setShowDayPicker] = useState(false);
 
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: highlightBG, opacity: 0.85 },
-      ]}
-    >
+    <View style={[styles.container, { backgroundColor: BG_2, opacity: 0.85 }]}>
       {/* WEEK */}
       {!showDayPicker && (
         <>
@@ -76,13 +72,11 @@ export default function SessionHeader({
                   setShowWeekPicker(p => !p);
                 }}
               >
-                <Text style={[styles.week, { color: highlightColor }]}>
-                  {weekText}
-                </Text>
+                <Text style={[styles.week, { color: TEXT_1 }]}>{weekText}</Text>
               </TouchableOpacity>
             </View>
             <Checkbox
-              color={TEXT_4}
+              color={TEXT_1}
               complete={complete}
               handleComplete={handleComplete}
             />
@@ -90,7 +84,7 @@ export default function SessionHeader({
 
           {showWeekPicker && (
             <Picker
-              itemStyle={{ fontSize: 20, color: TEXT_4 }}
+              itemStyle={{ fontSize: 20, color: TEXT_1 }}
               style={{ borderRadius: 3 }}
               selectedValue={String(week)}
               onValueChange={(value: string) => {
@@ -127,15 +121,13 @@ export default function SessionHeader({
                 setShowDayPicker(p => !p);
               }}
             >
-              <Text style={[styles.day, { color: highlightColor }]}>
-                {dayText}
-              </Text>
+              <Text style={[styles.day, { color: TEXT_1 }]}>{dayText}</Text>
             </TouchableOpacity>
           </Animated.View>
 
           {showDayPicker && (
             <Picker
-              itemStyle={{ fontSize: 20, color: TEXT_4 }}
+              itemStyle={{ fontSize: 20, color: TEXT_1 }}
               style={{ borderRadius: 3 }}
               selectedValue={String(day)}
               onValueChange={(value: string) => {

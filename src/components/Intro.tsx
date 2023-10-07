@@ -7,8 +7,6 @@ import {
   View,
 } from 'react-native';
 import TextBlock from './TextBlock';
-import { Theme } from '../types';
-import { getColor } from '../utils';
 
 const { width } = Dimensions.get('window');
 
@@ -18,6 +16,10 @@ type IntroProps = {
   notes: string[];
   page: number;
   scrollX: Animated.Value;
+  BG_1: string;
+  BG_2: string;
+  TEXT_1: string;
+  TEXT_2: string;
 };
 
 export default function Intro({
@@ -25,9 +27,11 @@ export default function Intro({
   name,
   notes,
   scrollX,
+  BG_1,
+  BG_2,
+  TEXT_1,
+  TEXT_2,
 }: IntroProps) {
-  const TEXT_2 = getColor(Theme.TEXT_2);
-
   const inputRange = [
     (sessionIndex - 1) * width,
     sessionIndex * width,

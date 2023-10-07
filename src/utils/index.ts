@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Program, Session, Maxes, Colors, Exercises, Theme } from '../types';
+import { Program, Session, Maxes, Colors, Exercises } from '../types';
 
 export const getStorage = async (key: string) => {
   try {
@@ -92,28 +92,6 @@ export function findLastCompleted(program: Program): number {
   return 0;
 }
 
-export const getColor = (theme: Theme): string => {
-  const themes = {
-    BG_1: Colors.LIGHT_SPACE,
-    // BG_2: Colors.DARK_GRAY,
-    BG_2: Colors.DARK_SPACE,
-    BG_3: Colors.PALE_VIOLET,
-    BG_4: Colors.PALE_BLUE,
-
-    TEXT_1: Colors.WHITE,
-    TEXT_2: Colors.WHITE,
-    // TEXT_3: Colors.LIGHT_GRAY,
-    TEXT_3: Colors.WHITE,
-    // TEXT_4: Colors.DARK_BLACK,
-    TEXT_4: Colors.WHITE,
-    // TEXT_5: Colors.DARK_GRAY,
-    TEXT_5: Colors.WHITE,
-    TEXT_6: Colors.MED_GRAY,
-  };
-
-  return themes[theme] || Colors.PINK;
-};
-
 const hexToRgb = (hex: string): [number, number, number] => {
   // Remove the hash at the start if it's there
   hex = hex.charAt(0) === '#' ? hex.slice(1) : hex;
@@ -134,19 +112,23 @@ const rgbToHex = (r: number, g: number, b: number): string => {
   );
 };
 
-export const interpolateColors = (n: number, Colors: string[]): string[] => {
-  if (Colors.length < 2)
-    throw new Error('Need at least two Colors to interpolate');
+export const interpolateColors = (n: number, colors: string[]): string[] => {
+  if (colors.length < 2) {
+    throw new Error('Need at least two colors to interpolate');
+  }
+  colors = colors.map(color =>
+    color.length === 4 ? color + color.slice(1) : color
+  );
 
-  const segments = Colors.length - 1; // the number of segments between Colors
+  const segments = colors.length - 1; // the number of segments between colors
   const stepsPerSegment = Math.floor(n / segments); // calculate how many steps per each segment
   const remainder = n - stepsPerSegment * segments; // remainder if n is not divisible by segments
 
   const output: string[] = [];
 
   for (let i = 0; i < segments; i++) {
-    const color1 = Colors[i];
-    const color2 = Colors[i + 1];
+    const color1 = colors[i];
+    const color2 = colors[i + 1];
 
     // Calculate how many steps for the current segment, adding remainder to the last segment
     const steps =

@@ -10,8 +10,8 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import programs from '../programs';
-import { Maxes, Program, Theme } from '../types';
-import { findIncrement, makeRange, getColor } from '../utils';
+import { Maxes, Program } from '../types';
+import { findIncrement, makeRange } from '../utils';
 
 const { width } = Dimensions.get('window');
 
@@ -21,6 +21,10 @@ type PanelProps = {
   onClose: () => void;
   onProgramChange: (program: Program) => void;
   onMaxChange: (lift: string, max: number) => void;
+  BG_1: string;
+  BG_2: string;
+  TEXT_1: string;
+  TEXT_2: string;
 };
 
 export default function Panel({
@@ -29,13 +33,17 @@ export default function Panel({
   program,
   onProgramChange,
   onMaxChange,
+  BG_1,
+  BG_2,
+  TEXT_1,
+  TEXT_2,
 }: PanelProps) {
   const _width = width * 0.85;
   const maxes: Maxes = program.maxes;
-  const BG_2 = getColor(Theme.BG_2);
-  const BG_1 = getColor(Theme.BG_1);
-  const TEXT_1 = getColor(Theme.TEXT_1);
-  const TEXT_6 = getColor(Theme.TEXT_6);
+  // const BG_2 = getColor(Theme.BG_2);
+  // const BG_1 = getColor(Theme.BG_1);
+  // const TEXT_1 = getColor(Theme.TEXT_1);
+  // const TEXT_1 = getColor(Theme.TEXT_1);
 
   const [showProgramPicker, setShowProgramPicker] = useState(false);
   const [showMaxPicker, setShowMaxPicker] = useState(false);
@@ -73,12 +81,7 @@ export default function Panel({
         </Text>
         <View style={[styles.row, {}]}>
           <Text
-            style={[
-              styles.rowKey,
-              {
-                color: selectedLift ? TEXT_6 : TEXT_1,
-              },
-            ]}
+            style={[styles.rowKey, { color: selectedLift ? TEXT_1 : TEXT_1 }]}
             onPress={() => {
               setSelectedLift('');
               setShowMaxPicker(false);
@@ -101,7 +104,7 @@ export default function Panel({
             const max = program.maxes[lift];
             const TEXT_COLOR =
               showProgramPicker || (selectedLift && selectedLift !== lift)
-                ? TEXT_6
+                ? TEXT_1
                 : TEXT_1;
 
             return (

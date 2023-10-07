@@ -10,8 +10,8 @@ import {
   View,
 } from 'react-native';
 import TextBlock from './TextBlock';
-import { Maxes, Program, Lift, Theme } from '../types';
-import { roundTo, getColor, findIncrement } from '../utils';
+import { Maxes, Program, Lift } from '../types';
+import { roundTo, findIncrement } from '../utils';
 import SessionHeader from './SessionHeader';
 const { width } = Dimensions.get('window');
 
@@ -20,8 +20,10 @@ type SessionProps = {
   day: number;
   dayOptions: number[];
   handleComplete: () => void;
-  highlightBG: string;
-  highlightColor: string;
+  BG_1: string;
+  BG_2: string;
+  TEXT_1: string;
+  TEXT_2: string;
   index: number;
   lifts: Lift[];
   notes: string[];
@@ -39,8 +41,10 @@ function Session({
   day,
   dayOptions,
   handleComplete,
-  highlightBG,
-  highlightColor,
+  BG_1,
+  BG_2,
+  TEXT_1,
+  TEXT_2,
   index,
   lifts,
   notes,
@@ -58,9 +62,6 @@ function Session({
   const maxes: Maxes = program.maxes;
 
   const _width = width * 0.85;
-  const BG_2 = getColor(Theme.BG_2);
-  const TEXT_2 = getColor(Theme.TEXT_2);
-  const TEXT_3 = getColor(Theme.TEXT_3);
 
   const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
 
@@ -112,8 +113,10 @@ function Session({
           day={day}
           dayOptions={dayOptions}
           handleComplete={handleComplete}
-          highlightBG={highlightBG}
-          highlightColor={highlightColor}
+          BG_1={BG_1}
+          BG_2={BG_2}
+          TEXT_1={TEXT_1}
+          TEXT_2={TEXT_2}
           index={index}
           onDayChange={onDayChange}
           onWeekChange={onWeekChange}
@@ -131,15 +134,15 @@ function Session({
                 style={[
                   styles.liftContainer,
                   {
-                    backgroundColor: highlightBG,
-                    opacity: 0.85,
+                    backgroundColor: BG_2,
+                    opacity: 0.95,
                   },
                 ]}
                 key={liftIndex}
               >
                 <TextBlock
                   text={name}
-                  style={[styles.liftName, { color: TEXT_2 }]}
+                  style={[styles.liftName, { color: TEXT_1 }]}
                   opacity={opacity}
                   translateX={translateSlow}
                 />
@@ -170,7 +173,7 @@ function Session({
                       <TextBlock
                         key={rxIndex}
                         text={rxText}
-                        style={[styles.rx, { color: TEXT_2 }]}
+                        style={[styles.rx, { color: TEXT_1 }]}
                         opacity={opacity}
                         translateX={translateFast}
                       />
@@ -189,14 +192,14 @@ function Session({
                         >
                           <TextBlock
                             text={'•'}
-                            style={[styles.bullet, { color: TEXT_3 }]}
+                            style={[styles.bullet, { color: TEXT_1 }]}
                             opacity={opacity}
                             translateX={translateFast}
                           />
 
                           <TextBlock
                             text={note.replace(/\.$/, '').trim()}
-                            style={[styles.liftNote, { color: TEXT_3 }]}
+                            style={[styles.liftNote, { color: TEXT_1 }]}
                             opacity={opacity}
                             translateX={translateFast}
                           />
@@ -212,7 +215,7 @@ function Session({
           <View
             style={[styles.sessionNotesContainer, { backgroundColor: BG_2 }]}
           >
-            <Text style={[styles.sessionNoteHeader, { color: TEXT_2 }]}>
+            <Text style={[styles.sessionNoteHeader, { color: TEXT_1 }]}>
               Session Notes
             </Text>
             {notes
@@ -222,7 +225,7 @@ function Session({
                   <View key={noteIndex} style={[styles.sessionNoteContainer]}>
                     <TextBlock
                       text={note.trim()}
-                      style={[styles.sessionNote, { color: TEXT_3 }]}
+                      style={[styles.sessionNote, { color: TEXT_1 }]}
                       opacity={opacity}
                       translateX={translateFast}
                     />

@@ -14,7 +14,7 @@ import {
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
 import LottieView from 'lottie-react-native';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, set } from 'lodash';
 import Session from './Session';
 import Intro from './Intro';
 import Panel from './Panel';
@@ -24,17 +24,22 @@ import {
   getStorage,
   clearStorage,
   setStorage,
-  getColor,
   interpolateColors,
 } from '../utils';
-import { Theme, Program, Colors } from '../types';
-import spaceAnimation from '../../assets/animations/data_2.json';
+import { Program, Colors } from '../types';
+import animationSrc from '../../assets/animations/data_6.json';
 
 const { width, height } = Dimensions.get('window');
 const LOADING_DELAY = 1000;
 const defaultProgram = programs[1];
 
 export default function App() {
+  // REFS
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const drawerRef = useRef<Drawer>(null);
+  const flatListRef = useRef<FlatList>(null);
+  const animationRef = useRef<LottieView | null>(null);
+
   // PAGE
   const [pageLoaded, setPageLoaded] = useState<boolean>(false);
 
@@ -52,26 +57,23 @@ export default function App() {
   const dayOptions: number[] = [1, 2, 3];
 
   // COLORS
-  const BG_1 = Colors.DARK_SPACE;
-  const BG_2 = Colors.LIGHT_SPACE;
-
-  const gradientBG = useMemo(
-    () => interpolateColors(totalPages, [BG_1, BG_2]),
+  const BGS_1 = useMemo(
+    () => interpolateColors(totalPages, [Colors.DARK_BLACK, '#2F363D']),
     [totalPages]
   );
-  const gradientColor = useMemo(
-    () => interpolateColors(totalPages, [Colors.WHITE, Colors.WHITE]),
+  const BGS_2 = useMemo(
+    () => interpolateColors(totalPages, ['#2F363D', Colors.DARK_BLACK]),
     [totalPages]
   );
 
-  const HIGHLIGHT_BG = page ? gradientBG[page] : BG_1;
-  const HIGHLIGHT_COLOR = page ? gradientColor[page] : 'white';
-  const BASE_TEXT = getColor(Theme.TEXT_1);
+  const BG_1 = BGS_1[page];
+  const BG_2 = BGS_2[page];
 
-  // REFS
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const drawerRef = useRef<Drawer>(null);
-  const flatListRef = useRef<FlatList>(null);
+  const TEXT_1 = Colors.WHITE;
+  const TEXT_2 = Colors.WHITE;
+
+  // VARS
+  const [speed, setSpeed] = useState(0.25);
 
   // HANDLERS
   const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -216,15 +218,7 @@ export default function App() {
 
   if (!pageLoaded) {
     return (
-      <SafeAreaView
-        style={[styles.container, { backgroundColor: getColor(Theme.BG_1) }]}
-      >
-        <LottieView
-          style={{ ...styles.lottie, width: width * 1.33, height }}
-          source={spaceAnimation}
-          autoPlay={true}
-          loop={true}
-        />
+      <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
         <Image
           source={require('../../assets/splash_transparent.png')}
           style={[
@@ -259,24 +253,42 @@ export default function App() {
           program={program}
           onProgramChange={handleProgramChange}
           onMaxChange={handleMaxChange}
+          BG_1={BG_1}
+          BG_2={BG_2}
+          TEXT_1={TEXT_1}
+          TEXT_2={TEXT_2}
         />
       }
     >
-      <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
+      <SafeAreaView
+        style={[
+          styles.container,
+          {
+            backgroundColor: BG_1,
+          },
+        ]}
+      >
         <LottieView
-          style={{ ...styles.lottie, width: width * 1.33, height }}
-          source={spaceAnimation}
+          ref={animationRef}
+          style={{
+            ...styles.lottie,
+            width: width * 3.5,
+            height: height * 1,
+            transform: [{ rotate: '0deg' }],
+            opacity: 0.5,
+          }}
+          source={animationSrc}
           autoPlay={true}
-          loop={true}
+          loop={false}
+          speed={speed}
+          onAnimationFinish={() => {
+            setSpeed(p => p * -1);
+            animationRef.current?.play();
+          }}
         />
 
         <View style={styles.headerContainer}>
-          <Feather
-            name={'menu'}
-            size={24}
-            color={BASE_TEXT}
-            onPress={openPanel}
-          />
+          <Feather name={'menu'} size={24} color={TEXT_1} onPress={openPanel} />
         </View>
 
         <Animated.FlatList
@@ -305,6 +317,10 @@ export default function App() {
                 index={index}
                 page={page}
                 scrollX={scrollX}
+                BG_1={BG_1}
+                BG_2={BG_2}
+                TEXT_1={TEXT_1}
+                TEXT_2={TEXT_2}
               />
             ) : (
               <Session
@@ -319,8 +335,10 @@ export default function App() {
                 lifts={session.lifts}
                 page={page}
                 scrollX={scrollX}
-                highlightBG={HIGHLIGHT_BG}
-                highlightColor={HIGHLIGHT_COLOR}
+                BG_1={BG_1}
+                BG_2={BG_2}
+                TEXT_1={TEXT_1}
+                TEXT_2={TEXT_2}
                 handleComplete={() => handleComplete(index)}
                 weekOptions={weekOptions}
                 dayOptions={dayOptions}

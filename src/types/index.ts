@@ -33,7 +33,7 @@ export enum Colors {
   PALE_RED = '#E5BEBD',
   DARK_SPACE = '#313854',
   MED_SPACE = '#394473',
-  LIGHT_SPACE = '#5666a3',
+  LIGHT_SPACE = '#5666A3',
 }
 
 export enum Mode {
@@ -58,21 +58,7 @@ export enum Day {
   sun = 'Sun',
 }
 
-export enum Theme {
-  BG_1 = 'BG_1',
-  BG_2 = 'BG_2',
-  BG_3 = 'BG_3',
-  BG_4 = 'BG_4',
-  TEXT_1 = 'TEXT_1',
-  TEXT_2 = 'TEXT_2',
-  TEXT_3 = 'TEXT_3',
-  TEXT_4 = 'TEXT_4',
-  TEXT_5 = 'TEXT_5',
-  TEXT_6 = 'TEXT_6',
-}
-
 // TYPES
-
 export type Option = {
   id: number;
   item: string;
