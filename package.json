@@ -12,7 +12,8 @@
     "build": "eas build -p ios",
     "beta": "eas submit --platform ios",
     "deploy": "npm run build && npm run beta",
-    "asset": "npx react-native-asset"
+    "asset": "npx react-native-asset",
+    "test": "jest"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.19.3",
@@ -31,7 +32,11 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@babel/preset-env": "^7.22.20",
+    "@babel/preset-typescript": "^7.23.0",
     "@react-native/normalize-colors": "^0.73.2",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^12.3.0",
     "@types/react": "~18.2.14",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "@typescript-eslint/parser": "^6.7.0",
@@ -41,6 +46,7 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "jest": "^29.7.0",
     "prettier": "^3.0.3",
     "typescript": "^5.1.3"
   },

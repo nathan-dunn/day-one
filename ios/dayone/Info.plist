@@ -56,7 +56,7 @@
 		<string>Mooli-Regular.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
-	<string>I</string>
+	<string>SplashScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
