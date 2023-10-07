@@ -66,23 +66,38 @@ export default function Intro({
       <View style={styles.header}>
         <TextBlock
           text={name}
-          style={[styles.headerText, { width: width * 0.75, color: TEXT_2 }]}
-          opacity={opacity}
-          translateX={translateSlow}
+          style={[
+            styles.headerText,
+            {
+              width: width * 0.75,
+              color: TEXT_1,
+              opacity,
+              transform: [{ translateX: translateSlow }],
+            },
+          ]}
         />
       </View>
 
-      {notes
-        .filter(note => note)
-        .map((note, noteIndex) => (
-          <TextBlock
-            key={noteIndex}
-            text={note.trim()}
-            style={[styles.note, { width: width * 0.85, color: TEXT_2 }]}
-            opacity={opacity}
-            translateX={translateFast}
-          />
-        ))}
+      <View style={styles.notesContainer}>
+        {notes
+          .filter(note => note)
+          .map((note, noteIndex) => (
+            <TextBlock
+              key={noteIndex}
+              text={note.trim()}
+              style={[
+                styles.note,
+                {
+                  width: width * 0.85,
+                  color: TEXT_1,
+                  opacity,
+                  transform: [{ translateX: translateFast }],
+                  backgroundColor: BG_2,
+                },
+              ]}
+            />
+          ))}
+      </View>
     </ScrollView>
   );
 }
@@ -102,20 +117,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Archivo Black',
   },
+  notesContainer: {},
   note: {
     fontWeight: '300',
     textAlign: 'justify',
     marginRight: 10,
     fontSize: 16,
     lineHeight: 16 * 1.5,
-    paddingBottom: 20,
-  },
-  bullet: {
-    fontWeight: '600',
-    marginRight: 10,
-    fontSize: 16,
-    lineHeight: 16 * 1.5,
-    width: 10,
-    textAlign: 'center',
+    borderRadius: 5,
+    padding: 16,
   },
 });

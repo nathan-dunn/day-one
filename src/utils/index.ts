@@ -151,6 +151,39 @@ export const interpolateColors = (n: number, colors: string[]): string[] => {
   return output;
 };
 
+export const generateTintsAndShades = (
+  n: number,
+  color: string,
+  range: number = 50
+): string[] => {
+  if (n <= 2) {
+    throw new Error('Need more than two steps for tints and shades');
+  }
+
+  const [r1, g1, b1] = hexToRgb(color);
+
+  const output: string[] = [];
+  const factorRange = range / 100;
+
+  for (let i = 0; i < n; i++) {
+    const t = (i / (n - 1)) * factorRange * 2 + (1 - factorRange); // Adjusting the formula based on the range
+
+    const r = r1 * t;
+    const g = g1 * t;
+    const b = b1 * t;
+
+    output.push(
+      rgbToHex(
+        Math.min(255, Math.round(r)),
+        Math.min(255, Math.round(g)),
+        Math.min(255, Math.round(b))
+      )
+    );
+  }
+
+  return output;
+};
+
 export const findIncrement = (exercise: string): number => {
   if (['BENCH', 'PRESS'].includes(exercise.toUpperCase())) return 2.5;
   if (['SQUAT', 'DEADLIFT'].includes(exercise.toUpperCase())) return 5;

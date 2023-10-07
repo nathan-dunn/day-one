@@ -25,6 +25,7 @@ import {
   clearStorage,
   setStorage,
   interpolateColors,
+  generateTintsAndShades,
 } from '../utils';
 import { Program, Colors } from '../types';
 import animationSrc from '../../assets/animations/data_6.json';
@@ -57,23 +58,35 @@ export default function App() {
   const dayOptions: number[] = [1, 2, 3];
 
   // COLORS
+  // const BGS_1 = useMemo(
+  //   () => interpolateColors(totalPages, ['#151C23', '#2F363D']),
+  //   [totalPages]
+  // );
+  // const BGS_2 = useMemo(
+  //   () => interpolateColors(totalPages, ['#2F363D', '#151C23']),
+  //   [totalPages]
+  // );
+
+  const HEX = '#516f7f';
+
   const BGS_1 = useMemo(
-    () => interpolateColors(totalPages, [Colors.DARK_BLACK, '#2F363D']),
+    () => generateTintsAndShades(totalPages, HEX),
     [totalPages]
   );
   const BGS_2 = useMemo(
-    () => interpolateColors(totalPages, ['#2F363D', Colors.DARK_BLACK]),
+    () => generateTintsAndShades(totalPages, HEX),
     [totalPages]
   );
 
-  const BG_1 = BGS_1[page];
-  const BG_2 = BGS_2[page];
+  const BG_1 = HEX || BGS_1[page];
+  const BG_2 = HEX || BGS_2[page];
 
   const TEXT_1 = Colors.WHITE;
   const TEXT_2 = Colors.WHITE;
 
   // VARS
-  const [speed, setSpeed] = useState(0.25);
+  const [speed, setSpeed] = useState(0.33);
+  const [collapsed, setCollapsed] = useState<boolean>(false);
 
   // HANDLERS
   const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -144,6 +157,11 @@ export default function App() {
     }
   };
 
+  const handleCollapsedChange = async (collapsed: boolean) => {
+    setCollapsed(collapsed);
+    await setStorage(`@day_one_program_collapsed`, collapsed.toString());
+  };
+
   const handleComplete = async (sessionIndex: number) => {
     const updated = cloneDeep(program);
     updated.sessions[sessionIndex - 1].complete =
@@ -170,7 +188,6 @@ export default function App() {
   };
 
   const handleProgramChange = async (selectedProgram: Program) => {
-    console.log('selectedProgram:', selectedProgram.name);
     if (selectedProgram.name !== program.name) {
       loadStorage(selectedProgram);
     }
@@ -182,6 +199,8 @@ export default function App() {
       `@day_one_program_${selectedProgram.name}`
     );
     const parsedProgram = storedProgram ? JSON.parse(storedProgram) : null;
+
+    const storedCollapsed = await getStorage(`@day_one_program_collapsed`);
 
     if (parsedProgram) {
       setProgram(parsedProgram);
@@ -209,6 +228,10 @@ export default function App() {
         setPageLoaded(true);
       }, LOADING_DELAY);
     }
+
+    if (storedCollapsed) {
+      setCollapsed(storedCollapsed === 'true');
+    }
   };
 
   // EFFECTS
@@ -223,7 +246,10 @@ export default function App() {
           source={require('../../assets/splash_transparent.png')}
           style={[
             styles.splashImage,
-            { marginBottom: 150, width: width * 0.85 },
+            {
+              // marginBottom: 150,
+              width: width * 0.85,
+            },
           ]}
         />
       </SafeAreaView>
@@ -233,12 +259,7 @@ export default function App() {
   return (
     <Drawer
       ref={drawerRef}
-      styles={{
-        main: {},
-        drawer: {},
-        drawerOverlay: {},
-        mainOverlay: {},
-      }}
+      styles={{ main: {}, drawer: {}, drawerOverlay: {}, mainOverlay: {} }}
       type="overlay"
       tapToClose
       panCloseMask={0.2}
@@ -272,10 +293,10 @@ export default function App() {
           ref={animationRef}
           style={{
             ...styles.lottie,
-            width: width * 3.5,
-            height: height * 1,
-            transform: [{ rotate: '0deg' }],
-            opacity: 0.5,
+            width: width * 4,
+            height: height * 4,
+            opacity: 0.7,
+            // transform: [{ rotate: '0deg' }],
           }}
           source={animationSrc}
           autoPlay={true}
@@ -342,6 +363,8 @@ export default function App() {
                 handleComplete={() => handleComplete(index)}
                 weekOptions={weekOptions}
                 dayOptions={dayOptions}
+                collapsed={collapsed}
+                handleCollapsedChange={handleCollapsedChange}
               />
             );
           }}

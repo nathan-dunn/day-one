@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableHighlight,
 } from 'react-native';
 import TextBlock from './TextBlock';
 import { Maxes, Program, Lift } from '../types';
@@ -34,6 +35,8 @@ type SessionProps = {
   scrollX: Animated.Value;
   week: number;
   weekOptions: number[];
+  collapsed: boolean;
+  handleCollapsedChange: (collapsed: boolean) => void;
 };
 
 function Session({
@@ -55,6 +58,8 @@ function Session({
   scrollX,
   week,
   weekOptions,
+  collapsed,
+  handleCollapsedChange,
 }: SessionProps) {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [scrollPosition, setScrollPosition] = useState<number>(0);
@@ -106,135 +111,167 @@ function Session({
       scrollEventThrottle={16}
       contentContainerStyle={[styles.container, { width }]}
     >
-      <View style={[styles.content, { width: _width }]}>
-        {/* HEADER */}
-        <SessionHeader
-          complete={complete}
-          day={day}
-          dayOptions={dayOptions}
-          handleComplete={handleComplete}
-          BG_1={BG_1}
-          BG_2={BG_2}
-          TEXT_1={TEXT_1}
-          TEXT_2={TEXT_2}
-          index={index}
-          onDayChange={onDayChange}
-          onWeekChange={onWeekChange}
-          opacity={opacity}
-          translateFast={translateFast}
-          translateSlow={translateSlow}
-          week={week}
-          weekOptions={weekOptions}
-        />
+      <TouchableHighlight
+        onLongPress={() => {
+          handleCollapsedChange(!collapsed);
+        }}
+        underlayColor="transparent"
+      >
+        <View style={[styles.content, { width: _width }]}>
+          {/* HEADER */}
+          <SessionHeader
+            complete={complete}
+            day={day}
+            dayOptions={dayOptions}
+            handleComplete={handleComplete}
+            BG_1={BG_1}
+            BG_2={BG_2}
+            TEXT_1={TEXT_1}
+            TEXT_2={TEXT_2}
+            index={index}
+            onDayChange={onDayChange}
+            onWeekChange={onWeekChange}
+            opacity={opacity}
+            translateFast={translateFast}
+            translateSlow={translateSlow}
+            week={week}
+            weekOptions={weekOptions}
+          />
 
-        <View style={[styles.liftsContainer]}>
-          {lifts.map(({ name, notes: liftNotes, rxs }, liftIndex) => {
-            return (
-              <View
-                style={[
-                  styles.liftContainer,
-                  {
-                    backgroundColor: BG_2,
-                    opacity: 0.95,
-                  },
-                ]}
-                key={liftIndex}
-              >
-                <TextBlock
-                  text={name}
-                  style={[styles.liftName, { color: TEXT_1 }]}
-                  opacity={opacity}
-                  translateX={translateSlow}
-                />
-                <View style={[styles.rxContainer]}>
-                  {rxs.map(({ sets, reps, perc }, rxIndex) => {
-                    const max: number = maxes[name];
-                    const setsText =
-                      (typeof sets === 'number' && sets > 1) ||
-                      typeof sets === 'string'
-                        ? 'sets'
-                        : 'set';
-                    const repsText =
-                      reps === 'AMRAP' ? '' : reps == 1 ? 'rep' : 'reps';
-                    const rounded = findIncrement(name);
-                    const rxText =
-                      max && perc
-                        ? `${sets} ${setsText} x ${reps} ${repsText} @ ${roundTo(
-                            max * perc,
-                            rounded
-                          )} lbs`
-                        : perc
-                        ? `${sets} ${setsText} x ${reps} ${repsText} @ ${
-                            perc * 100
-                          }%`
-                        : `${sets} ${setsText} x ${reps} ${repsText}`;
+          <View style={[styles.liftsContainer]}>
+            {lifts.map(({ name, notes: liftNotes, rxs }, liftIndex) => {
+              return (
+                <View
+                  style={[
+                    styles.liftContainer,
+                    {
+                      backgroundColor: BG_2,
+                      opacity: 0.95,
+                    },
+                  ]}
+                  key={liftIndex}
+                >
+                  <TextBlock
+                    text={name}
+                    style={[
+                      styles.liftName,
+                      {
+                        color: TEXT_1,
+                        transform: [{ translateX: translateSlow }],
+                        opacity,
+                      },
+                    ]}
+                  />
+                  <View style={[styles.rxContainer]}>
+                    {rxs.map(({ sets, reps, perc }, rxIndex) => {
+                      const max: number = maxes[name];
+                      const setsText =
+                        (typeof sets === 'number' && sets > 1) ||
+                        typeof sets === 'string'
+                          ? 'sets'
+                          : 'set';
+                      const repsText =
+                        reps === 'AMRAP' ? '' : reps == 1 ? 'rep' : 'reps';
+                      const rounded = findIncrement(name);
+                      const rxText =
+                        max && perc
+                          ? `${sets} ${setsText} x ${reps} ${repsText} @ ${roundTo(
+                              max * perc,
+                              rounded
+                            )} lbs`
+                          : perc
+                          ? `${sets} ${setsText} x ${reps} ${repsText} @ ${
+                              perc * 100
+                            }%`
+                          : `${sets} ${setsText} x ${reps} ${repsText}`;
 
-                    return (
-                      <TextBlock
-                        key={rxIndex}
-                        text={rxText}
-                        style={[styles.rx, { color: TEXT_1 }]}
-                        opacity={opacity}
-                        translateX={translateFast}
-                      />
-                    );
-                  })}
-                </View>
-
-                {!complete &&
-                  liftNotes
-                    .filter(note => note)
-                    .map((note, noteIndex) => {
                       return (
-                        <View
-                          key={noteIndex}
-                          style={[styles.liftNoteContainer]}
-                        >
-                          <TextBlock
-                            text={'•'}
-                            style={[styles.bullet, { color: TEXT_1 }]}
-                            opacity={opacity}
-                            translateX={translateFast}
-                          />
-
-                          <TextBlock
-                            text={note.replace(/\.$/, '').trim()}
-                            style={[styles.liftNote, { color: TEXT_1 }]}
-                            opacity={opacity}
-                            translateX={translateFast}
-                          />
-                        </View>
+                        <TextBlock
+                          key={rxIndex}
+                          text={rxText}
+                          style={[
+                            styles.rx,
+                            {
+                              color: TEXT_1,
+                              opacity,
+                              transform: [{ translateX: translateFast }],
+                            },
+                          ]}
+                        />
                       );
                     })}
-              </View>
-            );
-          })}
-        </View>
-
-        {!complete && !!notes.filter(note => note).length && (
-          <View
-            style={[styles.sessionNotesContainer, { backgroundColor: BG_2 }]}
-          >
-            <Text style={[styles.sessionNoteHeader, { color: TEXT_1 }]}>
-              Session Notes
-            </Text>
-            {notes
-              .filter(note => note)
-              .map((note, noteIndex) => {
-                return (
-                  <View key={noteIndex} style={[styles.sessionNoteContainer]}>
-                    <TextBlock
-                      text={note.trim()}
-                      style={[styles.sessionNote, { color: TEXT_1 }]}
-                      opacity={opacity}
-                      translateX={translateFast}
-                    />
                   </View>
-                );
-              })}
+
+                  {!collapsed &&
+                    liftNotes
+                      .filter(note => note)
+                      .map((note, noteIndex) => {
+                        return (
+                          <View
+                            key={noteIndex}
+                            style={[styles.liftNoteContainer]}
+                          >
+                            <TextBlock
+                              text={'•'}
+                              style={[
+                                styles.bullet,
+                                {
+                                  color: TEXT_1,
+                                  opacity,
+                                  transform: [{ translateX: translateFast }],
+                                },
+                              ]}
+                            />
+
+                            <TextBlock
+                              text={note.replace(/\.$/, '').trim()}
+                              style={[
+                                styles.liftNote,
+                                {
+                                  color: TEXT_1,
+                                  opacity,
+                                  transform: [{ translateX: translateFast }],
+                                },
+                              ]}
+                            />
+                          </View>
+                        );
+                      })}
+                </View>
+              );
+            })}
           </View>
-        )}
-      </View>
+
+          {!collapsed && !!notes.filter(note => note).length && (
+            <View
+              style={[styles.sessionNotesContainer, { backgroundColor: BG_2 }]}
+            >
+              <Text style={[styles.sessionNoteHeader, { color: TEXT_1 }]}>
+                Session Notes
+              </Text>
+              {notes
+                .filter(note => note)
+                .map((note, noteIndex) => {
+                  return (
+                    <View key={noteIndex} style={[styles.sessionNoteContainer]}>
+                      <TextBlock
+                        text={note.trim()}
+                        style={[
+                          styles.sessionNote,
+                          {
+                            color: TEXT_1,
+                            opacity,
+                            transform: [{ translateX: translateFast }],
+                          },
+                        ]}
+                      />
+                    </View>
+                  );
+                })}
+            </View>
+          )}
+        </View>
+      </TouchableHighlight>
     </ScrollView>
   );
 }
