@@ -55,7 +55,7 @@ export default function SessionHeader({
   const [showDayPicker, setShowDayPicker] = useState(false);
 
   return (
-    <View style={[styles.container, { backgroundColor: BG_2, opacity: 0.85 }]}>
+    <View style={[styles.container, { backgroundColor: BG_2 }]}>
       {/* WEEK */}
       {!showDayPicker && (
         <>
@@ -97,7 +97,7 @@ export default function SessionHeader({
                   <Picker.Item
                     key={String(week) + index}
                     label={`Week ${week}`}
-                    value={week}
+                    value={String(week)}
                   />
                 );
               })}
@@ -146,7 +146,7 @@ export default function SessionHeader({
                         ? Day.wednesday
                         : Day.friday
                     }
-                    value={day}
+                    value={String(day)}
                   />
                 );
               })}
@@ -160,11 +160,12 @@ export default function SessionHeader({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 15,
     borderRadius: 3,
     fontFamily: 'Archivo Black',
     justifyContent: 'space-evenly',
-    gap: 20,
+    padding: 15,
+    gap: 15,
+    opacity: 0.9,
   },
   headerTopRow: {
     flexDirection: 'row',

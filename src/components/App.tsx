@@ -24,7 +24,6 @@ import {
   getStorage,
   clearStorage,
   setStorage,
-  interpolateColors,
   generateTintsAndShades,
 } from '../utils';
 import { Program, Colors } from '../types';
@@ -57,32 +56,11 @@ export default function App() {
 
   const dayOptions: number[] = [1, 2, 3];
 
-  // COLORS
-  // const BGS_1 = useMemo(
-  //   () => interpolateColors(totalPages, ['#151C23', '#2F363D']),
-  //   [totalPages]
-  // );
-  // const BGS_2 = useMemo(
-  //   () => interpolateColors(totalPages, ['#2F363D', '#151C23']),
-  //   [totalPages]
-  // );
-
-  const HEX = '#516f7f';
-
-  const BGS_1 = useMemo(
-    () => generateTintsAndShades(totalPages, HEX),
-    [totalPages]
-  );
-  const BGS_2 = useMemo(
-    () => generateTintsAndShades(totalPages, HEX),
-    [totalPages]
-  );
-
-  const BG_1 = HEX || BGS_1[page];
-  const BG_2 = HEX || BGS_2[page];
+  const BG_1 = '#182A37';
+  const BG_2 = '#516f7f';
 
   const TEXT_1 = Colors.WHITE;
-  const TEXT_2 = Colors.WHITE;
+  const TEXT_2 = Colors.MED_GRAY;
 
   // VARS
   const [speed, setSpeed] = useState(0.33);
@@ -296,7 +274,6 @@ export default function App() {
             width: width * 4,
             height: height * 4,
             opacity: 0.7,
-            // transform: [{ rotate: '0deg' }],
           }}
           source={animationSrc}
           autoPlay={true}
