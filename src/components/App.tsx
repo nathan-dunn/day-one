@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Animated,
   Dimensions,
@@ -14,7 +14,7 @@ import {
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
 import LottieView from 'lottie-react-native';
-import { cloneDeep, set } from 'lodash';
+import { cloneDeep } from 'lodash';
 import Session from './Session';
 import Intro from './Intro';
 import Panel from './Panel';
@@ -24,7 +24,6 @@ import {
   getStorage,
   clearStorage,
   setStorage,
-  generateTintsAndShades,
 } from '../utils';
 import { Program, Colors } from '../types';
 import animationSrc from '../../assets/animations/data_6.json';
@@ -40,14 +39,11 @@ export default function App() {
   const flatListRef = useRef<FlatList>(null);
   const animationRef = useRef<LottieView | null>(null);
 
-  // PAGE
-  const [pageLoaded, setPageLoaded] = useState<boolean>(false);
-
   // PROGRAM
   const [program, setProgram] = useState<Program>(defaultProgram);
 
-  // PAGE & CHECKS
-  const totalPages = program.sessions.length + 1;
+  // PAGES
+  const [pageLoaded, setPageLoaded] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
 
   const weekOptions: number[] = program.sessions
@@ -56,13 +52,14 @@ export default function App() {
 
   const dayOptions: number[] = [1, 2, 3];
 
+  // COLORS
   const BG_1 = '#182A37';
   const BG_2 = '#516f7f';
 
   const TEXT_1 = Colors.WHITE;
   const TEXT_2 = Colors.MED_GRAY;
 
-  // VARS
+  // MISC STATE
   const [speed, setSpeed] = useState(0.33);
   const [collapsed, setCollapsed] = useState<boolean>(false);
 
@@ -222,13 +219,7 @@ export default function App() {
       <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
         <Image
           source={require('../../assets/splash_transparent.png')}
-          style={[
-            styles.splashImage,
-            {
-              // marginBottom: 150,
-              width: width * 0.85,
-            },
-          ]}
+          style={[styles.splashImage, { width: width * 0.85 }]}
         />
       </SafeAreaView>
     );
@@ -259,14 +250,7 @@ export default function App() {
         />
       }
     >
-      <SafeAreaView
-        style={[
-          styles.container,
-          {
-            backgroundColor: BG_1,
-          },
-        ]}
-      >
+      <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
         <LottieView
           ref={animationRef}
           style={{
