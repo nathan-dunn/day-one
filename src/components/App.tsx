@@ -13,11 +13,11 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
-import LottieView from 'lottie-react-native';
 import { cloneDeep } from 'lodash';
 import Session from './Session';
 import Intro from './Intro';
 import Panel from './Panel';
+import AnimationBackground from './AnimationBackground';
 import programs from '../programs';
 import {
   findLastCompleted,
@@ -26,9 +26,8 @@ import {
   setStorage,
 } from '../utils';
 import { Program, Colors } from '../types';
-import animationSrc from '../../assets/animations/data_6.json';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const LOADING_DELAY = 1000;
 const defaultProgram = programs[1];
 
@@ -37,10 +36,10 @@ export default function App() {
   const scrollX = useRef(new Animated.Value(0)).current;
   const drawerRef = useRef<Drawer>(null);
   const flatListRef = useRef<FlatList>(null);
-  const animationRef = useRef<LottieView | null>(null);
 
   // PROGRAM
   const [program, setProgram] = useState<Program>(defaultProgram);
+  const [collapsed, setCollapsed] = useState<boolean>(false);
 
   // PAGES
   const [pageLoaded, setPageLoaded] = useState<boolean>(false);
@@ -58,10 +57,6 @@ export default function App() {
 
   const TEXT_1 = Colors.WHITE;
   const TEXT_2 = Colors.MED_GRAY;
-
-  // MISC STATE
-  const [speed, setSpeed] = useState(0.33);
-  const [collapsed, setCollapsed] = useState<boolean>(false);
 
   // HANDLERS
   const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -218,7 +213,7 @@ export default function App() {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
         <Image
-          source={require('../../assets/splash_transparent.png')}
+          source={require('../../assets/images/splash_transparent.png')}
           style={[styles.splashImage, { width: width * 0.85 }]}
         />
       </SafeAreaView>
@@ -251,28 +246,11 @@ export default function App() {
       }
     >
       <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
-        <LottieView
-          ref={animationRef}
-          style={{
-            ...styles.lottie,
-            width: width * 4,
-            height: height * 4,
-            opacity: 0.7,
-          }}
-          source={animationSrc}
-          autoPlay={true}
-          loop={false}
-          speed={speed}
-          onAnimationFinish={() => {
-            setSpeed(p => p * -1);
-            animationRef.current?.play();
-          }}
-        />
+        <AnimationBackground page={page} />
 
         <View style={styles.headerContainer}>
           <Feather name={'menu'} size={24} color={TEXT_1} onPress={openPanel} />
         </View>
-
         <Animated.FlatList
           keyExtractor={item => `${item.week} + ${item.day}`}
           ref={flatListRef}
@@ -352,11 +330,5 @@ const styles = StyleSheet.create({
   },
   splashImage: {
     resizeMode: 'contain',
-  },
-  lottie: {
-    overflow: 'hidden',
-    padding: 0,
-    margin: 0,
-    position: 'absolute',
   },
 });

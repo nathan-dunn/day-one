@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 3,
     gap: 10,
-    opacity: 0.9,
+    opacity: 0.95,
   },
   liftName: {
     textTransform: 'uppercase',

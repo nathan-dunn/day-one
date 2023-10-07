@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     padding: 15,
     gap: 15,
-    opacity: 0.9,
+    opacity: 0.95,
   },
   headerTopRow: {
     flexDirection: 'row',

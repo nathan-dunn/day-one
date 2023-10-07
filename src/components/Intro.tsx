@@ -92,7 +92,7 @@ export default function Intro({
                   color: TEXT_1,
                   opacity,
                   transform: [{ translateX: translateFast }],
-                  backgroundColor: BG_2,
+                  // backgroundColor: BG_2,
                 },
               ]}
             />
