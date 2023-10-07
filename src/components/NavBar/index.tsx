@@ -8,7 +8,7 @@ import {
   StyleProp,
 } from 'react-native';
 import { findLast } from 'lodash';
-import { Program, Colors } from '../types';
+import { Program, Colors } from '../../types';
 
 type NavBarProps = {
   highlightColor: string;

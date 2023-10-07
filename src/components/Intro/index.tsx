@@ -6,7 +6,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import TextBlock from './TextBlock';
+import TextBlock from '../TextBlock';
 
 const { width } = Dimensions.get('window');
 

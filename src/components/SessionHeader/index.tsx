@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { Day } from '../types';
-import Checkbox from './Checkbox';
+import { Day } from '../../types';
+import Checkbox from '../Checkbox';
 
 type SessionHeaderProps = {
   complete: boolean;

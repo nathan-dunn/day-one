@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Animated, Dimensions, StyleSheet } from 'react-native';
 import LottieView from 'lottie-react-native';
-import animationSrc from '../../assets/animations/data_6.json';
+import animationSrc from '../../../assets/animations/data_6.json';
 
 const { width, height } = Dimensions.get('window');
 

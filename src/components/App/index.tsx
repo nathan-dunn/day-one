@@ -14,18 +14,18 @@ import {
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
 import { cloneDeep } from 'lodash';
-import Session from './Session';
-import Intro from './Intro';
-import Panel from './Panel';
-import AnimationBackground from './AnimationBackground';
-import programs from '../programs';
+import Session from '../Session';
+import Intro from '../Intro';
+import Panel from '../Panel';
+import AnimationBackground from '../AnimationBackground';
+import programs from '../../programs';
 import {
   findLastCompleted,
   getStorage,
   clearStorage,
   setStorage,
-} from '../utils';
-import { Program, Colors } from '../types';
+} from '../../utils';
+import { Program, Colors } from '../../types';
 
 const { width } = Dimensions.get('window');
 const LOADING_DELAY = 1000;
@@ -213,7 +213,7 @@ export default function App() {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
         <Image
-          source={require('../../assets/images/splash_transparent.png')}
+          source={require('../../../assets/images/splash_transparent.png')}
           style={[styles.splashImage, { width: width * 0.85 }]}
         />
       </SafeAreaView>

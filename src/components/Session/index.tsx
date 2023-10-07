@@ -10,10 +10,10 @@ import {
   View,
   TouchableHighlight,
 } from 'react-native';
-import TextBlock from './TextBlock';
-import { Maxes, Program, Lift } from '../types';
-import { roundTo, findIncrement } from '../utils';
-import SessionHeader from './SessionHeader';
+import TextBlock from '../TextBlock';
+import { Maxes, Program, Lift } from '../../types';
+import { roundTo, findIncrement } from '../../utils';
+import SessionHeader from '../SessionHeader';
 const { width } = Dimensions.get('window');
 
 type SessionProps = {

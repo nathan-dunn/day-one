@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
-import TextBlock from './index.tsx';
+import TextBlock from './index';
+import { TextStyle } from 'react-native';
 
 describe('TextBlock Component', () => {
   it('renders the given text', () => {
@@ -12,7 +13,7 @@ describe('TextBlock Component', () => {
   });
 
   it('applies the given style', () => {
-    const testStyle = { color: 'blue', fontSize: 20 };
+    const testStyle: TextStyle = { color: 'blue', fontSize: 20 };
     const { getByText } = render(
       <TextBlock text="Styled Text" style={testStyle} />
     );
