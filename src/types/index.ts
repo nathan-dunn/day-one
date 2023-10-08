@@ -5,6 +5,7 @@ export enum Exercises {
   PRESS = 'press',
   DEADLIFT = 'deadlift',
   ROWS = 'rows',
+  BARBELL_ROWS = 'barbell rows',
   SLDL = 'stiff-leg deadlift',
   DIPS = 'dips',
   PUSHUPS = 'pushups',
