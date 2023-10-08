@@ -6,6 +6,13 @@ jest.mock('@expo/vector-icons', () => ({
   Feather: '',
 }));
 
+jest.mock('react-navigation-drawer', () => {
+  return {
+    addEventListener: jest.fn(),
+    createDrawerNavigator: jest.fn(),
+  };
+});
+
 describe('<App />', () => {
   test('should display splash screen when page is not loaded', () => {
     const { getByTestId } = render(<App />);
@@ -15,7 +22,6 @@ describe('<App />', () => {
 
   test('should render main view once page is loaded', async () => {
     const { getByTestId } = render(<App />);
-    // Assuming that the loading delay is 1000ms
     await waitFor(() => getByTestId('main-view'), { timeout: 1100 });
     expect(getByTestId('main-view')).toBeTruthy();
   });
@@ -38,14 +44,10 @@ describe('<App />', () => {
     expect(drawerPanel).toBeNull();
   });
 
-  // You can add more tests for functions like handleWeekChange, handleDayChange, handleComplete, and so on
-
-  // Example:
   test('should navigate to a specific session on week change', async () => {
     const { getByTestId } = render(<App />);
     const weekChangeButton = getByTestId('week-change-button'); // Assign testID to your week change button
     fireEvent.press(weekChangeButton);
-    // Expect some state change or UI change
     const specificSession = getByTestId('specific-session'); // Assign testID to your specific session or its header
     expect(specificSession).toBeTruthy();
   });

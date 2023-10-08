@@ -36,11 +36,11 @@ export const clearStorage = async () => {
   }
 };
 
-export function roundTo(num: number, nearest: number): number {
+export const roundTo = (num: number, nearest: number): number => {
   return Math.round(num / nearest) * nearest;
-}
+};
 
-export function findMaxesNeeded(sessions: Session[]): Maxes {
+export const findMaxesNeeded = (sessions: Session[]): Maxes => {
   const liftNamesWithPerc: string[] = [];
 
   for (const session of sessions) {
@@ -67,9 +67,9 @@ export function findMaxesNeeded(sessions: Session[]): Maxes {
   }
 
   return maxesNeeded;
-}
+};
 
-export function findLastCompleted(program: Program): number {
+export const findLastCompleted = (program: Program): number => {
   const { sessions } = program;
 
   // if none completed return first session
@@ -90,7 +90,7 @@ export function findLastCompleted(program: Program): number {
   }
 
   return 0;
-}
+};
 
 const hexToRgb = (hex: string): [number, number, number] => {
   // Remove the hash at the start if it's there
@@ -116,9 +116,9 @@ export const interpolateColors = (n: number, colors: string[]): string[] => {
   if (colors.length < 2) {
     throw new Error('Need at least two colors to interpolate');
   }
-  colors = colors.map(color =>
-    color.length === 4 ? color + color.slice(1) : color
-  );
+  colors = colors
+    .map(color => color.toUpperCase())
+    .map(color => (color.length === 4 ? color + color.slice(1) : color));
 
   const segments = colors.length - 1; // the number of segments between colors
   const stepsPerSegment = Math.floor(n / segments); // calculate how many steps per each segment

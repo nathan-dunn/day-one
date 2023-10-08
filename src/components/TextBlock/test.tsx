@@ -19,7 +19,6 @@ describe('TextBlock Component', () => {
     );
     const styledText = getByText('Styled Text');
 
-    // Checking specific style properties
     expect(styledText.props.style).toMatchObject(testStyle);
   });
 });
