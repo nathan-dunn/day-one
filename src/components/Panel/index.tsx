@@ -159,18 +159,20 @@ export default function Panel({
                   }, 0);
                 }}
               >
-                <Text style={[styles.rowKey, { color: TEXT_COLOR }]}>
+                <Text
+                  style={[
+                    styles.rowKey,
+                    { textTransform: 'uppercase', color: TEXT_COLOR },
+                  ]}
+                >
                   {lift}
                 </Text>
 
                 <Text
                   style={[
                     styles.rowValue,
+                    styles.input,
                     {
-                      width: '30%',
-                      borderWidth: 1,
-                      padding: 10,
-                      borderRadius: 3,
                       color: TEXT_COLOR,
                       borderColor: TEXT_COLOR,
                     },
@@ -216,65 +218,67 @@ export default function Panel({
         >
           PREFERENCES
         </Text>
-        <TouchableOpacity style={[styles.row, {}]} onPress={() => {}}>
-          <Text
-            style={[
-              styles.rowKey,
-              { color: showProgramPicker || selectedLift ? TEXT_2 : TEXT_1 },
-            ]}
-          >
-            show notes
-          </Text>
+        <View style={[styles.preferencesContainer]}>
+          <TouchableOpacity style={[styles.row, {}]} onPress={() => {}}>
+            <Text
+              style={[
+                styles.rowKey,
+                { color: showProgramPicker || selectedLift ? TEXT_2 : TEXT_1 },
+              ]}
+            >
+              Show Notes
+            </Text>
 
-          <Switch
-            trackColor={{ false: TEXT_2, true: BG_2 }}
-            thumbColor={showNotes ? TEXT_1 : TEXT_1}
-            ios_backgroundColor={TEXT_2}
-            onValueChange={onshowNotesChange}
-            value={showNotes}
-            disabled={showProgramPicker || selectedLift ? true : false}
-          />
-        </TouchableOpacity>
+            <Switch
+              trackColor={{ false: TEXT_2, true: BG_2 }}
+              thumbColor={showNotes ? TEXT_1 : TEXT_1}
+              ios_backgroundColor={TEXT_2}
+              onValueChange={onshowNotesChange}
+              value={showNotes}
+              disabled={showProgramPicker || selectedLift ? true : false}
+            />
+          </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.row, {}]} onPress={() => {}}>
-          <Text
-            style={[
-              styles.rowKey,
-              { color: showProgramPicker || selectedLift ? TEXT_2 : TEXT_1 },
-            ]}
-          >
-            show animation
-          </Text>
+          <TouchableOpacity style={[styles.row, {}]} onPress={() => {}}>
+            <Text
+              style={[
+                styles.rowKey,
+                { color: showProgramPicker || selectedLift ? TEXT_2 : TEXT_1 },
+              ]}
+            >
+              Show Animation
+            </Text>
 
-          <Switch
-            trackColor={{ false: TEXT_2, true: BG_2 }}
-            thumbColor={showNotes ? TEXT_1 : TEXT_1}
-            ios_backgroundColor={TEXT_2}
-            onValueChange={onAnimationChange}
-            value={showAnimation}
-            disabled={showProgramPicker || selectedLift ? true : false}
-          />
-        </TouchableOpacity>
+            <Switch
+              trackColor={{ false: TEXT_2, true: BG_2 }}
+              thumbColor={showNotes ? TEXT_1 : TEXT_1}
+              ios_backgroundColor={TEXT_2}
+              onValueChange={onAnimationChange}
+              value={showAnimation}
+              disabled={showProgramPicker || selectedLift ? true : false}
+            />
+          </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.row, {}]} onPress={() => {}}>
-          <Text
-            style={[
-              styles.rowKey,
-              { color: showProgramPicker || selectedLift ? TEXT_2 : TEXT_1 },
-            ]}
-          >
-            show day name
-          </Text>
+          <TouchableOpacity style={[styles.row, {}]} onPress={() => {}}>
+            <Text
+              style={[
+                styles.rowKey,
+                { color: showProgramPicker || selectedLift ? TEXT_2 : TEXT_1 },
+              ]}
+            >
+              Show Day Name
+            </Text>
 
-          <Switch
-            trackColor={{ false: TEXT_2, true: BG_2 }}
-            thumbColor={showNotes ? TEXT_1 : TEXT_1}
-            ios_backgroundColor={TEXT_2}
-            onValueChange={onDayNameChange}
-            value={showDayName}
-            disabled={showProgramPicker || selectedLift ? true : false}
-          />
-        </TouchableOpacity>
+            <Switch
+              trackColor={{ false: TEXT_2, true: BG_2 }}
+              thumbColor={showNotes ? TEXT_1 : TEXT_1}
+              ios_backgroundColor={TEXT_2}
+              onValueChange={onDayNameChange}
+              value={showDayName}
+              disabled={showProgramPicker || selectedLift ? true : false}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -284,6 +288,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     borderRightWidth: 1,
+    gap: 30,
   },
   content: {
     flex: 1,
@@ -296,39 +301,36 @@ const styles = StyleSheet.create({
     paddingTop: 0,
   },
   sectionContainer: {
-    padding: 20,
+    paddingHorizontal: 20,
   },
   rowHeader: {
     fontSize: 20,
-    paddingVertical: 10,
+    paddingVertical: 20,
     fontFamily: 'Archivo Black',
-    textTransform: 'uppercase',
   },
   row: {
     justifyContent: 'space-between',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 5,
   },
   rowKey: {
     fontSize: 18,
     paddingLeft: 10,
-    textTransform: 'uppercase',
   },
   rowValue: {
     fontSize: 18,
     textAlign: 'center',
   },
   input: {
-    height: 40,
-    borderWidth: 2,
-    padding: 10,
-    width: '33%',
-    textAlign: 'center',
-    fontSize: 16,
-    borderRadius: 2,
+    width: '30%',
+    borderWidth: 1,
+    padding: 5,
+    borderRadius: 3,
   },
   maxesContainer: {
-    gap: 10,
+    gap: 15,
+  },
+  preferencesContainer: {
+    gap: 15,
   },
 });
