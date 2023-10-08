@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   Animated,
   Dimensions,
@@ -72,7 +72,6 @@ export default function App() {
     const contentOffset = e.nativeEvent.contentOffset;
     const viewSize = e.nativeEvent.layoutMeasurement;
     const pageNum = Math.floor(contentOffset.x / viewSize.width);
-
     setPage(pageNum);
   };
 
@@ -303,12 +302,14 @@ export default function App() {
         <Animated.FlatList
           keyExtractor={item => `${item.week} + ${item.day}`}
           ref={flatListRef}
-          windowSize={program.sessions.length + 1}
           initialScrollIndex={page}
           showsHorizontalScrollIndicator={false}
           scrollEventThrottle={16}
           horizontal
           pagingEnabled
+          removeClippedSubviews={true}
+          initialNumToRender={program.sessions.length + 1}
+          windowSize={program.sessions.length + 1}
           onScroll={onScroll}
           onMomentumScrollEnd={onScrollEnd}
           getItemLayout={(_, index) => ({
@@ -319,23 +320,25 @@ export default function App() {
           data={[{}, ...program.sessions]}
           extraData={[program, page]}
           renderItem={({ item: session, index }) => {
-            return index === 0 ? (
-              <Intro
-                name={program.name}
-                notes={program.notes}
-                index={index}
-                page={page}
-                scrollX={scrollX}
-                BG_1={BG_1}
-                BG_2={BG_2}
-                TEXT_1={TEXT_1}
-                TEXT_2={TEXT_2}
-              />
-            ) : (
+            if (index === 0) {
+              return (
+                <Intro
+                  name={program.name}
+                  notes={program.notes}
+                  index={index}
+                  page={page}
+                  scrollX={scrollX}
+                  BG_1={BG_1}
+                  BG_2={BG_2}
+                  TEXT_1={TEXT_1}
+                  TEXT_2={TEXT_2}
+                />
+              );
+            }
+
+            return (
               <Session
-                onDayChange={handleDayChange}
-                onWeekChange={handleWeekChange}
-                program={program}
+                maxes={program.maxes}
                 index={index}
                 week={session.week}
                 complete={session.complete}
@@ -348,12 +351,14 @@ export default function App() {
                 BG_2={BG_2}
                 TEXT_1={TEXT_1}
                 TEXT_2={TEXT_2}
-                handleComplete={() => handleComplete(index)}
                 weekOptions={weekOptions}
                 dayOptions={dayOptions}
                 showNotes={showNotes}
-                onshowNotesChange={handleshowNotesChange}
                 showDayName={showDayName}
+                onDayChange={handleDayChange}
+                onWeekChange={handleWeekChange}
+                onshowNotesChange={handleshowNotesChange}
+                onComplete={handleComplete}
               />
             );
           }}

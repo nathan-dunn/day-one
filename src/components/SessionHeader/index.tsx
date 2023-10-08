@@ -11,15 +11,15 @@ import { Day } from '../../types';
 import Checkbox from '../Checkbox';
 
 type SessionHeaderProps = {
+  index: number;
   complete: boolean;
   day: number;
   dayOptions: number[];
-  handleComplete: () => void;
+  onComplete: (index: number) => void;
   BG_1: string;
   BG_2: string;
   TEXT_1: string;
   TEXT_2: string;
-  index: number;
   onDayChange: (dayOption: number) => void;
   onWeekChange: (weekOption: number) => void;
   opacity: Animated.AnimatedInterpolation<number>;
@@ -30,11 +30,12 @@ type SessionHeaderProps = {
   showDayName: boolean;
 };
 
-export default function SessionHeader({
+function SessionHeader({
+  index,
   complete,
   day,
   dayOptions,
-  handleComplete,
+  onComplete,
   BG_1,
   BG_2,
   TEXT_1,
@@ -88,7 +89,7 @@ export default function SessionHeader({
             <Checkbox
               color={TEXT_1}
               complete={complete}
-              handleComplete={handleComplete}
+              handleComplete={() => onComplete(index)}
             />
           </Animated.View>
 
@@ -172,6 +173,8 @@ export default function SessionHeader({
     </View>
   );
 }
+
+export default React.memo(SessionHeader);
 
 const styles = StyleSheet.create({
   container: {

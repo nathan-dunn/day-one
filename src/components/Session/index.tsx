@@ -11,16 +11,17 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import TextBlock from '../TextBlock';
-import { Maxes, Program, Lift } from '../../types';
+import { Maxes, Lift } from '../../types';
 import { roundTo, findIncrement } from '../../utils';
 import SessionHeader from '../SessionHeader';
+
 const { width } = Dimensions.get('window');
 
 type SessionProps = {
   complete: boolean;
   day: number;
   dayOptions: number[];
-  handleComplete: () => void;
+  onComplete: (index: number) => void;
   BG_1: string;
   BG_2: string;
   TEXT_1: string;
@@ -31,7 +32,7 @@ type SessionProps = {
   onDayChange: (day: number) => void;
   onWeekChange: (week: number) => void;
   page: number;
-  program: Program;
+  maxes: Maxes;
   scrollX: Animated.Value;
   week: number;
   weekOptions: number[];
@@ -40,11 +41,11 @@ type SessionProps = {
   showDayName: boolean;
 };
 
-export default function Session({
+function Session({
   complete,
   day,
   dayOptions,
-  handleComplete,
+  onComplete,
   BG_1,
   BG_2,
   TEXT_1,
@@ -55,7 +56,7 @@ export default function Session({
   onDayChange,
   onWeekChange,
   page,
-  program,
+  maxes,
   scrollX,
   week,
   weekOptions,
@@ -63,12 +64,15 @@ export default function Session({
   onshowNotesChange,
   showDayName,
 }: SessionProps) {
-  const scrollViewRef = useRef<ScrollView | null>(null);
-  const [scrollPosition, setScrollPosition] = useState<number>(0);
+  // console.log('SESSION:', { page, index });
 
-  const maxes: Maxes = program.maxes;
+  if (![page - 1, page, page + 1].includes(index)) {
+    return <View style={{ width }} />;
+  }
 
   const _width = width * 0.85;
+  const scrollViewRef = useRef<ScrollView | null>(null);
+  const [scrollPosition, setScrollPosition] = useState<number>(0);
 
   const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
 
@@ -125,7 +129,7 @@ export default function Session({
             complete={complete}
             day={day}
             dayOptions={dayOptions}
-            handleComplete={handleComplete}
+            onComplete={onComplete}
             BG_1={BG_1}
             BG_2={BG_2}
             TEXT_1={TEXT_1}
@@ -276,6 +280,8 @@ export default function Session({
     </ScrollView>
   );
 }
+
+export default React.memo(Session);
 
 const styles = StyleSheet.create({
   container: {
