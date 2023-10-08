@@ -35,8 +35,8 @@ type SessionProps = {
   scrollX: Animated.Value;
   week: number;
   weekOptions: number[];
-  collapsed: boolean;
-  onCollapsedChange: (collapsed: boolean) => void;
+  showNotes: boolean;
+  onshowNotesChange: (showNotes: boolean) => void;
 };
 
 export default function Session({
@@ -58,8 +58,8 @@ export default function Session({
   scrollX,
   week,
   weekOptions,
-  collapsed,
-  onCollapsedChange,
+  showNotes,
+  onshowNotesChange,
 }: SessionProps) {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [scrollPosition, setScrollPosition] = useState<number>(0);
@@ -113,7 +113,7 @@ export default function Session({
     >
       <TouchableHighlight
         onLongPress={() => {
-          onCollapsedChange(!collapsed);
+          onshowNotesChange(!showNotes);
         }}
         underlayColor="transparent"
       >
@@ -142,12 +142,7 @@ export default function Session({
             {lifts.map(({ name, notes: liftNotes, rxs }, liftIndex) => {
               return (
                 <View
-                  style={[
-                    styles.liftContainer,
-                    {
-                      backgroundColor: BG_2,
-                    },
-                  ]}
+                  style={[styles.liftContainer, { backgroundColor: BG_2 }]}
                   key={liftIndex}
                 >
                   <TextBlock
@@ -201,7 +196,7 @@ export default function Session({
                     })}
                   </View>
 
-                  {!collapsed &&
+                  {showNotes &&
                     liftNotes
                       .filter(note => note)
                       .map((note, noteIndex) => {
@@ -241,7 +236,7 @@ export default function Session({
             })}
           </View>
 
-          {!collapsed && !!notes.filter(note => note).length && (
+          {showNotes && !!notes.filter(note => note).length && (
             <View
               style={[styles.sessionNotesContainer, { backgroundColor: BG_2 }]}
             >
@@ -322,7 +317,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   liftNote: {
-    fontWeight: '300',
+    fontWeight: '400',
     textAlign: 'left',
     marginRight: 10,
     fontSize: 16,

@@ -22,8 +22,8 @@ type PanelProps = {
   onClose: () => void;
   onProgramChange: (program: Program) => void;
   onMaxChange: (lift: string, max: number) => void;
-  onCollapsedChange: (collapsed: boolean) => void;
-  collapsed: boolean;
+  onshowNotesChange: (showNotes: boolean) => void;
+  showNotes: boolean;
   showAnimation: boolean;
   onAnimationChange: (showAnimation: boolean) => void;
   BG_1: string;
@@ -38,8 +38,8 @@ export default function Panel({
   program,
   onProgramChange,
   onMaxChange,
-  onCollapsedChange,
-  collapsed,
+  onshowNotesChange,
+  showNotes,
   showAnimation,
   onAnimationChange,
   BG_1,
@@ -224,10 +224,10 @@ export default function Panel({
 
           <Switch
             trackColor={{ false: TEXT_2, true: BG_2 }}
-            thumbColor={collapsed ? TEXT_1 : TEXT_1}
+            thumbColor={showNotes ? TEXT_1 : TEXT_1}
             ios_backgroundColor={TEXT_2}
-            onValueChange={onCollapsedChange}
-            value={collapsed}
+            onValueChange={onshowNotesChange}
+            value={showNotes}
             disabled={showProgramPicker || selectedLift ? true : false}
           />
         </TouchableOpacity>
@@ -244,7 +244,7 @@ export default function Panel({
 
           <Switch
             trackColor={{ false: TEXT_2, true: BG_2 }}
-            thumbColor={collapsed ? TEXT_1 : TEXT_1}
+            thumbColor={showNotes ? TEXT_1 : TEXT_1}
             ios_backgroundColor={TEXT_2}
             onValueChange={onAnimationChange}
             value={showAnimation}

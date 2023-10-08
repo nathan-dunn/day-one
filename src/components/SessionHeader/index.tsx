@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   day: {
     fontWeight: '600',
     marginRight: 10,
-    fontSize: 20,
+    fontSize: 18,
     lineHeight: 16 * 1.5,
   },
   checkbox: {

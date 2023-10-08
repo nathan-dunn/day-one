@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, set } from 'lodash';
 import Session from '../Session';
 import Intro from '../Intro';
 import Panel from '../Panel';
@@ -38,7 +38,7 @@ export default function App() {
 
   // PROGRAM
   const [program, setProgram] = useState<Program>(defaultProgram);
-  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [showNotes, setShowNotes] = useState<boolean>(true);
   const [showAnimation, setShowAnimation] = useState<boolean>(true);
 
   // PAGES
@@ -125,9 +125,9 @@ export default function App() {
     }
   };
 
-  const handleCollapsedChange = async (collapsed: boolean) => {
-    setCollapsed(collapsed);
-    await setStorage(`@day_one_program_collapsed`, collapsed.toString());
+  const handleshowNotesChange = async (showNotes: boolean) => {
+    setShowNotes(showNotes);
+    await setStorage(`@day_one_program_showNotes`, showNotes.toString());
   };
 
   const handleAnimationChange = async (showAnimation: boolean) => {
@@ -147,7 +147,6 @@ export default function App() {
       `@day_one_program_${program.name}`,
       JSON.stringify(updated)
     );
-
     setProgram(updated);
   };
 
@@ -171,6 +170,7 @@ export default function App() {
 
   // LOADERS
   const loadStorage = async (selectedProgram: Program) => {
+    // Load program
     const storedProgram = await getStorage(
       `@day_one_program_${selectedProgram.name}`
     );
@@ -180,17 +180,13 @@ export default function App() {
       setProgram(parsedProgram);
       const lastCompleted = findLastCompleted(parsedProgram);
       handlePageNav(lastCompleted + 1);
-
       setPageLoaded(true);
     } else {
       const _program = cloneDeep(selectedProgram);
       _program.sessions = _program.sessions.map(session => ({
         ...session,
         complete: false,
-        lifts: session.lifts.map(lift => ({
-          ...lift,
-          complete: false,
-        })),
+        lifts: session.lifts.map(lift => ({ ...lift, complete: false })),
       }));
       await setStorage(
         `@day_one_program_${_program.name}`,
@@ -200,19 +196,23 @@ export default function App() {
       setPageLoaded(true);
     }
 
-    const storedCollapsed = await getStorage(`@day_one_program_collapsed`);
-    if (storedCollapsed) {
-      setCollapsed(storedCollapsed === 'true');
+    // Load showNotes
+    const storedshowNotes = await getStorage(`@day_one_program_showNotes`);
+    if (storedshowNotes != null) {
+      setShowNotes(storedshowNotes === 'true');
     } else {
-      await setStorage(`@day_one_program_collapsed`, collapsed.toString());
+      setShowNotes(true);
+      await setStorage(`@day_one_program_showNotes`, showNotes.toString());
     }
 
+    // Load showAnimation
     const storedShowAnimation = await getStorage(
       `@day_one_program_show_animation`
     );
-    if (storedShowAnimation) {
+    if (storedShowAnimation != null) {
       setShowAnimation(storedShowAnimation === 'true');
     } else {
+      setShowAnimation(true);
       await setStorage(
         `@day_one_program_show_animation`,
         showAnimation.toString()
@@ -224,6 +224,8 @@ export default function App() {
   useEffect(() => {
     loadStorage(program);
   }, []);
+
+  console.log('show:', { showAnimation, showNotes });
 
   if (!pageLoaded) {
     return (
@@ -255,8 +257,8 @@ export default function App() {
           program={program}
           onProgramChange={handleProgramChange}
           onMaxChange={handleMaxChange}
-          onCollapsedChange={handleCollapsedChange}
-          collapsed={collapsed}
+          onshowNotesChange={handleshowNotesChange}
+          showNotes={showNotes}
           showAnimation={showAnimation}
           onAnimationChange={handleAnimationChange}
           BG_1={BG_1}
@@ -323,8 +325,8 @@ export default function App() {
                 handleComplete={() => handleComplete(index)}
                 weekOptions={weekOptions}
                 dayOptions={dayOptions}
-                collapsed={collapsed}
-                onCollapsedChange={handleCollapsedChange}
+                showNotes={showNotes}
+                onshowNotesChange={handleshowNotesChange}
               />
             );
           }}
