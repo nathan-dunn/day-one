@@ -15,7 +15,11 @@ export default function Checkbox({
 }: CheckboxProps) {
   return (
     <View style={[styles.checkbox]}>
-      <TouchableHighlight onPress={handleComplete} underlayColor="transparent">
+      <TouchableHighlight
+        onPress={handleComplete}
+        underlayColor="transparent"
+        testID="checkbox-touchable"
+      >
         <Feather
           name={complete ? 'check-circle' : 'circle'}
           size={30}

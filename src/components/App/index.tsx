@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Animated,
   Dimensions,
@@ -13,36 +13,36 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
-import LottieView from 'lottie-react-native';
 import { cloneDeep } from 'lodash';
-import Session from './Session';
-import Intro from './Intro';
-import Panel from './Panel';
-import programs from '../programs';
+import Session from '../Session';
+import Intro from '../Intro';
+import Panel from '../Panel';
+import AnimationBackground from '../AnimationBackground';
+import programs from '../../programs';
 import {
   findLastCompleted,
   getStorage,
   clearStorage,
   setStorage,
-  getColor,
-  interpolateColors,
-} from '../utils';
-import { Theme, Program, Colors } from '../types';
-import spaceAnimation from '../../assets/animations/data_2.json';
+} from '../../utils';
+import { Program, Colors } from '../../types';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const LOADING_DELAY = 1000;
 const defaultProgram = programs[1];
 
 export default function App() {
-  // PAGE
-  const [pageLoaded, setPageLoaded] = useState<boolean>(false);
+  // REFS
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const drawerRef = useRef<Drawer>(null);
+  const flatListRef = useRef<FlatList>(null);
 
   // PROGRAM
   const [program, setProgram] = useState<Program>(defaultProgram);
+  const [collapsed, setCollapsed] = useState<boolean>(false);
 
-  // PAGE & CHECKS
-  const totalPages = program.sessions.length + 1;
+  // PAGES
+  const [pageLoaded, setPageLoaded] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
 
   const weekOptions: number[] = program.sessions
@@ -52,26 +52,11 @@ export default function App() {
   const dayOptions: number[] = [1, 2, 3];
 
   // COLORS
-  const BG_1 = Colors.DARK_SPACE;
-  const BG_2 = Colors.LIGHT_SPACE;
+  const BG_1 = '#182A37';
+  const BG_2 = '#516f7f';
 
-  const gradientBG = useMemo(
-    () => interpolateColors(totalPages, [BG_1, BG_2]),
-    [totalPages]
-  );
-  const gradientColor = useMemo(
-    () => interpolateColors(totalPages, [Colors.WHITE, Colors.WHITE]),
-    [totalPages]
-  );
-
-  const HIGHLIGHT_BG = page ? gradientBG[page] : BG_1;
-  const HIGHLIGHT_COLOR = page ? gradientColor[page] : 'white';
-  const BASE_TEXT = getColor(Theme.TEXT_1);
-
-  // REFS
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const drawerRef = useRef<Drawer>(null);
-  const flatListRef = useRef<FlatList>(null);
+  const TEXT_1 = Colors.WHITE;
+  const TEXT_2 = Colors.MED_GRAY;
 
   // HANDLERS
   const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -142,6 +127,11 @@ export default function App() {
     }
   };
 
+  const handleCollapsedChange = async (collapsed: boolean) => {
+    setCollapsed(collapsed);
+    await setStorage(`@day_one_program_collapsed`, collapsed.toString());
+  };
+
   const handleComplete = async (sessionIndex: number) => {
     const updated = cloneDeep(program);
     updated.sessions[sessionIndex - 1].complete =
@@ -168,7 +158,6 @@ export default function App() {
   };
 
   const handleProgramChange = async (selectedProgram: Program) => {
-    console.log('selectedProgram:', selectedProgram.name);
     if (selectedProgram.name !== program.name) {
       loadStorage(selectedProgram);
     }
@@ -180,6 +169,8 @@ export default function App() {
       `@day_one_program_${selectedProgram.name}`
     );
     const parsedProgram = storedProgram ? JSON.parse(storedProgram) : null;
+
+    const storedCollapsed = await getStorage(`@day_one_program_collapsed`);
 
     if (parsedProgram) {
       setProgram(parsedProgram);
@@ -207,6 +198,10 @@ export default function App() {
         setPageLoaded(true);
       }, LOADING_DELAY);
     }
+
+    if (storedCollapsed) {
+      setCollapsed(storedCollapsed === 'true');
+    }
   };
 
   // EFFECTS
@@ -216,120 +211,113 @@ export default function App() {
 
   if (!pageLoaded) {
     return (
-      <SafeAreaView
-        style={[styles.container, { backgroundColor: getColor(Theme.BG_1) }]}
-      >
-        <LottieView
-          style={{ ...styles.lottie, width: width * 1.33, height }}
-          source={spaceAnimation}
-          autoPlay={true}
-          loop={true}
-        />
+      <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
         <Image
-          source={require('../../assets/splash_transparent.png')}
-          style={[
-            styles.splashImage,
-            { marginBottom: 150, width: width * 0.85 },
-          ]}
+          testID="splash-image"
+          source={require('../../../assets/images/splash_transparent.png')}
+          style={[styles.splashImage, { width: width * 0.85 }]}
         />
       </SafeAreaView>
     );
   }
 
   return (
-    <Drawer
-      ref={drawerRef}
-      styles={{
-        main: {},
-        drawer: {},
-        drawerOverlay: {},
-        mainOverlay: {},
-      }}
-      type="overlay"
-      tapToClose
-      panCloseMask={0.2}
-      tweenHandler={ratio => ({
-        main: { transform: [{ translateX: ratio * 0 }] },
-      })}
-      onClose={Keyboard.dismiss}
-      content={
-        <Panel
-          onClose={closePanel}
-          handleReset={handleReset}
-          program={program}
-          onProgramChange={handleProgramChange}
-          onMaxChange={handleMaxChange}
-        />
-      }
-    >
-      <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
-        <LottieView
-          style={{ ...styles.lottie, width: width * 1.33, height }}
-          source={spaceAnimation}
-          autoPlay={true}
-          loop={true}
-        />
-
-        <View style={styles.headerContainer}>
-          <Feather
-            name={'menu'}
-            size={24}
-            color={BASE_TEXT}
-            onPress={openPanel}
+    <View testID="drawer-panel">
+      <Drawer
+        ref={drawerRef}
+        styles={{ main: {}, drawer: {}, drawerOverlay: {}, mainOverlay: {} }}
+        type="overlay"
+        tapToClose
+        panCloseMask={0.2}
+        tweenHandler={ratio => ({
+          main: { transform: [{ translateX: ratio * 0 }] },
+        })}
+        onClose={Keyboard.dismiss}
+        content={
+          <Panel
+            onClose={closePanel}
+            handleReset={handleReset}
+            program={program}
+            onProgramChange={handleProgramChange}
+            onMaxChange={handleMaxChange}
+            BG_1={BG_1}
+            BG_2={BG_2}
+            TEXT_1={TEXT_1}
+            TEXT_2={TEXT_2}
           />
-        </View>
+        }
+      >
+        <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
+          <AnimationBackground page={page} />
 
-        <Animated.FlatList
-          keyExtractor={item => `${item.week} + ${item.day}`}
-          ref={flatListRef}
-          windowSize={program.sessions.length + 1}
-          initialScrollIndex={page}
-          showsHorizontalScrollIndicator={false}
-          scrollEventThrottle={16}
-          horizontal
-          pagingEnabled
-          onScroll={onScroll}
-          onMomentumScrollEnd={onScrollEnd}
-          getItemLayout={(_, index) => ({
-            length: width,
-            offset: width * index,
-            index,
-          })}
-          data={[{}, ...program.sessions]}
-          extraData={[program, page]}
-          renderItem={({ item: session, index }) => {
-            return index === 0 ? (
-              <Intro
-                name={program.name}
-                notes={program.notes}
-                index={index}
-                page={page}
-                scrollX={scrollX}
-              />
-            ) : (
-              <Session
-                onDayChange={handleDayChange}
-                onWeekChange={handleWeekChange}
-                program={program}
-                index={index}
-                week={session.week}
-                complete={session.complete}
-                day={session.day}
-                notes={session.notes}
-                lifts={session.lifts}
-                page={page}
-                scrollX={scrollX}
-                highlightBG={HIGHLIGHT_BG}
-                highlightColor={HIGHLIGHT_COLOR}
-                handleComplete={() => handleComplete(index)}
-                weekOptions={weekOptions}
-                dayOptions={dayOptions}
-              />
-            );
-          }}
-        />
-      </SafeAreaView>
-    </Drawer>
+          <View style={styles.headerContainer}>
+            <Feather
+              name={'menu'}
+              size={24}
+              color={TEXT_1}
+              onPress={openPanel}
+            />
+          </View>
+          <Animated.FlatList
+            keyExtractor={item => `${item.week} + ${item.day}`}
+            ref={flatListRef}
+            windowSize={program.sessions.length + 1}
+            initialScrollIndex={page}
+            showsHorizontalScrollIndicator={false}
+            scrollEventThrottle={16}
+            horizontal
+            pagingEnabled
+            onScroll={onScroll}
+            onMomentumScrollEnd={onScrollEnd}
+            getItemLayout={(_, index) => ({
+              length: width,
+              offset: width * index,
+              index,
+            })}
+            data={[{}, ...program.sessions]}
+            extraData={[program, page]}
+            renderItem={({ item: session, index }) => {
+              return index === 0 ? (
+                <Intro
+                  name={program.name}
+                  notes={program.notes}
+                  index={index}
+                  page={page}
+                  scrollX={scrollX}
+                  BG_1={BG_1}
+                  BG_2={BG_2}
+                  TEXT_1={TEXT_1}
+                  TEXT_2={TEXT_2}
+                />
+              ) : (
+                <Session
+                  onDayChange={handleDayChange}
+                  onWeekChange={handleWeekChange}
+                  program={program}
+                  index={index}
+                  week={session.week}
+                  complete={session.complete}
+                  day={session.day}
+                  notes={session.notes}
+                  lifts={session.lifts}
+                  page={page}
+                  scrollX={scrollX}
+                  BG_1={BG_1}
+                  BG_2={BG_2}
+                  TEXT_1={TEXT_1}
+                  TEXT_2={TEXT_2}
+                  handleComplete={() => handleComplete(index)}
+                  weekOptions={weekOptions}
+                  dayOptions={dayOptions}
+                  collapsed={collapsed}
+                  handleCollapsedChange={handleCollapsedChange}
+                />
+              );
+            }}
+          />
+        </SafeAreaView>
+      </Drawer>
+    </View>
   );
 }
 
@@ -350,11 +338,5 @@ const styles = StyleSheet.create({
   },
   splashImage: {
     resizeMode: 'contain',
-  },
-  lottie: {
-    overflow: 'hidden',
-    padding: 0,
-    margin: 0,
-    position: 'absolute',
   },
 });

@@ -4,10 +4,10 @@
     "slug": "day-one",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash_transparent.png",
+      "image": "./assets/images/splash_transparent.png",
       "resizeMode": "contain",
       "backgroundColor": "#242424"
     },
@@ -25,7 +25,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#242424"
       },
       "config": {
@@ -34,7 +34,7 @@
       "package": "com.tru36rit.dayone"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/images/favicon.png"
     },
     "extra": {
       "eas": {
