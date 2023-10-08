@@ -222,102 +222,95 @@ export default function App() {
   }
 
   return (
-    <View testID="drawer-panel">
-      <Drawer
-        ref={drawerRef}
-        styles={{ main: {}, drawer: {}, drawerOverlay: {}, mainOverlay: {} }}
-        type="overlay"
-        tapToClose
-        panCloseMask={0.2}
-        tweenHandler={ratio => ({
-          main: { transform: [{ translateX: ratio * 0 }] },
-        })}
-        onClose={Keyboard.dismiss}
-        content={
-          <Panel
-            onClose={closePanel}
-            handleReset={handleReset}
-            program={program}
-            onProgramChange={handleProgramChange}
-            onMaxChange={handleMaxChange}
-            BG_1={BG_1}
-            BG_2={BG_2}
-            TEXT_1={TEXT_1}
-            TEXT_2={TEXT_2}
-          />
-        }
-      >
-        <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
-          <AnimationBackground page={page} />
+    <Drawer
+      ref={drawerRef}
+      styles={{ main: {}, drawer: {}, drawerOverlay: {}, mainOverlay: {} }}
+      type="overlay"
+      tapToClose
+      panCloseMask={0.2}
+      tweenHandler={ratio => ({
+        main: { transform: [{ translateX: ratio * 0 }] },
+      })}
+      onClose={Keyboard.dismiss}
+      content={
+        <Panel
+          onClose={closePanel}
+          handleReset={handleReset}
+          program={program}
+          onProgramChange={handleProgramChange}
+          onMaxChange={handleMaxChange}
+          BG_1={BG_1}
+          BG_2={BG_2}
+          TEXT_1={TEXT_1}
+          TEXT_2={TEXT_2}
+        />
+      }
+    >
+      <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
+        <AnimationBackground page={page} />
 
-          <View style={styles.headerContainer}>
-            <Feather
-              name={'menu'}
-              size={24}
-              color={TEXT_1}
-              onPress={openPanel}
-            />
-          </View>
-          <Animated.FlatList
-            keyExtractor={item => `${item.week} + ${item.day}`}
-            ref={flatListRef}
-            windowSize={program.sessions.length + 1}
-            initialScrollIndex={page}
-            showsHorizontalScrollIndicator={false}
-            scrollEventThrottle={16}
-            horizontal
-            pagingEnabled
-            onScroll={onScroll}
-            onMomentumScrollEnd={onScrollEnd}
-            getItemLayout={(_, index) => ({
-              length: width,
-              offset: width * index,
-              index,
-            })}
-            data={[{}, ...program.sessions]}
-            extraData={[program, page]}
-            renderItem={({ item: session, index }) => {
-              return index === 0 ? (
-                <Intro
-                  name={program.name}
-                  notes={program.notes}
-                  index={index}
-                  page={page}
-                  scrollX={scrollX}
-                  BG_1={BG_1}
-                  BG_2={BG_2}
-                  TEXT_1={TEXT_1}
-                  TEXT_2={TEXT_2}
-                />
-              ) : (
-                <Session
-                  onDayChange={handleDayChange}
-                  onWeekChange={handleWeekChange}
-                  program={program}
-                  index={index}
-                  week={session.week}
-                  complete={session.complete}
-                  day={session.day}
-                  notes={session.notes}
-                  lifts={session.lifts}
-                  page={page}
-                  scrollX={scrollX}
-                  BG_1={BG_1}
-                  BG_2={BG_2}
-                  TEXT_1={TEXT_1}
-                  TEXT_2={TEXT_2}
-                  handleComplete={() => handleComplete(index)}
-                  weekOptions={weekOptions}
-                  dayOptions={dayOptions}
-                  collapsed={collapsed}
-                  handleCollapsedChange={handleCollapsedChange}
-                />
-              );
-            }}
-          />
-        </SafeAreaView>
-      </Drawer>
-    </View>
+        <View style={styles.headerContainer}>
+          <Feather name={'menu'} size={24} color={TEXT_1} onPress={openPanel} />
+        </View>
+        <Animated.FlatList
+          keyExtractor={item => `${item.week} + ${item.day}`}
+          ref={flatListRef}
+          windowSize={program.sessions.length + 1}
+          initialScrollIndex={page}
+          showsHorizontalScrollIndicator={false}
+          scrollEventThrottle={16}
+          horizontal
+          pagingEnabled
+          onScroll={onScroll}
+          onMomentumScrollEnd={onScrollEnd}
+          getItemLayout={(_, index) => ({
+            length: width,
+            offset: width * index,
+            index,
+          })}
+          data={[{}, ...program.sessions]}
+          extraData={[program, page]}
+          renderItem={({ item: session, index }) => {
+            return index === 0 ? (
+              <Intro
+                name={program.name}
+                notes={program.notes}
+                index={index}
+                page={page}
+                scrollX={scrollX}
+                BG_1={BG_1}
+                BG_2={BG_2}
+                TEXT_1={TEXT_1}
+                TEXT_2={TEXT_2}
+              />
+            ) : (
+              <Session
+                onDayChange={handleDayChange}
+                onWeekChange={handleWeekChange}
+                program={program}
+                index={index}
+                week={session.week}
+                complete={session.complete}
+                day={session.day}
+                notes={session.notes}
+                lifts={session.lifts}
+                page={page}
+                scrollX={scrollX}
+                BG_1={BG_1}
+                BG_2={BG_2}
+                TEXT_1={TEXT_1}
+                TEXT_2={TEXT_2}
+                handleComplete={() => handleComplete(index)}
+                weekOptions={weekOptions}
+                dayOptions={dayOptions}
+                collapsed={collapsed}
+                handleCollapsedChange={handleCollapsedChange}
+              />
+            );
+          }}
+        />
+      </SafeAreaView>
+    </Drawer>
   );
 }
 
