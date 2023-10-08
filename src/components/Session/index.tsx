@@ -37,6 +37,7 @@ type SessionProps = {
   weekOptions: number[];
   showNotes: boolean;
   onshowNotesChange: (showNotes: boolean) => void;
+  showDayName: boolean;
 };
 
 export default function Session({
@@ -60,6 +61,7 @@ export default function Session({
   weekOptions,
   showNotes,
   onshowNotesChange,
+  showDayName,
 }: SessionProps) {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [scrollPosition, setScrollPosition] = useState<number>(0);
@@ -136,6 +138,7 @@ export default function Session({
             translateSlow={translateSlow}
             week={week}
             weekOptions={weekOptions}
+            showDayName={showDayName}
           />
 
           <View style={[styles.liftsContainer]}>

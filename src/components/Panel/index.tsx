@@ -26,6 +26,8 @@ type PanelProps = {
   showNotes: boolean;
   showAnimation: boolean;
   onAnimationChange: (showAnimation: boolean) => void;
+  showDayName: boolean;
+  onDayNameChange: (showDayName: boolean) => void;
   BG_1: string;
   BG_2: string;
   TEXT_1: string;
@@ -42,6 +44,8 @@ export default function Panel({
   showNotes,
   showAnimation,
   onAnimationChange,
+  showDayName,
+  onDayNameChange,
   BG_1,
   BG_2,
   TEXT_1,
@@ -251,6 +255,26 @@ export default function Panel({
             disabled={showProgramPicker || selectedLift ? true : false}
           />
         </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.row, {}]} onPress={() => {}}>
+          <Text
+            style={[
+              styles.rowKey,
+              { color: showProgramPicker || selectedLift ? TEXT_2 : TEXT_1 },
+            ]}
+          >
+            show day name
+          </Text>
+
+          <Switch
+            trackColor={{ false: TEXT_2, true: BG_2 }}
+            thumbColor={showNotes ? TEXT_1 : TEXT_1}
+            ios_backgroundColor={TEXT_2}
+            onValueChange={onDayNameChange}
+            value={showDayName}
+            disabled={showProgramPicker || selectedLift ? true : false}
+          />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -306,6 +330,5 @@ const styles = StyleSheet.create({
   },
   maxesContainer: {
     gap: 10,
-    // paddingRight: 40,
   },
 });

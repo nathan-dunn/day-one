@@ -27,6 +27,7 @@ type SessionHeaderProps = {
   translateSlow: Animated.AnimatedInterpolation<number>;
   week: number;
   weekOptions: number[];
+  showDayName: boolean;
 };
 
 export default function SessionHeader({
@@ -45,11 +46,20 @@ export default function SessionHeader({
   translateSlow,
   week,
   weekOptions,
+  showDayName,
 }: SessionHeaderProps) {
   const weekText = `Week ${weekOptions[week - 1]}`;
 
-  const dayText =
-    day === 1 ? Day.monday : day === 2 ? Day.wednesday : Day.friday;
+  let dayText = `Day ${day}`;
+  if (showDayName) {
+    if (day === 1) {
+      dayText = Day.monday;
+    } else if (day === 2) {
+      dayText = Day.wednesday;
+    } else if (day === 3) {
+      dayText = Day.friday;
+    }
+  }
 
   const [showWeekPicker, setShowWeekPicker] = useState(false);
   const [showDayPicker, setShowDayPicker] = useState(false);
@@ -136,16 +146,21 @@ export default function SessionHeader({
               }}
             >
               {dayOptions.map((day: number, index: number) => {
+                let dayText = `Day ${day}`;
+                if (showDayName) {
+                  if (day === 1) {
+                    dayText = Day.monday;
+                  } else if (day === 2) {
+                    dayText = Day.wednesday;
+                  } else if (day === 3) {
+                    dayText = Day.friday;
+                  }
+                }
+
                 return (
                   <Picker.Item
                     key={String(day) + index}
-                    label={
-                      day === 1
-                        ? Day.monday
-                        : day === 2
-                        ? Day.wednesday
-                        : Day.friday
-                    }
+                    label={dayText}
                     value={String(day)}
                   />
                 );

@@ -27,8 +27,12 @@ import {
 } from '../../utils';
 import { Program, Colors } from '../../types';
 
+// VARS
 const { width } = Dimensions.get('window');
-const defaultProgram = programs[1];
+const DEFAULT_PROGRAM = programs[1];
+const DEFAULT_SHOW_NOTES = true;
+const DEFAULT_SHOW_ANIMATION = true;
+const DEFAULT_SHOW_DAY_NAME = true;
 
 export default function App() {
   // REFS
@@ -36,10 +40,15 @@ export default function App() {
   const drawerRef = useRef<Drawer>(null);
   const flatListRef = useRef<FlatList>(null);
 
-  // PROGRAM
-  const [program, setProgram] = useState<Program>(defaultProgram);
-  const [showNotes, setShowNotes] = useState<boolean>(true);
-  const [showAnimation, setShowAnimation] = useState<boolean>(true);
+  // STATE
+  const [program, setProgram] = useState<Program>(DEFAULT_PROGRAM);
+  const [showNotes, setShowNotes] = useState<boolean>(DEFAULT_SHOW_NOTES);
+  const [showAnimation, setShowAnimation] = useState<boolean>(
+    DEFAULT_SHOW_ANIMATION
+  );
+  const [showDayName, setShowDayName] = useState<boolean>(
+    DEFAULT_SHOW_DAY_NAME
+  );
 
   // PAGES
   const [pageLoaded, setPageLoaded] = useState<boolean>(false);
@@ -99,7 +108,7 @@ export default function App() {
     await clearStorage();
     closePanel();
     alert('App Reset');
-    loadStorage(defaultProgram);
+    loadStorage(DEFAULT_PROGRAM);
   };
 
   const handleWeekChange = (week: number) => {
@@ -201,8 +210,11 @@ export default function App() {
     if (storedshowNotes != null) {
       setShowNotes(storedshowNotes === 'true');
     } else {
-      setShowNotes(true);
-      await setStorage(`@day_one_program_showNotes`, showNotes.toString());
+      setShowNotes(DEFAULT_SHOW_NOTES);
+      await setStorage(
+        `@day_one_program_showNotes`,
+        DEFAULT_SHOW_NOTES.toString()
+      );
     }
 
     // Load showAnimation
@@ -212,10 +224,24 @@ export default function App() {
     if (storedShowAnimation != null) {
       setShowAnimation(storedShowAnimation === 'true');
     } else {
-      setShowAnimation(true);
+      setShowAnimation(DEFAULT_SHOW_ANIMATION);
       await setStorage(
         `@day_one_program_show_animation`,
-        showAnimation.toString()
+        DEFAULT_SHOW_ANIMATION.toString()
+      );
+    }
+
+    // Load showDayName
+    const storedShowDayName = await getStorage(
+      `@day_one_program_show_day_name`
+    );
+    if (storedShowDayName != null) {
+      setShowDayName(storedShowDayName === 'true');
+    } else {
+      setShowDayName(DEFAULT_SHOW_DAY_NAME);
+      await setStorage(
+        `@day_one_program_show_day_name`,
+        DEFAULT_SHOW_DAY_NAME.toString()
       );
     }
   };
@@ -224,8 +250,6 @@ export default function App() {
   useEffect(() => {
     loadStorage(program);
   }, []);
-
-  console.log('show:', { showAnimation, showNotes });
 
   if (!pageLoaded) {
     return (
@@ -261,6 +285,8 @@ export default function App() {
           showNotes={showNotes}
           showAnimation={showAnimation}
           onAnimationChange={handleAnimationChange}
+          showDayName={showDayName}
+          onDayNameChange={setShowDayName}
           BG_1={BG_1}
           BG_2={BG_2}
           TEXT_1={TEXT_1}
@@ -327,6 +353,7 @@ export default function App() {
                 dayOptions={dayOptions}
                 showNotes={showNotes}
                 onshowNotesChange={handleshowNotesChange}
+                showDayName={showDayName}
               />
             );
           }}
