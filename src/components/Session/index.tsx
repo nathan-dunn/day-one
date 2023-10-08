@@ -160,7 +160,7 @@ export default function Session({
                     ]}
                   />
                   <View style={[styles.rxContainer]}>
-                    {rxs.map(({ sets, reps, perc }, rxIndex) => {
+                    {rxs.map(({ sets, reps, perc, test }, rxIndex) => {
                       const max: number = maxes[name];
                       const setsText =
                         (typeof sets === 'number' && sets > 1) ||
@@ -170,7 +170,7 @@ export default function Session({
                       const repsText =
                         reps === 'AMRAP' ? '' : reps == 1 ? 'rep' : 'reps';
                       const rounded = findIncrement(name);
-                      const rxText =
+                      let rxText =
                         max && perc
                           ? `${sets} ${setsText} x ${reps} ${repsText} @ ${roundTo(
                               max * perc,
@@ -181,6 +181,10 @@ export default function Session({
                               perc * 100
                             }%`
                           : `${sets} ${setsText} x ${reps} ${repsText}`;
+
+                      if (test) {
+                        rxText = 'Work up to a new 1-rep max';
+                      }
 
                       return (
                         <TextBlock

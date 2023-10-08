@@ -1,4 +1,5 @@
 import { Program, Exercises } from '../types';
+import { makeNotes } from '../utils';
 
 const {
   SQUAT,
@@ -12,6 +13,41 @@ const {
   ARMS,
 } = Exercises;
 
+const BLANK = ARMS;
+const AMRAP = 'AMRAP';
+const _REST =
+  'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed';
+const _PAUSE_SQ =
+  'You may pause all or some of the reps in order to increase difficulty';
+const _PAUSE_BP =
+  'You may also institute a 2-3 count pause in order to increase difficulty.';
+const _NARROW =
+  'Perform this exercise with a narrow / close grip in order to increase difficulty.';
+const _NARROW_BACK_OFF =
+  'Perform the back off sets with a narrow / close grip in order to increase difficulty.';
+const _FINAL =
+  'On the final set you may push for more reps, stopping 1-2 reps shy of failure';
+const _DEFICIT =
+  'You may use a small 1-2 inch deficit as needed to increase range of motion';
+const _WEIGHT_DIPS =
+  'Add weight to Dips if performing more than 15 reps per set';
+
+const _CHINS_ = [
+  'Rest 2-3 minutes between sets.',
+  'If you cannot do Chins/Pull Ups then sub with Lat Pulldowns for sets of 8-12 reps or Bodyweight Rows for sets of 10-15 reps.',
+  'If you can only do a few chins/pull ups then perform as many sets as needed to achieve 20-25 total reps minimum.',
+  'If you can do more than 15 reps per set, add weight.',
+];
+const _ROWS_ = [
+  'Keep form strict and maintain 2-3 minute rest periods.',
+  'Perform from the hang or from the floor.',
+  'Use straps.',
+];
+const _ARMS_ = [
+  'Pick one bicep exercise and one tricep exercise and move back and forth between the two for 2-3 sets.',
+  'Rest about 1 minute between each exercise until all sets are complete.',
+];
+
 const program: Program = {
   name: 'Garage Gym Warrior II',
   shortName: 'GGW II',
@@ -24,8 +60,8 @@ const program: Program = {
     'Moving every rep of every set with speed and acceleration will challenge your physical and mental capacity. You need to stay focused and concentrate on every set and every rep.',
     'A fast bar speed does not mean wild and out of control. It also does not imply a fast eccentric phase of the lift. Lower the bar in a normal controlled fashion. You explode and accelerate the concentric phase of the lift. If this is very new to you, then add the speed in gradually. Start with just a little faster than what a normal rep might be. Over time you will get better and better at moving these loads faster and with more acceleration.',
     'The speed element applies mainly to the primary work sets on the Squat, Bench, Press, and Deadlift.',
-    'There is some dedicated hypertrophy work in the program that comes in the form of assistance Exercises (rows, dips, push ups, bicep curls, tricep extensions, stiff leg deadlifts, and the occasional back off set). In these cases a more normal rep tempo is used.',
-    'It is recommended that lifters do not skip the assistance Exercises. If there is an exercise you cannot do for some reason then swap it out with an appropriate substitution. If you can’t do Barbell Rows you might swap them out for more Chins or Pull Ups. Dips are recommended but if you cannot do Dips, substitute with Push Ups. After Deadlifts, I recommend a top set of Stiff Leg Deadlifts. If you prefer, you could swap these out with perhaps Deficit Deadlifts or Snatch Grip Deadlifts.',
+    'There is some dedicated hypertrophy work in the program that comes in the form of assistance exercises (rows, dips, push ups, bicep curls, tricep extensions, stiff leg deadlifts, and the occasional back off set). In these cases a more normal rep tempo is used.',
+    'It is recommended that lifters do not skip the assistance exercises. If there is an exercise you cannot do for some reason then swap it out with an appropriate substitution. If you can’t do Barbell Rows you might swap them out for more Chins or Pull Ups. Dips are recommended but if you cannot do Dips, substitute with Push Ups. After Deadlifts, I recommend a top set of Stiff Leg Deadlifts. If you prefer, you could swap these out with perhaps Deficit Deadlifts or Snatch Grip Deadlifts.',
     'Use common sense when progressing your assistance work. If possible, every week you should attempt to increase either weight, sets, or reps on a given exercise while maintaining good quality form.',
     'Keep in mind I have everything here for a reason. This program has been tested with dozens of my online training clients and I know that it works. If you change the program up dramatically - it makes it not this program.',
   ],
@@ -43,35 +79,22 @@ const program: Program = {
         {
           name: SQUAT,
           rxs: [{ sets: 4, reps: 3, perc: 0.75 }],
-          notes: [
-            'Rest 2-3 mins between sets.',
-            'Keep rest minimal while preserving form and focusing on bar speed.',
-          ],
+          notes: [_REST],
         },
         {
           name: BENCH,
           rxs: [{ sets: 4, reps: 3, perc: 0.75 }],
-          notes: [
-            'Rest 2-3 mins between sets.',
-            'Keep rest minimal while preserving form and focusing on bar speed.',
-          ],
+          notes: [_REST],
         },
         {
           name: ROWS,
           rxs: [{ sets: 3, reps: '8-10' }],
-          notes: [
-            'Keep form strict and maintain 2-3 minute rest periods.',
-            'Perform from the hang or from the floor.',
-            'Use straps.',
-          ],
+          notes: _ROWS_,
         },
         {
           name: DIPS_OR_PUSHUPS,
-          rxs: [{ sets: 3, reps: 'AMRAP' }],
-          notes: [
-            '2-3 mins rest between sets.',
-            'Add weight to Dips if performing more than 15 reps per set.',
-          ],
+          rxs: [{ sets: 3, reps: AMRAP }],
+          notes: ['2-3 mins rest between sets.', _WEIGHT_DIPS],
         },
       ],
     },
@@ -86,25 +109,19 @@ const program: Program = {
             { sets: 4, reps: 3, perc: 0.75 },
             { sets: 1, reps: '8+', perc: 0.6 },
           ],
-          notes: [
-            'Rest 2-3 mins between sets.',
-            'Keep rest minimal while preserving form and focusing on bar speed.',
-          ],
+          notes: [_REST],
         },
         {
           name: DEADLIFT,
           rxs: [{ sets: 4, reps: 3, perc: 0.75 }],
-          notes: [
-            'Rest 2-3 mins between sets.',
-            'Keep rest minimal while preserving form and focusing on bar speed.',
-          ],
+          notes: [_REST],
         },
         {
           name: SLDL,
           rxs: [{ sets: 1, reps: 8 }],
           notes: [
             'Use approx 50-60% of your Deadlift 1RM (or reference recent records) and perform a set of 8 reps on the SLDL.',
-            'You may use a small 1-2 inch deficit as needed to increase range of motion.',
+            _DEFICIT,
           ],
         },
       ],
@@ -117,38 +134,22 @@ const program: Program = {
         {
           name: SQUAT,
           rxs: [{ sets: 3, reps: 5, perc: 0.6 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed.',
-            'You may pause all or some of the reps in order to increase difficulty.',
-          ],
+          notes: [_REST, _PAUSE_SQ],
         },
         {
           name: BENCH,
           rxs: [{ sets: 3, reps: 5, perc: 0.6 }],
-          notes: [
-            'Perform this exercise with a narrow / close grip in order to increase difficulty.',
-            'You may also institute a 2-3 count pause in order to increase difficulty.',
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed.',
-            'On the final set you may push for more reps, stopping 1-2 reps shy of failure.',
-          ],
+          notes: [_NARROW, _PAUSE_BP, _REST, _FINAL],
         },
         {
           name: CHINS_OR_PULLUPS,
-          rxs: [{ sets: 5, reps: 'AMRAP' }],
-          notes: [
-            'Rest 2-3 minutes between sets.',
-            'If you cannot do Chins/Pull Ups then sub with Lat Pulldowns for sets of 8-12 reps or Bodyweight Rows for sets of 10-15 reps.',
-            'If you can only do a few chins/pull ups then perform as many sets as needed to achieve 20-25 total reps minimum.',
-            'If you can do more than 15 reps per set, add weight.',
-          ],
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: _CHINS_,
         },
         {
           name: ARMS,
           rxs: [{ sets: '2-3', reps: '10-15' }],
-          notes: [
-            'Pick one bicep exercise and one tricep exercise and move back and forth between the two for 2-3 sets.',
-            'Rest about 1 minute between each exercise until all sets are complete.',
-          ],
+          notes: _ARMS_,
         },
       ],
     },
@@ -160,31 +161,22 @@ const program: Program = {
         {
           name: SQUAT,
           rxs: [{ sets: 5, reps: 3, perc: 0.75 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: [_REST],
         },
         {
           name: BENCH,
           rxs: [{ sets: 5, reps: 3, perc: 0.75 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: [_REST],
         },
         {
           name: ROWS,
           rxs: [{ sets: 4, reps: '8-10' }],
-          notes: [
-            'Keep form strict and maintain 2-3 minute rest periods. Perform from the hang or from the floor. Use straps.',
-          ],
+          notes: _ROWS_,
         },
         {
           name: DIPS_OR_PUSHUPS,
-          rxs: [{ sets: 4, reps: 'AMRAP' }],
-          notes: [
-            '2 mins rest between sets.',
-            'Add weight to Dips if performing more than 15 reps per set',
-          ],
+          rxs: [{ sets: 4, reps: AMRAP }],
+          notes: ['2 mins rest between sets.', _WEIGHT_DIPS],
         },
       ],
     },
@@ -200,22 +192,21 @@ const program: Program = {
             { sets: 1, reps: '8+', perc: 0.62 },
           ],
           notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
+            _REST,
             'After the triples, perform a single set of 8 or more reps at 62%',
           ],
         },
         {
           name: DEADLIFT,
           rxs: [{ sets: 5, reps: 3, perc: 0.75 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: [_REST],
         },
         {
           name: SLDL,
           rxs: [{ sets: 1, reps: 8 }],
           notes: [
-            'Use approx 50-60% of your Deadlift 1RM (or reference recent records) and perform a set of 8 reps on the SLDL. You may use a small 1-2 inch deficit as needed to increase range of motion',
+            'Use approx 50-60% of your Deadlift 1RM (or reference recent records) and perform a set of 8 reps on the SLDL.',
+            _DEFICIT,
             'Aim to beat your set of 8 from last week',
           ],
         },
@@ -229,38 +220,22 @@ const program: Program = {
         {
           name: SQUAT,
           rxs: [{ sets: 4, reps: 5, perc: 0.6 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-            'You may pause all or some of the reps in order to increase difficulty',
-          ],
+          notes: [_REST, _PAUSE_SQ],
         },
         {
           name: BENCH,
           rxs: [{ sets: 4, reps: 5, perc: 0.6 }],
-          notes: [
-            'Perform this exercise with a narrow / close grip in order to increase difficulty',
-            'You may also institute a 2-3 count pause in order to increase difficulty',
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-            'On the final set you may push for more reps, stopping 1-2 reps shy of failure',
-          ],
+          notes: [_NARROW, _PAUSE_BP, _REST, _FINAL],
         },
         {
           name: CHINS_OR_PULLUPS,
-          rxs: [{ sets: 5, reps: 'AMRAP' }],
-          notes: [
-            'Rest 2-3 minutes between sets',
-            'If you cannot do Chins/Pull Ups then sub with Lat Pulldown or Bodyweight Rows',
-            'If you can only do a few chins/pull ups then perform as many sets as needed to achieve 15-25 total reps',
-            'If you can do more than 15 reps per set, add weight.',
-          ],
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: _CHINS_,
         },
         {
           name: ARMS,
           rxs: [{ sets: '2-3', reps: '10-15' }],
-          notes: [
-            'Pick one bicep exercise and one tricep exercise and move back and forth between the two for 2-3 sets.',
-            'Rest about 1 minute between each exercise until all sets are complete.',
-          ],
+          notes: _ARMS_,
         },
       ],
     },
@@ -272,31 +247,22 @@ const program: Program = {
         {
           name: SQUAT,
           rxs: [{ sets: 6, reps: 3, perc: 0.75 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: [_REST],
         },
         {
           name: BENCH,
           rxs: [{ sets: 6, reps: 3, perc: 0.75 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: [_REST],
         },
         {
           name: ROWS,
           rxs: [{ sets: 5, reps: '8-10' }],
-          notes: [
-            'Keep form strict and maintain 2-3 minute rest periods. Perform from the hang or from the floor. Use straps.',
-          ],
+          notes: _ROWS_,
         },
         {
           name: DIPS_OR_PUSHUPS,
-          rxs: [{ sets: 5, reps: 'AMRAP' }],
-          notes: [
-            '2 mins rest between sets.',
-            'Add weight to Dips if performing more than 15 reps per set',
-          ],
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: ['2 mins rest between sets.', _WEIGHT_DIPS],
         },
       ],
     },
@@ -312,22 +278,21 @@ const program: Program = {
             { sets: 1, reps: '8+', perc: 0.64 },
           ],
           notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
+            _REST,
             'After the triples, perform a single set of 8 or more reps at 64%',
           ],
         },
         {
           name: DEADLIFT,
           rxs: [{ sets: 6, reps: 3, perc: 0.75 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: [_REST],
         },
         {
           name: SLDL,
           rxs: [{ sets: 1, reps: 8 }],
           notes: [
-            'Use approx 50-60% of your Deadlift 1RM (or reference recent records) and perform a set of 8 reps on the SLDL. You may use a small 1-2 inch deficit as needed to increase range of motion',
+            'Use approx 50-60% of your Deadlift 1RM (or reference recent records) and perform a set of 8 reps on the SLDL.',
+            _DEFICIT,
             'Aim to beat your set of 8 from last week',
           ],
         },
@@ -341,38 +306,22 @@ const program: Program = {
         {
           name: SQUAT,
           rxs: [{ sets: 5, reps: 5, perc: 0.6 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-            'You may pause all or some of the reps in order to increase difficulty',
-          ],
+          notes: [_REST, _PAUSE_SQ],
         },
         {
           name: BENCH,
           rxs: [{ sets: 5, reps: 5, perc: 0.6 }],
-          notes: [
-            'Perform this exercise with a narrow / close grip in order to increase difficulty',
-            'You may also institute a 2-3 count pause in order to increase difficulty',
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-            'On the final set you may push for more reps, stopping 1-2 reps shy of failure',
-          ],
+          notes: [_NARROW, _PAUSE_BP, _REST, _FINAL],
         },
         {
           name: CHINS_OR_PULLUPS,
-          rxs: [{ sets: 5, reps: 'AMRAP' }],
-          notes: [
-            'Rest 2-3 minutes between sets',
-            'If you cannot do Chins/Pull Ups then sub with Lat Pulldown or Bodyweight Rows',
-            'If you can only do a few chins/pull ups then perform as many sets as needed to achieve 15-25 total reps',
-            'If you can do more than 15 reps per set, add weight.',
-          ],
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: _CHINS_,
         },
         {
           name: ARMS,
           rxs: [{ sets: '2-3', reps: '10-15' }],
-          notes: [
-            'Pick one bicep exercise and one tricep exercise and move back and forth between the two for 2-3 sets.',
-            'Rest about 1 minute between each exercise until all sets are complete.',
-          ],
+          notes: _ARMS_,
         },
       ],
     },
@@ -384,30 +333,24 @@ const program: Program = {
         {
           name: SQUAT,
           rxs: [{ sets: 4, reps: 2, perc: 0.8 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: [_REST],
         },
         {
           name: BENCH,
           rxs: [{ sets: 4, reps: 2, perc: 0.8 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: [_REST],
         },
         {
           name: ROWS,
           rxs: [{ sets: 3, reps: '6-8' }],
-          notes: [
-            'Keep form strict and maintain 2-3 minute rest periods. Perform from the hang or from the floor. Use straps. Increase weight from last cycle',
-          ],
+          notes: _ROWS_,
         },
         {
           name: DIPS_OR_PUSHUPS,
-          rxs: [{ sets: 3, reps: 'AMRAP' }],
+          rxs: [{ sets: 3, reps: AMRAP }],
           notes: [
             '2 mins rest between sets.',
-            'Add weight to Dips if performing more than 15 reps per set',
+            _WEIGHT_DIPS,
             'Add weight from last cycle if possible',
           ],
         },
@@ -425,22 +368,21 @@ const program: Program = {
             { sets: 1, reps: '8+', perc: 0.66 },
           ],
           notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
+            _REST,
             'After the doubles, perform a single set of 8 or more reps at 66%',
           ],
         },
         {
           name: DEADLIFT,
           rxs: [{ sets: 4, reps: 2, perc: 0.8 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: [_REST],
         },
         {
           name: SLDL,
           rxs: [{ sets: 1, reps: 6 }],
           notes: [
-            'Perform a set of 6 reps on the SLDL. You may use a small 1-2 inch deficit as needed to increase range of motion',
+            'Perform a set of 6 reps on the SLDL.',
+            _DEFICIT,
             'Aim to beat your sets of 8 from last week',
           ],
         },
@@ -460,8 +402,8 @@ const program: Program = {
           notes: [
             'Work up to a single at 90% of your 1RM.',
             'After the top single for the day, perform 3 sets of 5 reps at 62% of 1RM.',
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-            'You may pause all or some of the reps in order to increase difficulty',
+            _REST,
+            _PAUSE_SQ,
           ],
         },
         {
@@ -472,29 +414,21 @@ const program: Program = {
           ],
           notes: [
             'Work up to a single at 90% of your 1RM.',
-            'Perform the back off sets with a narrow / close grip in order to increase difficulty',
-            'You may also institute a 2-3 count pause in order to increase difficulty',
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-            'On the final set you may push for more reps, stopping 1-2 reps shy of failure',
+            _NARROW_BACK_OFF,
+            _PAUSE_BP,
+            _REST,
+            _FINAL,
           ],
         },
         {
           name: CHINS_OR_PULLUPS,
-          rxs: [{ sets: 5, reps: 'AMRAP' }],
-          notes: [
-            'Rest 2-3 minutes between sets',
-            'If you cannot do Chins/Pull Ups then sub with Lat Pulldown or Bodyweight Rows',
-            'If you can only do a few chins/pull ups then perform as many sets as needed to achieve 15-25 total reps',
-            'If you can do more than 15 reps per set, add weight.',
-          ],
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: _CHINS_,
         },
         {
           name: ARMS,
           rxs: [{ sets: '2-3', reps: '10-15' }],
-          notes: [
-            'Pick one bicep exercise and one tricep exercise and move back and forth between the two for 2-3 sets.',
-            'Rest about 1 minute between each exercise until all sets are complete.',
-          ],
+          notes: _ARMS_,
         },
       ],
     },
@@ -506,31 +440,22 @@ const program: Program = {
         {
           name: SQUAT,
           rxs: [{ sets: 5, reps: 2, perc: 0.8 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: [_REST],
         },
         {
           name: BENCH,
           rxs: [{ sets: 5, reps: 2, perc: 0.8 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: [_REST],
         },
         {
           name: ROWS,
           rxs: [{ sets: 4, reps: '6-8' }],
-          notes: [
-            'Keep form strict and maintain 2-3 minute rest periods. Perform from the hang or from the floor. Use straps. Increase weight from last cycle',
-          ],
+          notes: _ROWS_,
         },
         {
           name: DIPS_OR_PUSHUPS,
-          rxs: [{ sets: 4, reps: 'AMRAP' }],
-          notes: [
-            '2 mins rest between sets.',
-            'Add weight to Dips if performing more than 15 reps per set',
-          ],
+          rxs: [{ sets: 4, reps: AMRAP }],
+          notes: ['2 mins rest between sets.', _WEIGHT_DIPS],
         },
       ],
     },
@@ -546,22 +471,21 @@ const program: Program = {
             { sets: 1, reps: '8+', perc: 0.68 },
           ],
           notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
+            _REST,
             'After the doubles, perform a single set of 8 or more reps at 66%',
           ],
         },
         {
           name: DEADLIFT,
           rxs: [{ sets: 5, reps: 2, perc: 0.8 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: [_REST],
         },
         {
           name: SLDL,
           rxs: [{ sets: 1, reps: 6 }],
           notes: [
-            'Perform a set of 6 reps on the SLDL. You may use a small 1-2 inch deficit as needed to increase range of motion',
+            'Perform a set of 6 reps on the SLDL.',
+            _DEFICIT,
             'Aim to beat your sets of 8 from last week',
           ],
         },
@@ -575,39 +499,27 @@ const program: Program = {
         {
           name: SQUAT,
           rxs: [{ sets: 4, reps: 5, perc: 0.62 }],
-          notes: [
-            'Perform 4 sets of 5 reps at 62% of 1RM',
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-            'You may pause all or some of the reps in order to increase difficulty',
-          ],
+          notes: ['Perform 4 sets of 5 reps at 62% of 1RM', _REST, _PAUSE_SQ],
         },
         {
           name: BENCH,
           rxs: [{ sets: 4, reps: 5, perc: 0.62 }],
           notes: [
             'Perform the sets with a narrow / close grip in order to increase difficulty',
-            'You may also institute a 2-3 count pause in order to increase difficulty',
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-            'On the final set you may push for more reps, stopping 1-2 reps shy of failure',
+            _PAUSE_BP,
+            _REST,
+            _FINAL,
           ],
         },
         {
           name: CHINS_OR_PULLUPS,
-          rxs: [{ sets: 5, reps: 'AMRAP' }],
-          notes: [
-            'Rest 2-3 minutes between sets',
-            'If you cannot do Chins/Pull Ups then sub with Lat Pulldown or Bodyweight Rows',
-            'If you can only do a few chins/pull ups then perform as many sets as needed to achieve 15-25 total reps',
-            'If you can do more than 15 reps per set, add weight.',
-          ],
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: _CHINS_,
         },
         {
           name: ARMS,
           rxs: [{ sets: '2-3', reps: '10-15' }],
-          notes: [
-            'Pick one bicep exercise and one tricep exercise and move back and forth between the two for 2-3 sets.',
-            'Rest about 1 minute between each exercise until all sets are complete.',
-          ],
+          notes: _ARMS_,
         },
       ],
     },
@@ -619,31 +531,22 @@ const program: Program = {
         {
           name: SQUAT,
           rxs: [{ sets: 6, reps: 2, perc: 0.8 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: [_REST],
         },
         {
           name: BENCH,
           rxs: [{ sets: 6, reps: 2, perc: 0.8 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: [_REST],
         },
         {
           name: ROWS,
           rxs: [{ sets: 5, reps: '6-8' }],
-          notes: [
-            'Keep form strict and maintain 2-3 minute rest periods. Perform from the hang or from the floor. Use straps. Increase weight from last cycle',
-          ],
+          notes: _ROWS_,
         },
         {
           name: DIPS_OR_PUSHUPS,
-          rxs: [{ sets: 5, reps: 'AMRAP' }],
-          notes: [
-            '2 mins rest between sets.',
-            'Add weight to Dips if performing more than 15 reps per set',
-          ],
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: ['2 mins rest between sets.', _WEIGHT_DIPS],
         },
       ],
     },
@@ -659,22 +562,21 @@ const program: Program = {
             { sets: 1, reps: '8+', perc: 0.7 },
           ],
           notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
+            _REST,
             'After the doubles, perform a single set of 8 or more reps at 66%',
           ],
         },
         {
           name: DEADLIFT,
           rxs: [{ sets: 6, reps: 2, perc: 0.8 }],
-          notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: [_REST],
         },
         {
           name: SLDL,
           rxs: [{ sets: 1, reps: 6 }],
           notes: [
-            'Perform a set of 6 reps on the SLDL. You may use a small 1-2 inch deficit as needed to increase range of motion',
+            'Perform a set of 6 reps on the SLDL.',
+            _DEFICIT,
             'Aim to beat your sets of 8 from last week',
           ],
         },
@@ -688,39 +590,27 @@ const program: Program = {
         {
           name: SQUAT,
           rxs: [{ sets: 5, reps: 5, perc: 0.62 }],
-          notes: [
-            'Perform 5 sets of 5 reps at 62% of 1RM',
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-            'You may pause all or some of the reps in order to increase difficulty',
-          ],
+          notes: ['Perform 5 sets of 5 reps at 62% of 1RM', _REST, _PAUSE_SQ],
         },
         {
           name: BENCH,
           rxs: [{ sets: 5, reps: 5, perc: 0.62 }],
           notes: [
             'Perform the sets with a narrow / close grip in order to increase difficulty',
-            'You may also institute a 2-3 count pause in order to increase difficulty',
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-            'On the final set you may push for more reps, stopping 1-2 reps shy of failure',
+            _PAUSE_BP,
+            _REST,
+            _FINAL,
           ],
         },
         {
           name: CHINS_OR_PULLUPS,
-          rxs: [{ sets: 5, reps: 'AMRAP' }],
-          notes: [
-            'Rest 2-3 minutes between sets',
-            'If you cannot do Chins/Pull Ups then sub with Lat Pulldown or Bodyweight Rows',
-            'If you can only do a few chins/pull ups then perform as many sets as needed to achieve 15-25 total reps',
-            'If you can do more than 15 reps per set, add weight.',
-          ],
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: _CHINS_,
         },
         {
           name: ARMS,
           rxs: [{ sets: '2-3', reps: '10-15' }],
-          notes: [
-            'Pick one bicep exercise and one tricep exercise and move back and forth between the two for 2-3 sets.',
-            'Rest about 1 minute between each exercise until all sets are complete.',
-          ],
+          notes: _ARMS_,
         },
       ],
     },
@@ -732,33 +622,22 @@ const program: Program = {
         {
           name: SQUAT,
           rxs: [{ sets: 4, reps: 2, perc: 0.7 }],
-          notes: [
-            'DELOAD',
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: ['DELOAD', _REST],
         },
         {
           name: BENCH,
           rxs: [{ sets: 4, reps: 2, perc: 0.7 }],
-          notes: [
-            'DELOAD',
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-          ],
+          notes: ['DELOAD', _REST],
         },
         {
           name: ROWS,
           rxs: [{ sets: 3, reps: '8-10' }],
-          notes: [
-            'Keep form strict and maintain 2-3 minute rest periods. Perform from the hang or from the floor. Use straps. Increase weight from last cycle of 8-10',
-          ],
+          notes: _ROWS_,
         },
         {
           name: DIPS_OR_PUSHUPS,
-          rxs: [{ sets: 3, reps: 'AMRAP' }],
-          notes: [
-            '2 mins rest between sets.',
-            'Add weight to Dips if performing more than 15 reps per set',
-          ],
+          rxs: [{ sets: 3, reps: AMRAP }],
+          notes: ['2 mins rest between sets.', _WEIGHT_DIPS],
         },
       ],
     },
@@ -789,7 +668,7 @@ const program: Program = {
             { sets: 1, reps: 1, perc: 0.9 },
           ],
           notes: [
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
+            _REST,
             'After the lighter doubles, perform 3 progressively heavier singles. Rest as needed between efforts',
           ],
         },
@@ -797,7 +676,8 @@ const program: Program = {
           name: SLDL,
           rxs: [{ sets: 1, reps: 8 }],
           notes: [
-            'Perform a set of 8 reps on the SLDL. You may use a small 1-2 inch deficit as needed to increase range of motion',
+            'Perform a set of 8 reps on the SLDL.',
+            _DEFICIT,
             'Aim to beat your last set of 8 from Week 3',
           ],
         },
@@ -814,11 +694,7 @@ const program: Program = {
             { sets: 1, reps: 1, perc: 0.92 },
             { sets: 3, reps: 5, perc: 0.64 },
           ],
-          notes: [
-            'Perform 3 sets of 5 reps at 64% of 1RM',
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-            'You may pause all or some of the reps in order to increase difficulty',
-          ],
+          notes: ['Perform 3 sets of 5 reps at 64% of 1RM', _REST, _PAUSE_SQ],
         },
         {
           name: BENCH,
@@ -826,33 +702,896 @@ const program: Program = {
             { sets: 1, reps: 1, perc: 0.92 },
             { sets: 3, reps: 5, perc: 0.64 },
           ],
-          notes: [
-            'Perform the back off sets with a narrow / close grip in order to increase difficulty',
-            'You may also institute a 2-3 count pause in order to increase difficulty',
-            'Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing on bar speed',
-            'On the final set you may push for more reps, stopping 1-2 reps shy of failure',
-          ],
+          notes: [_NARROW_BACK_OFF, _PAUSE_BP, _REST, _FINAL],
         },
         {
           name: CHINS_OR_PULLUPS,
-          rxs: [{ sets: 5, reps: 'AMRAP' }],
-          notes: [
-            'Rest 2-3 minutes between sets',
-            'If you cannot do Chins/Pull Ups then sub with Lat Pulldown or Bodyweight Rows',
-            'If you can only do a few chins/pull ups then perform as many sets as needed to achieve 15-25 total reps',
-            'If you can do more than 15 reps per set, add weight.',
-          ],
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: _CHINS_,
         },
         {
           name: ARMS,
           rxs: [{ sets: '2-3', reps: '10-15' }],
-          notes: [
-            'Pick one bicep exercise and one tricep exercise and move back and forth between the two for 2-3 sets.',
-            'Rest about 1 minute between each exercise until all sets are complete.',
+          notes: _ARMS_,
+        },
+      ],
+    },
+    {
+      week: 8,
+      day: 1,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [{ sets: 4, reps: 3, perc: 0.8 }],
+          notes: [_REST],
+        },
+        {
+          name: BENCH,
+          rxs: [{ sets: 4, reps: 3, perc: 0.8 }],
+          notes: [_REST],
+        },
+        {
+          name: ROWS,
+          rxs: [{ sets: 4, reps: '8-10' }],
+          notes: _ROWS_,
+        },
+        {
+          name: DIPS_OR_PUSHUPS,
+          rxs: [{ sets: 4, reps: 'MAX' }],
+          notes: ['2 mins rest between sets.', _WEIGHT_DIPS],
+        },
+      ],
+    },
+    {
+      week: 8,
+      day: 2,
+      notes: [''],
+      lifts: [
+        // {
+        //   name: BLANK,
+        //   rxs: [{ sets: 1, reps: 1, perc: 0.1 }],
+        //   notes: makeNotes(``)
+        // },
+        {
+          name: PRESS,
+          rxs: [
+            { sets: 4, reps: 3, perc: 0.8 },
+            { sets: 1, reps: AMRAP, perc: 0.6 },
           ],
+          notes: [
+            _REST,
+            'After the triples, perform a max rep set at 60% of 1RM. Attempt to beat your total reps from week 1.',
+          ],
+        },
+        {
+          name: DEADLIFT,
+          rxs: [{ sets: 4, reps: 3, perc: 0.8 }],
+          notes: [_REST],
+        },
+        {
+          name: SLDL,
+          rxs: [{ sets: 1, reps: 8 }],
+          notes: [
+            'Perform a set of 8 reps on the SLDL',
+            'You may use a small 12 inch deficit as needed\nto increase range of motion',
+            'Aim to beat your best set of 8',
+          ],
+        },
+      ],
+    },
+
+    {
+      week: 8,
+      day: 3,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [{ sets: 4, reps: 5, perc: 0.64 }],
+          notes: [
+            'Perform 4 sets of 5 reps at 64 of 1RM',
+            'Rest 23 mins between sets',
+            'Keep rest minimal while preserving form and focusing\non bar speed',
+            'You may pause all or some of the reps in order to increase difficulty',
+          ],
+        },
+        {
+          name: BENCH,
+          rxs: [{ sets: 4, reps: 5, perc: 0.64 }],
+          notes:
+            makeNotes(`● Perform the sets with a narrow / close grip in order to increase difficulty
+          ● You may also institute a 2-3 count pause in order to increase difficulty
+          ● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● On the final set you may push for more reps, stopping 1-2 reps shy of failure`),
+        },
+        {
+          name: CHINS_OR_PULLUPS,
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: makeNotes(`● Rest 2-3 minutes between sets
+          ● If you cannot do Chins/Pull Ups then sub with Lat Pulldown or Bodyweight Rows
+          ● If you can only do a few chins/pull ups then perform as many sets as needed to
+          achieve 15-25 total reps
+          ● If you can do more than 15 reps per set, add weight.`),
+        },
+        {
+          name: ARMS,
+          rxs: [{ sets: '2-3', reps: '10-15' }],
+          notes:
+            makeNotes(`● Pick one bicep exercise and one tricep exercise and move back and forth between
+          the two for 2-3 sets.
+          ● Rest about 1 minute between each exercise until all sets are complete`),
+        },
+      ],
+    },
+
+    {
+      week: 9,
+      day: 1,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [{ sets: 5, reps: 3, perc: 0.8 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: BENCH,
+          rxs: [{ sets: 5, reps: 3, perc: 0.8 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: ROWS,
+          rxs: [{ sets: 5, reps: '8-10' }],
+          notes:
+            makeNotes(`● Keep form strict and maintain 2-3 minute rest periods. Perform from the hang or from
+          the floor. Use straps.`),
+        },
+        {
+          name: CHINS_OR_PULLUPS,
+          rxs: [{ sets: 1, reps: AMRAP }],
+          notes: makeNotes(`● 2 mins rest between sets.
+          ● Add weight to Dips if performing more than 15 reps per set`),
+        },
+      ],
+    },
+    {
+      week: 9,
+      day: 2,
+      notes: [''],
+      lifts: [
+        {
+          name: PRESS,
+          rxs: [
+            { sets: 5, reps: 3, perc: 0.8 },
+            { sets: 1, reps: AMRAP, perc: 0.62 },
+          ],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● After the triples, perform a max rep set at 62% of 1RM. Attempt to beat your total
+          reps from week 2`),
+        },
+        {
+          name: DEADLIFT,
+          rxs: [{ sets: 5, reps: 3, perc: 0.8 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: SLDL,
+          rxs: [{ sets: 1, reps: 8 }],
+          notes:
+            makeNotes(`● Perform a set of 8 reps on the SLDL. You may use a small 1-2 inch deficit as needed
+          to increase range of motion
+          ● Aim to beat your best set of 8 from previous weeks.`),
+        },
+      ],
+    },
+    {
+      week: 9,
+      day: 3,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [{ sets: 5, reps: 5, perc: 0.64 }],
+          notes: makeNotes(`● Perform 5 sets of 5 reps at 64% of 1RM.
+          ● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● You may pause all or some of the reps in order to increase difficulty`),
+        },
+        {
+          name: BENCH,
+          rxs: [{ sets: 5, reps: 5, perc: 0.64 }],
+          notes:
+            makeNotes(`● Perform the sets with a narrow / close grip in order to increase difficulty
+          ● You may also institute a 2-3 count pause in order to increase difficulty
+          ● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● On the final set you may push for more reps, stopping 1-2 reps shy of failure`),
+        },
+        {
+          name: CHINS_OR_PULLUPS,
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: makeNotes(`● Rest 2-3 minutes between sets
+          ● If you cannot do Chins/Pull Ups then sub with Lat Pulldown or Bodyweight Rows
+          ● If you can only do a few chins/pull ups then perform as many sets as needed to
+          achieve 15-25 total reps
+          ● If you can do more than 15 reps per set, add weight.`),
+        },
+        {
+          name: ARMS,
+          rxs: [{ sets: '2-3', reps: '10-15' }],
+          notes:
+            makeNotes(`● Pick one bicep exercise and one tricep exercise and move back and forth between
+          the two for 2-3 sets.
+          ● Rest about 1 minute between each exercise until all sets are complete`),
+        },
+      ],
+    },
+
+    {
+      week: 10,
+      day: 1,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [{ sets: 6, reps: 3, perc: 0.8 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: BENCH,
+          rxs: [{ sets: 6, reps: 3, perc: 0.8 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: ROWS,
+          rxs: [{ sets: 3, reps: '6-8' }],
+          notes:
+            makeNotes(`● Keep form strict and maintain 2-3 minute rest periods. Perform from the hang or from
+          the floor. Use straps. Increase weight from last week and last cycle of 6-8 reps`),
+        },
+        {
+          name: DIPS_OR_PUSHUPS,
+          rxs: [{ sets: 3, reps: AMRAP }],
+          notes: makeNotes(`● 2 mins rest between sets.
+          ● Add weight to Dips if performing more than 15 reps per set`),
+        },
+      ],
+    },
+    {
+      week: 10,
+      day: 2,
+      notes: [''],
+      lifts: [
+        {
+          name: PRESS,
+          rxs: [
+            { sets: 6, reps: 3, perc: 0.8 },
+            { sets: 1, reps: AMRAP, perc: 0.64 },
+          ],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● After the triples, perform a max rep set at 64% of 1RM. Attempt to beat your total
+          reps from week 3..`),
+        },
+        {
+          name: DEADLIFT,
+          rxs: [{ sets: 6, reps: 3, perc: 0.8 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: SLDL,
+          rxs: [{ sets: 1, reps: 8 }],
+          notes:
+            makeNotes(`● Perform a set of 8 reps on the SLDL. You may use a small 1-2 inch deficit as needed
+          to increase range of motion
+          ● Aim to beat your best set of 8 from previous weeks.`),
+        },
+      ],
+    },
+    {
+      week: 10,
+      day: 3,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [{ sets: 4, reps: 2, perc: 0.75 }],
+          notes: makeNotes(``),
+        },
+        {
+          name: BENCH,
+          rxs: [{ sets: 4, reps: 2, perc: 0.75 }],
+          notes: makeNotes(`● Perform 4 sets of 2 reps at 75% of 1RM.
+          ● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● You may pause all or some of the reps in order to increase difficulty`),
+        },
+        {
+          name: CHINS_OR_PULLUPS,
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: makeNotes(`● Rest 2-3 minutes between sets
+          ● If you cannot do Chins/Pull Ups then sub with Lat Pulldown or Bodyweight Rows
+          ● If you can only do a few chins/pull ups then perform as many sets as needed to
+          achieve 15-25 total reps
+          ● If you can do more than 15 reps per set, add weight.`),
+        },
+        {
+          name: ARMS,
+          rxs: [{ sets: '2-3', reps: '10-15' }],
+          notes:
+            makeNotes(`● Pick one bicep exercise and one tricep exercise and move back and forth between
+          the two for 2-3 sets.
+          ● Rest about 1 minute between each exercise until all sets are complete`),
+        },
+      ],
+    },
+
+    {
+      week: 11,
+      day: 1,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [{ sets: 4, reps: 2, perc: 0.85 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: BENCH,
+          rxs: [{ sets: 4, reps: 2, perc: 0.85 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: ROWS,
+          rxs: [{ sets: 4, reps: '6-8' }],
+          notes:
+            makeNotes(`● Keep form strict and maintain 2-3 minute rest periods. Perform from the hang or from
+          the floor. Use straps.`),
+        },
+        {
+          name: DIPS_OR_PUSHUPS,
+          rxs: [{ sets: 4, reps: AMRAP }],
+          notes: makeNotes(`● 2 mins rest between sets.
+          ● Add weight to Dips if performing more than 15 reps per set`),
+        },
+      ],
+    },
+    {
+      week: 11,
+      day: 2,
+      notes: [''],
+      lifts: [
+        {
+          name: PRESS,
+          rxs: [
+            { sets: 4, reps: 2, perc: 0.85 },
+            { sets: 1, reps: AMRAP, perc: 0.66 },
+          ],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● After the doubles, perform a max rep set at 66% of 1RM. Attempt to beat your total
+          reps from week 4.`),
+        },
+        {
+          name: DEADLIFT,
+          rxs: [{ sets: 4, reps: 2, perc: 0.85 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: SLDL,
+          rxs: [{ sets: 1, reps: 6 }],
+          notes:
+            makeNotes(`● Perform a set of 6 reps on the SLDL. You may use a small 1-2 inch deficit as needed
+          to increase range of motion
+          ● Aim to beat your best set of 6 from Week 6.`),
+        },
+      ],
+    },
+    {
+      week: 11,
+      day: 3,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [
+            { sets: 1, reps: 1, perc: 0.94 },
+            { sets: 3, reps: 5, perc: 0.66 },
+          ],
+          notes: makeNotes(`● Work up to a single at 94% of your 1-rep max
+          ● After the single perform 3 sets of 5 reps at 66% of 1RM.
+          ● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● You may pause all or some of the reps in order to increase difficulty`),
+        },
+        {
+          name: BENCH,
+          rxs: [
+            { sets: 1, reps: 1, perc: 0.94 },
+            { sets: 3, reps: 5, perc: 0.66 },
+          ],
+          notes: makeNotes(`● Work up to a single at 94% of your 1-rep max
+          ● After the single, perform 3 sets of 5 reps at 66% of 1RM
+          ● Perform the back off sets with a narrow / close grip in order to increase difficulty
+          ● You may also institute a 2-3 count pause in order to increase difficulty
+          ● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● On the final set you may push for more reps, stopping 1-2 reps shy of failure`),
+        },
+        {
+          name: CHINS_OR_PULLUPS,
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: makeNotes(`● Rest 2-3 minutes between sets
+          ● If you cannot do Chins/Pull Ups then sub with Lat Pulldown or Bodyweight Rows
+          ● If you can only do a few chins/pull ups then perform as many sets as needed to
+          achieve 15-25 total reps
+          ● If you can do more than 15 reps per set, add weight.`),
+        },
+        {
+          name: ARMS,
+          rxs: [{ sets: '2-3', reps: '10-15' }],
+          notes:
+            makeNotes(`● Pick one bicep exercise and one tricep exercise and move back and forth between
+          the two for 2-3 sets.
+          ● Rest about 1 minute between each exercise until all sets are complete`),
+        },
+      ],
+    },
+
+    {
+      week: 12,
+      day: 1,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [{ sets: 5, reps: 2, perc: 0.85 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: BENCH,
+          rxs: [{ sets: 5, reps: 2, perc: 0.85 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: ROWS,
+          rxs: [{ sets: 5, reps: '6-8' }],
+          notes:
+            makeNotes(`● Keep form strict and maintain 2-3 minute rest periods. Perform from the hang or from
+          the floor. Use straps. Increase weight from previous best sets of 8-10`),
+        },
+        {
+          name: DIPS_OR_PUSHUPS,
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: makeNotes(`● 2 mins rest between sets.
+          ● Add weight to Dips if performing more than 15 reps per set`),
+        },
+      ],
+    },
+    {
+      week: 12,
+      day: 2,
+      notes: [''],
+      lifts: [
+        {
+          name: PRESS,
+          rxs: [
+            { sets: 5, reps: 2, perc: 0.85 },
+            { sets: 1, reps: AMRAP, perc: 0.68 },
+          ],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● After the doubles, perform a max rep set at 68% of 1RM. Attempt to beat your total
+          reps from week 5.`),
+        },
+        {
+          name: DEADLIFT,
+          rxs: [{ sets: 5, reps: 2, perc: 0.85 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: SLDL,
+          rxs: [{ sets: 1, reps: 6 }],
+          notes:
+            makeNotes(`● Perform a set of 6 reps on the SLDL. You may use a small 1-2 inch deficit as needed
+          to increase range of motion
+          ● Aim to beat your best set of 6 from last week.`),
+        },
+      ],
+    },
+    {
+      week: 12,
+      day: 3,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [{ sets: 4, reps: 5, perc: 0.68 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● You may pause all or some of the reps in order to increase difficulty`),
+        },
+        {
+          name: BENCH,
+          rxs: [{ sets: 4, reps: 5, perc: 0.68 }],
+          notes:
+            makeNotes(`● Perform the sets with a narrow / close grip in order to increase difficulty
+          ● You may also institute a 2-3 count pause in order to increase difficulty
+          ● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● On the final set you may push for more reps, stopping 1-2 reps shy of failure`),
+        },
+        {
+          name: CHINS_OR_PULLUPS,
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: makeNotes(`● Rest 2-3 minutes between sets
+          ● If you cannot do Chins/Pull Ups then sub with Lat Pulldown or Bodyweight Rows
+          ● If you can only do a few chins/pull ups then perform as many sets as needed to
+          achieve 15-25 total reps
+          ● If you can do more than 15 reps per set, add weight.`),
+        },
+        {
+          name: ARMS,
+          rxs: [{ sets: '2-3', reps: '10-15' }],
+          notes:
+            makeNotes(`● Pick one bicep exercise and one tricep exercise and move back and forth between
+          the two for 2-3 sets.
+          ● Rest about 1 minute between each exercise until all sets are complete`),
+        },
+      ],
+    },
+
+    {
+      week: 13,
+      day: 1,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [{ sets: 6, reps: 2, perc: 0.85 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: BENCH,
+          rxs: [{ sets: 6, reps: 2, perc: 0.85 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: ROWS,
+          rxs: [{ sets: 3, reps: '8-10' }],
+          notes:
+            makeNotes(`● Keep form strict and maintain 2-3 minute rest periods. Perform from the hang or from
+          the floor. Use straps. Increase weight from previous best sets of 8-10`),
+        },
+        {
+          name: DIPS_OR_PUSHUPS,
+          rxs: [{ sets: 3, reps: AMRAP }],
+          notes: makeNotes(`● 2 mins rest between sets.
+          ● Add weight to Dips if performing more than 15 reps per set`),
+        },
+      ],
+    },
+    {
+      week: 13,
+      day: 2,
+      notes: [''],
+      lifts: [
+        {
+          name: PRESS,
+          rxs: [
+            { sets: 6, reps: 2, perc: 0.85 },
+            { sets: 1, reps: AMRAP },
+          ],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● After the doubles, perform a max rep set at 70% of 1RM. Attempt to beat your total
+          reps from week 6 if possible but stop 1 rep short of failure.`),
+        },
+        {
+          name: DEADLIFT,
+          rxs: [{ sets: 6, reps: 2, perc: 0.85 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: SLDL,
+          rxs: [{ sets: 1, reps: 5 }],
+          notes:
+            makeNotes(`● Perform a set of 5 reps on the SLDL. You may use a small 1-2 inch deficit as needed
+          to increase range of motion
+          ● Aim to beat your best set of 6 from previous weeks.`),
+        },
+      ],
+    },
+    {
+      week: 13,
+      day: 3,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [{ sets: 5, reps: 5, perc: 0.68 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● You may pause all or some of the reps in order to increase difficulty`),
+        },
+        {
+          name: BENCH,
+          rxs: [{ sets: 5, reps: 5, perc: 0.68 }],
+          notes:
+            makeNotes(`● Perform the sets with a narrow / close grip in order to increase difficulty
+          ● You may also institute a 2-3 count pause in order to increase difficulty
+          ● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: CHINS_OR_PULLUPS,
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: makeNotes(`● Rest 2-3 minutes between sets
+          ● If you cannot do Chins/Pull Ups then sub with Lat Pulldown or Bodyweight Rows
+          ● If you can only do a few chins/pull ups then perform as many sets as needed to
+          achieve 15-25 total reps
+          ● If you can do more than 15 reps per set, add weight.`),
+        },
+        {
+          name: ARMS,
+          rxs: [{ sets: '2-3', reps: '10-15' }],
+          notes:
+            makeNotes(`● Pick one bicep exercise and one tricep exercise and move back and forth between
+          the two for 2-3 sets.
+          ● Rest about 1 minute between each exercise until all sets are complete`),
+        },
+      ],
+    },
+
+    {
+      week: 14,
+      day: 1,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [{ sets: 2, reps: 2, perc: 0.9 }],
+          notes: makeNotes(`● Rest as needed between sets.`),
+        },
+        {
+          name: BENCH,
+          rxs: [{ sets: 2, reps: 2, perc: 0.9 }],
+          notes: makeNotes(`● Rest as needed between sets.`),
+        },
+        {
+          name: ROWS,
+          rxs: [{ sets: 4, reps: '8-10' }],
+          notes:
+            makeNotes(`● Keep form strict and maintain 2-3 minute rest periods. Perform from the hang or from
+          the floor. Use straps.`),
+        },
+        {
+          name: DIPS_OR_PUSHUPS,
+          rxs: [{ sets: 4, reps: AMRAP }],
+          notes: makeNotes(`● 2 mins rest between sets.
+          ● Add weight to Dips if performing more than 15 reps per set`),
+        },
+      ],
+    },
+    {
+      week: 14,
+      day: 2,
+      notes: [''],
+      lifts: [
+        {
+          name: PRESS,
+          rxs: [
+            { sets: 2, reps: 2, perc: 0.9 },
+            { sets: 1, reps: AMRAP, perc: 0.75 },
+          ],
+          notes: makeNotes(`● Rest as needed between sets
+          ● After the doubles, perform max reps at 75% of 1RM, stopping 1-2 reps shy of failure`),
+        },
+        {
+          name: DEADLIFT,
+          rxs: [{ sets: 2, reps: 2, perc: 0.9 }],
+          notes: makeNotes(`● Rest as needed between sets`),
+        },
+        {
+          name: SLDL,
+          rxs: [{ sets: 1, reps: 4 }],
+          notes:
+            makeNotes(`● Perform a set of 4 reps on the SLDL. You may use a small 1-2 inch deficit as needed
+          to increase range of motion
+          ● Aim to beat your set of 5 from last week`),
+        },
+      ],
+    },
+    {
+      week: 14,
+      day: 3,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [{ sets: 3, reps: 5, perc: 0.7 }],
+          notes:
+            makeNotes(`● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● You may pause all or some of the reps in order to increase difficulty`),
+        },
+        {
+          name: BENCH,
+          rxs: [{ sets: 3, reps: 5, perc: 0.7 }],
+          notes:
+            makeNotes(`● Perform the sets with a narrow / close grip in order to increase difficulty
+          ● You may also institute a 2-3 count pause in order to increase difficulty
+          ● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed`),
+        },
+        {
+          name: CHINS_OR_PULLUPS,
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: makeNotes(`● Rest 2-3 minutes between sets
+          ● If you cannot do Chins/Pull Ups then sub with Lat Pulldown or Bodyweight Rows
+          ● If you can only do a few chins/pull ups then perform as many sets as needed to
+          achieve 15-25 total reps
+          ● If you can do more than 15 reps per set, add weight.`),
+        },
+        {
+          name: ARMS,
+          rxs: [{ sets: '2-3', reps: '10-15' }],
+          notes:
+            makeNotes(`● Pick one bicep exercise and one tricep exercise and move back and forth between
+          the two for 2-3 sets.
+          ● Rest about 1 minute between each exercise until all sets are complete`),
+        },
+      ],
+    },
+
+    {
+      week: 15,
+      day: 1,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [{ test: true }],
+          notes:
+            makeNotes(`● Aim for a very conservative 5-10 lb 1RM and then add weight for 1-2 more attempts
+          based on feel
+          ● Rest as needed between sets.`),
+        },
+        {
+          name: BENCH,
+          rxs: [{ test: true }],
+          notes:
+            makeNotes(`● Aim for a very conservative 5-10 lb 1RM and then add weight for 1-2 more attempts
+          based on feel
+          ● Rest as needed between sets`),
+        },
+        {
+          name: ROWS,
+          rxs: [{ sets: 5, reps: 10 }],
+          notes:
+            makeNotes(`● Use a light-medium weight that is 3-4 reps short of failure and causes no form
+          breakdown or low back fatigue.`),
+        },
+        {
+          name: DIPS_OR_PUSHUPS,
+          rxs: [{ sets: 3, reps: 'TBD' }],
+          notes:
+            makeNotes(`● Stop each set well short of failure in order to avoid excessive fatigue for Wednesday
+          Presses
+          ● 2 mins rest between sets.
+          ● Add weight to Dips if performing more than 15 reps per set`),
+        },
+      ],
+    },
+    {
+      week: 15,
+      day: 2,
+      notes: [''],
+      lifts: [
+        {
+          name: PRESS,
+          rxs: [{ test: true }, { sets: 1, reps: '8-10', perc: 0.6 }],
+          notes:
+            makeNotes(`● Aim for a very conservative 5-10 lb 1RM and then add weight for 1-2 more attempts
+          based on feel
+          ● Rest as needed between sets
+          ● After the 1RM for the day perform a set of 8-10 reps at 60% of today’s top single`),
+        },
+        {
+          name: DEADLIFT,
+          rxs: [{ test: true }, { sets: 1, reps: '5-8', perc: 0.7 }],
+          notes:
+            makeNotes(`● Aim for a very conservative 5-10 lb 1RM and then add weight for 1-2 more attempts
+          based on feel
+          ● Rest as needed between sets
+          ● After the 1RM for the day, perform a set of 5-8 reps at 70% of today’s top single.`),
+        },
+      ],
+    },
+    {
+      week: 15,
+      day: 3,
+      notes: [''],
+      lifts: [
+        {
+          name: SQUAT,
+          rxs: [{ sets: 3, reps: 5, perc: 0.6 }],
+          notes:
+            makeNotes(`DELOAD. ● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● You may pause all or some of the reps in order to increase difficulty
+          ● 60% of Monday’s top single`),
+        },
+        {
+          name: BENCH,
+          rxs: [{ sets: 3, reps: 5, perc: 0.6 }],
+          notes:
+            makeNotes(`● Perform the sets with a narrow / close grip in order to increase difficulty
+          ● You may also institute a 2-3 count pause in order to increase difficulty
+          ● Rest 2-3 mins between sets. Keep rest minimal while preserving form and focusing
+          on bar speed
+          ● 60% of Monday’s top single`),
+        },
+        {
+          name: CHINS_OR_PULLUPS,
+          rxs: [{ sets: 5, reps: AMRAP }],
+          notes: makeNotes(`● Rest 2-3 minutes between sets
+          ● If you cannot do Chins/Pull Ups then sub with Lat Pulldown or Bodyweight Rows
+          ● If you can only do a few chins/pull ups then perform as many sets as needed to
+          achieve 15-25 total reps
+          ● If you can do more than 15 reps per set, add weight.`),
+        },
+        {
+          name: ARMS,
+          rxs: [{ sets: '2-3', reps: '10-15' }],
+          notes:
+            makeNotes(`● Pick one bicep exercise and one tricep exercise and move back and forth between
+          the two for 2-3 sets.
+          ● Rest about 1 minute between each exercise until all sets are complete`),
         },
       ],
     },
   ],
 };
+
 export default program;

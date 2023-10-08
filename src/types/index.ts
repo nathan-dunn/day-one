@@ -77,6 +77,7 @@ export type Rx = {
   sets?: number | string;
   reps?: number | string;
   perc?: number;
+  test?: boolean;
 };
 
 export type Lift = {
