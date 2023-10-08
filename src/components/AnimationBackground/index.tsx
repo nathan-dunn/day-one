@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Animated, Dimensions, StyleSheet } from 'react-native';
 import LottieView from 'lottie-react-native';
-import animationSrc from '../../../assets/animations/data_6.json';
+import animationSource from '../../../assets/animations/waves.json';
 
 const { width, height } = Dimensions.get('window');
 
@@ -56,9 +56,10 @@ export default function AnimationBackground({
   return (
     <Animated.View style={[styles.lottieContainer, { opacity: fadeAnim }]}>
       <LottieView
+        testID="lottie-animation"
         ref={animationRef}
         style={[styles.lottie, { width: width * 4, height }]}
-        source={animationSrc}
+        source={animationSource}
         autoPlay={page > 0}
         loop={false}
         progress={0.5}

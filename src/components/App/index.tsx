@@ -213,6 +213,7 @@ export default function App() {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
         <Image
+          testID="splash-image"
           source={require('../../../assets/images/splash_transparent.png')}
           style={[styles.splashImage, { width: width * 0.85 }]}
         />

@@ -4,7 +4,7 @@ import TextBlock from './index';
 import { TextStyle } from 'react-native';
 
 describe('TextBlock Component', () => {
-  it('renders the given text', () => {
+  test('renders the given text', () => {
     const testText = 'Hello, Jest!';
     const { getByText } = render(
       <TextBlock text={testText} style={{ color: 'red' }} />
@@ -12,7 +12,7 @@ describe('TextBlock Component', () => {
     expect(getByText(testText)).toBeTruthy();
   });
 
-  it('applies the given style', () => {
+  test('applies the given style', () => {
     const testStyle: TextStyle = { color: 'blue', fontSize: 20 };
     const { getByText } = render(
       <TextBlock text="Styled Text" style={testStyle} />

@@ -39,7 +39,7 @@ type SessionProps = {
   handleCollapsedChange: (collapsed: boolean) => void;
 };
 
-function Session({
+export default function Session({
   complete,
   day,
   dayOptions,
@@ -357,5 +357,3 @@ const styles = StyleSheet.create({
     marginLeft: -6,
   },
 });
-
-export default Session;

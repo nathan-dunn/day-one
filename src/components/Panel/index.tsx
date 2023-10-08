@@ -129,6 +129,7 @@ export default function Panel({
 
             return (
               <TouchableOpacity
+                testID="close-button"
                 key={lift + index}
                 style={[styles.row, {}]}
                 onPress={() => {
