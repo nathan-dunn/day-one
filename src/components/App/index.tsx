@@ -28,7 +28,6 @@ import {
 import { Program, Colors } from '../../types';
 
 const { width } = Dimensions.get('window');
-const LOADING_DELAY = 1000;
 const defaultProgram = programs[1];
 
 export default function App() {
@@ -91,9 +90,7 @@ export default function App() {
     });
     setPage(index);
     if (!pageLoaded) {
-      setTimeout(() => {
-        setPageLoaded(true);
-      }, LOADING_DELAY);
+      setPageLoaded(true);
     }
   };
 
@@ -176,9 +173,8 @@ export default function App() {
       setProgram(parsedProgram);
       const lastCompleted = findLastCompleted(parsedProgram);
       handlePageNav(lastCompleted + 1);
-      setTimeout(() => {
-        setPageLoaded(true);
-      }, LOADING_DELAY);
+
+      setPageLoaded(true);
     } else {
       const _program = cloneDeep(selectedProgram);
       _program.sessions = _program.sessions.map(session => ({
@@ -194,9 +190,8 @@ export default function App() {
         JSON.stringify(_program)
       );
       setProgram(_program);
-      setTimeout(() => {
-        setPageLoaded(true);
-      }, LOADING_DELAY);
+
+      setPageLoaded(true);
     }
 
     if (storedCollapsed) {
