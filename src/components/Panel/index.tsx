@@ -9,14 +9,12 @@ import {
   TouchableOpacity,
   View,
   Switch,
-  ViewStyle,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import programs from '../../programs';
-import { Maxes, Program } from '../../types';
+import { Maxes, Program, Colors } from '../../types';
 import { findIncrement, makeRange } from '../../utils';
-import { set } from 'lodash';
 
 const { width } = Dimensions.get('window');
 
