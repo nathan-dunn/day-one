@@ -7,16 +7,18 @@ const { width, height } = Dimensions.get('window');
 
 type AnimationBackgroundProps = {
   page: number;
+  showAnimation: boolean;
 };
 
 export default function AnimationBackground({
   page,
+  showAnimation,
 }: AnimationBackgroundProps) {
   const animationRef = useRef<LottieView>(null);
 
   const [fadeAnim] = useState<Animated.Value>(new Animated.Value(0));
   const [speed, setSpeed] = useState(-0.33);
-  const [on, setOn] = useState(true);
+  const [on, setOn] = useState(showAnimation);
 
   const fadeIn = (options = {}) => {
     Animated.timing(fadeAnim, {
@@ -49,9 +51,9 @@ export default function AnimationBackground({
   }, [on]);
 
   useEffect(() => {
-    if (page === 0) fadeOut({ toValue: 0 });
-    else fadeIn({ toValue: 0.7 });
-  }, [page]);
+    if (!showAnimation || page === 0) fadeOut({ toValue: 0 });
+    else if (showAnimation) fadeIn({ toValue: 0.7 });
+  }, [page, showAnimation]);
 
   return (
     <Animated.View style={[styles.lottieContainer, { opacity: fadeAnim }]}>

@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Switch,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
@@ -21,6 +22,10 @@ type PanelProps = {
   onClose: () => void;
   onProgramChange: (program: Program) => void;
   onMaxChange: (lift: string, max: number) => void;
+  onCollapsedChange: (collapsed: boolean) => void;
+  collapsed: boolean;
+  showAnimation: boolean;
+  onAnimationChange: (showAnimation: boolean) => void;
   BG_1: string;
   BG_2: string;
   TEXT_1: string;
@@ -33,6 +38,10 @@ export default function Panel({
   program,
   onProgramChange,
   onMaxChange,
+  onCollapsedChange,
+  collapsed,
+  showAnimation,
+  onAnimationChange,
   BG_1,
   BG_2,
   TEXT_1,
@@ -70,14 +79,16 @@ export default function Panel({
         />
       </View>
 
+      {/* PROGRAM */}
       <View style={[styles.sectionContainer]}>
-        {/* PROGRAM */}
-        <Text style={[styles.rowHeader, { fontSize: 20, color: TEXT_1 }]}>
+        <Text
+          style={[styles.rowHeader, { color: selectedLift ? TEXT_2 : TEXT_1 }]}
+        >
           PROGRAM
         </Text>
         <View style={[styles.row, {}]}>
           <Text
-            style={[styles.rowKey, { color: selectedLift ? TEXT_1 : TEXT_1 }]}
+            style={[styles.rowKey, { color: selectedLift ? TEXT_2 : TEXT_1 }]}
             onPress={() => {
               setSelectedLift('');
               setShowMaxPicker(false);
@@ -90,11 +101,8 @@ export default function Panel({
         {showProgramPicker && (
           <Picker
             itemStyle={{ fontSize: 20, color: TEXT_1 }}
-            style={{
-              borderRadius: 3,
-              // backgroundColor: BG_1,
-            }}
-            selectedValue={program.name} // working ?
+            style={{}}
+            selectedValue={program.name}
             onValueChange={(_, index) => {
               setShowProgramPicker(false);
               onProgramChange(programs[index]);
@@ -114,12 +122,17 @@ export default function Panel({
       </View>
 
       {/* MAXES */}
-      <View style={[styles.sectionContainer, { flexGrow: 1 }]}>
-        <Text style={[styles.rowHeader, { color: TEXT_1, fontSize: 20 }]}>
+      <View style={[styles.sectionContainer]}>
+        <Text
+          style={[
+            styles.rowHeader,
+            { color: showProgramPicker ? TEXT_2 : TEXT_1 },
+          ]}
+        >
           MAXES
         </Text>
 
-        <View style={[styles.maxes]}>
+        <View style={[styles.maxesContainer]}>
           {Object.entries(maxes).map(([lift], index) => {
             const max = program.maxes[lift];
             const TEXT_COLOR =
@@ -151,11 +164,11 @@ export default function Panel({
                     styles.rowValue,
                     {
                       width: '30%',
-                      color: TEXT_COLOR,
-                      borderColor: TEXT_COLOR,
                       borderWidth: 1,
                       padding: 10,
                       borderRadius: 3,
+                      color: TEXT_COLOR,
+                      borderColor: TEXT_COLOR,
                     },
                   ]}
                 >
@@ -165,57 +178,80 @@ export default function Panel({
             );
           })}
         </View>
+
+        {showMaxPicker && (
+          <Picker
+            itemStyle={{ fontSize: 20, color: TEXT_1 }}
+            style={{}}
+            selectedValue={String(maxes[selectedLift] || '')}
+            onValueChange={(value: string) => {
+              onMaxChange(selectedLift, Number(value));
+            }}
+          >
+            {makeRange(25, 500, findIncrement(selectedLift)).map(
+              (weight: number, index: number) => {
+                return (
+                  <Picker.Item
+                    key={String(weight) + index}
+                    label={String(weight)}
+                    value={String(weight)}
+                  />
+                );
+              }
+            )}
+          </Picker>
+        )}
       </View>
 
-      {/* {showProgramPicker && (
-        <Picker
-          itemStyle={{ fontSize: 20, color: TEXT_1 }}
-          style={{
-            borderRadius: 3,
-            // backgroundColor: BG_1,
-          }}
-          selectedValue={program.name} // working ?
-          onValueChange={(_, index) => {
-            setShowProgramPicker(false);
-            onProgramChange(programs[index]);
-          }}
+      <View style={[styles.sectionContainer]}>
+        <Text
+          style={[
+            styles.rowHeader,
+            { color: showProgramPicker || selectedLift ? TEXT_2 : TEXT_1 },
+          ]}
         >
-          {programs.map((program: Program, index: number) => {
-            return (
-              <Picker.Item
-                key={program.name + index}
-                label={program.name}
-                value={program.name}
-              />
-            );
-          })}
-        </Picker>
-      )} */}
-      {showMaxPicker && (
-        <Picker
-          itemStyle={{ fontSize: 20, color: TEXT_1 }}
-          style={{
-            borderRadius: 3,
-            // backgroundColor: BG_1,
-          }}
-          selectedValue={String(maxes[selectedLift] || '')} // working ?
-          onValueChange={(value: string) => {
-            onMaxChange(selectedLift, Number(value));
-          }}
-        >
-          {makeRange(25, 500, findIncrement(selectedLift)).map(
-            (weight: number, index: number) => {
-              return (
-                <Picker.Item
-                  key={String(weight) + index}
-                  label={String(weight)}
-                  value={String(weight)}
-                />
-              );
-            }
-          )}
-        </Picker>
-      )}
+          PREFERENCES
+        </Text>
+        <TouchableOpacity style={[styles.row, {}]} onPress={() => {}}>
+          <Text
+            style={[
+              styles.rowKey,
+              { color: showProgramPicker || selectedLift ? TEXT_2 : TEXT_1 },
+            ]}
+          >
+            show notes
+          </Text>
+
+          <Switch
+            trackColor={{ false: TEXT_2, true: BG_2 }}
+            thumbColor={collapsed ? TEXT_1 : TEXT_1}
+            ios_backgroundColor={TEXT_2}
+            onValueChange={onCollapsedChange}
+            value={collapsed}
+            disabled={showProgramPicker || selectedLift ? true : false}
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.row, {}]} onPress={() => {}}>
+          <Text
+            style={[
+              styles.rowKey,
+              { color: showProgramPicker || selectedLift ? TEXT_2 : TEXT_1 },
+            ]}
+          >
+            show animation
+          </Text>
+
+          <Switch
+            trackColor={{ false: TEXT_2, true: BG_2 }}
+            thumbColor={collapsed ? TEXT_1 : TEXT_1}
+            ios_backgroundColor={TEXT_2}
+            onValueChange={onAnimationChange}
+            value={showAnimation}
+            disabled={showProgramPicker || selectedLift ? true : false}
+          />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -239,7 +275,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   rowHeader: {
-    fontSize: 18,
+    fontSize: 20,
     paddingVertical: 10,
     fontFamily: 'Archivo Black',
     textTransform: 'uppercase',
@@ -268,8 +304,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderRadius: 2,
   },
-  maxes: {
+  maxesContainer: {
     gap: 10,
-    paddingRight: 40,
+    // paddingRight: 40,
   },
 });

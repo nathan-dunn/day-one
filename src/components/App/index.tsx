@@ -39,6 +39,7 @@ export default function App() {
   // PROGRAM
   const [program, setProgram] = useState<Program>(defaultProgram);
   const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [showAnimation, setShowAnimation] = useState<boolean>(true);
 
   // PAGES
   const [pageLoaded, setPageLoaded] = useState<boolean>(false);
@@ -129,6 +130,14 @@ export default function App() {
     await setStorage(`@day_one_program_collapsed`, collapsed.toString());
   };
 
+  const handleAnimationChange = async (showAnimation: boolean) => {
+    setShowAnimation(showAnimation);
+    await setStorage(
+      `@day_one_program_show_animation`,
+      showAnimation.toString()
+    );
+  };
+
   const handleComplete = async (sessionIndex: number) => {
     const updated = cloneDeep(program);
     updated.sessions[sessionIndex - 1].complete =
@@ -167,8 +176,6 @@ export default function App() {
     );
     const parsedProgram = storedProgram ? JSON.parse(storedProgram) : null;
 
-    const storedCollapsed = await getStorage(`@day_one_program_collapsed`);
-
     if (parsedProgram) {
       setProgram(parsedProgram);
       const lastCompleted = findLastCompleted(parsedProgram);
@@ -190,12 +197,26 @@ export default function App() {
         JSON.stringify(_program)
       );
       setProgram(_program);
-
       setPageLoaded(true);
     }
 
+    const storedCollapsed = await getStorage(`@day_one_program_collapsed`);
     if (storedCollapsed) {
       setCollapsed(storedCollapsed === 'true');
+    } else {
+      await setStorage(`@day_one_program_collapsed`, collapsed.toString());
+    }
+
+    const storedShowAnimation = await getStorage(
+      `@day_one_program_show_animation`
+    );
+    if (storedShowAnimation) {
+      setShowAnimation(storedShowAnimation === 'true');
+    } else {
+      await setStorage(
+        `@day_one_program_show_animation`,
+        showAnimation.toString()
+      );
     }
   };
 
@@ -234,6 +255,10 @@ export default function App() {
           program={program}
           onProgramChange={handleProgramChange}
           onMaxChange={handleMaxChange}
+          onCollapsedChange={handleCollapsedChange}
+          collapsed={collapsed}
+          showAnimation={showAnimation}
+          onAnimationChange={handleAnimationChange}
           BG_1={BG_1}
           BG_2={BG_2}
           TEXT_1={TEXT_1}
@@ -242,7 +267,7 @@ export default function App() {
       }
     >
       <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
-        <AnimationBackground page={page} />
+        <AnimationBackground page={page} showAnimation={showAnimation} />
 
         <View style={styles.headerContainer}>
           <Feather name={'menu'} size={24} color={TEXT_1} onPress={openPanel} />
@@ -299,7 +324,7 @@ export default function App() {
                 weekOptions={weekOptions}
                 dayOptions={dayOptions}
                 collapsed={collapsed}
-                handleCollapsedChange={handleCollapsedChange}
+                onCollapsedChange={handleCollapsedChange}
               />
             );
           }}

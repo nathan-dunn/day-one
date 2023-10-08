@@ -36,7 +36,7 @@ type SessionProps = {
   week: number;
   weekOptions: number[];
   collapsed: boolean;
-  handleCollapsedChange: (collapsed: boolean) => void;
+  onCollapsedChange: (collapsed: boolean) => void;
 };
 
 export default function Session({
@@ -59,7 +59,7 @@ export default function Session({
   week,
   weekOptions,
   collapsed,
-  handleCollapsedChange,
+  onCollapsedChange,
 }: SessionProps) {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [scrollPosition, setScrollPosition] = useState<number>(0);
@@ -113,7 +113,7 @@ export default function Session({
     >
       <TouchableHighlight
         onLongPress={() => {
-          handleCollapsedChange(!collapsed);
+          onCollapsedChange(!collapsed);
         }}
         underlayColor="transparent"
       >
