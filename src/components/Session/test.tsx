@@ -65,8 +65,8 @@ describe.skip('Session Component', () => {
     scrollX: new Animated.Value(0),
     week: 1,
     weekOptions: [1, 2, 3],
-    collapsed: false,
-    handleCollapsedChange: jest.fn(),
+    showNotes: false,
+    handleshowNotesChange: jest.fn(),
   };
 
   test('renders correctly', () => {
@@ -74,13 +74,13 @@ describe.skip('Session Component', () => {
     expect(getByText('Session Notes')).toBeTruthy();
   });
 
-  test('triggers handleCollapsedChange on long press', () => {
+  test('triggers handleshowNotesChange on long press', () => {
     const { getByText } = render(<Session {...defaultProps} />);
     const sessionContent = getByText('Session Notes');
 
     act(() => {
       fireEvent(sessionContent, 'longPress');
     });
-    expect(defaultProps.handleCollapsedChange).toHaveBeenCalledWith(true);
+    expect(defaultProps.handleshowNotesChange).toHaveBeenCalledWith(true);
   });
 });

@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, set } from 'lodash';
 import Session from '../Session';
 import Intro from '../Intro';
 import Panel from '../Panel';
@@ -27,9 +27,12 @@ import {
 } from '../../utils';
 import { Program, Colors } from '../../types';
 
+// VARS
 const { width } = Dimensions.get('window');
-const LOADING_DELAY = 1000;
-const defaultProgram = programs[1];
+const DEFAULT_PROGRAM = programs[1];
+const DEFAULT_SHOW_NOTES = true;
+const DEFAULT_SHOW_ANIMATION = true;
+const DEFAULT_SHOW_DAY_NAME = true;
 
 export default function App() {
   // REFS
@@ -37,9 +40,15 @@ export default function App() {
   const drawerRef = useRef<Drawer>(null);
   const flatListRef = useRef<FlatList>(null);
 
-  // PROGRAM
-  const [program, setProgram] = useState<Program>(defaultProgram);
-  const [collapsed, setCollapsed] = useState<boolean>(false);
+  // STATE
+  const [program, setProgram] = useState<Program>(DEFAULT_PROGRAM);
+  const [showNotes, setShowNotes] = useState<boolean>(DEFAULT_SHOW_NOTES);
+  const [showAnimation, setShowAnimation] = useState<boolean>(
+    DEFAULT_SHOW_ANIMATION
+  );
+  const [showDayName, setShowDayName] = useState<boolean>(
+    DEFAULT_SHOW_DAY_NAME
+  );
 
   // PAGES
   const [pageLoaded, setPageLoaded] = useState<boolean>(false);
@@ -91,9 +100,7 @@ export default function App() {
     });
     setPage(index);
     if (!pageLoaded) {
-      setTimeout(() => {
-        setPageLoaded(true);
-      }, LOADING_DELAY);
+      setPageLoaded(true);
     }
   };
 
@@ -101,7 +108,7 @@ export default function App() {
     await clearStorage();
     closePanel();
     alert('App Reset');
-    loadStorage(defaultProgram);
+    loadStorage(DEFAULT_PROGRAM);
   };
 
   const handleWeekChange = (week: number) => {
@@ -127,9 +134,17 @@ export default function App() {
     }
   };
 
-  const handleCollapsedChange = async (collapsed: boolean) => {
-    setCollapsed(collapsed);
-    await setStorage(`@day_one_program_collapsed`, collapsed.toString());
+  const handleshowNotesChange = async (showNotes: boolean) => {
+    setShowNotes(showNotes);
+    await setStorage(`@day_one_program_showNotes`, showNotes.toString());
+  };
+
+  const handleAnimationChange = async (showAnimation: boolean) => {
+    setShowAnimation(showAnimation);
+    await setStorage(
+      `@day_one_program_show_animation`,
+      showAnimation.toString()
+    );
   };
 
   const handleComplete = async (sessionIndex: number) => {
@@ -141,7 +156,6 @@ export default function App() {
       `@day_one_program_${program.name}`,
       JSON.stringify(updated)
     );
-
     setProgram(updated);
   };
 
@@ -165,42 +179,70 @@ export default function App() {
 
   // LOADERS
   const loadStorage = async (selectedProgram: Program) => {
+    // Load program
     const storedProgram = await getStorage(
       `@day_one_program_${selectedProgram.name}`
     );
     const parsedProgram = storedProgram ? JSON.parse(storedProgram) : null;
 
-    const storedCollapsed = await getStorage(`@day_one_program_collapsed`);
-
     if (parsedProgram) {
       setProgram(parsedProgram);
       const lastCompleted = findLastCompleted(parsedProgram);
       handlePageNav(lastCompleted + 1);
-      setTimeout(() => {
-        setPageLoaded(true);
-      }, LOADING_DELAY);
+      setPageLoaded(true);
     } else {
       const _program = cloneDeep(selectedProgram);
       _program.sessions = _program.sessions.map(session => ({
         ...session,
         complete: false,
-        lifts: session.lifts.map(lift => ({
-          ...lift,
-          complete: false,
-        })),
+        lifts: session.lifts.map(lift => ({ ...lift, complete: false })),
       }));
       await setStorage(
         `@day_one_program_${_program.name}`,
         JSON.stringify(_program)
       );
       setProgram(_program);
-      setTimeout(() => {
-        setPageLoaded(true);
-      }, LOADING_DELAY);
+      setPageLoaded(true);
     }
 
-    if (storedCollapsed) {
-      setCollapsed(storedCollapsed === 'true');
+    // Load showNotes
+    const storedshowNotes = await getStorage(`@day_one_program_showNotes`);
+    if (storedshowNotes != null) {
+      setShowNotes(storedshowNotes === 'true');
+    } else {
+      setShowNotes(DEFAULT_SHOW_NOTES);
+      await setStorage(
+        `@day_one_program_showNotes`,
+        DEFAULT_SHOW_NOTES.toString()
+      );
+    }
+
+    // Load showAnimation
+    const storedShowAnimation = await getStorage(
+      `@day_one_program_show_animation`
+    );
+    if (storedShowAnimation != null) {
+      setShowAnimation(storedShowAnimation === 'true');
+    } else {
+      setShowAnimation(DEFAULT_SHOW_ANIMATION);
+      await setStorage(
+        `@day_one_program_show_animation`,
+        DEFAULT_SHOW_ANIMATION.toString()
+      );
+    }
+
+    // Load showDayName
+    const storedShowDayName = await getStorage(
+      `@day_one_program_show_day_name`
+    );
+    if (storedShowDayName != null) {
+      setShowDayName(storedShowDayName === 'true');
+    } else {
+      setShowDayName(DEFAULT_SHOW_DAY_NAME);
+      await setStorage(
+        `@day_one_program_show_day_name`,
+        DEFAULT_SHOW_DAY_NAME.toString()
+      );
     }
   };
 
@@ -222,102 +264,102 @@ export default function App() {
   }
 
   return (
-    <View testID="drawer-panel">
-      <Drawer
-        ref={drawerRef}
-        styles={{ main: {}, drawer: {}, drawerOverlay: {}, mainOverlay: {} }}
-        type="overlay"
-        tapToClose
-        panCloseMask={0.2}
-        tweenHandler={ratio => ({
-          main: { transform: [{ translateX: ratio * 0 }] },
-        })}
-        onClose={Keyboard.dismiss}
-        content={
-          <Panel
-            onClose={closePanel}
-            handleReset={handleReset}
-            program={program}
-            onProgramChange={handleProgramChange}
-            onMaxChange={handleMaxChange}
-            BG_1={BG_1}
-            BG_2={BG_2}
-            TEXT_1={TEXT_1}
-            TEXT_2={TEXT_2}
-          />
-        }
-      >
-        <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
-          <AnimationBackground page={page} />
+    <Drawer
+      ref={drawerRef}
+      styles={{ main: {}, drawer: {}, drawerOverlay: {}, mainOverlay: {} }}
+      type="overlay"
+      tapToClose
+      panCloseMask={0.2}
+      tweenHandler={ratio => ({
+        main: { transform: [{ translateX: ratio * 0 }] },
+      })}
+      onClose={Keyboard.dismiss}
+      content={
+        <Panel
+          onClose={closePanel}
+          handleReset={handleReset}
+          program={program}
+          onProgramChange={handleProgramChange}
+          onMaxChange={handleMaxChange}
+          onshowNotesChange={handleshowNotesChange}
+          showNotes={showNotes}
+          showAnimation={showAnimation}
+          onAnimationChange={handleAnimationChange}
+          showDayName={showDayName}
+          onDayNameChange={setShowDayName}
+          BG_1={BG_1}
+          BG_2={BG_2}
+          TEXT_1={TEXT_1}
+          TEXT_2={TEXT_2}
+        />
+      }
+    >
+      <SafeAreaView style={[styles.container, { backgroundColor: BG_1 }]}>
+        <AnimationBackground page={page} showAnimation={showAnimation} />
 
-          <View style={styles.headerContainer}>
-            <Feather
-              name={'menu'}
-              size={24}
-              color={TEXT_1}
-              onPress={openPanel}
-            />
-          </View>
-          <Animated.FlatList
-            keyExtractor={item => `${item.week} + ${item.day}`}
-            ref={flatListRef}
-            windowSize={program.sessions.length + 1}
-            initialScrollIndex={page}
-            showsHorizontalScrollIndicator={false}
-            scrollEventThrottle={16}
-            horizontal
-            pagingEnabled
-            onScroll={onScroll}
-            onMomentumScrollEnd={onScrollEnd}
-            getItemLayout={(_, index) => ({
-              length: width,
-              offset: width * index,
-              index,
-            })}
-            data={[{}, ...program.sessions]}
-            extraData={[program, page]}
-            renderItem={({ item: session, index }) => {
-              return index === 0 ? (
-                <Intro
-                  name={program.name}
-                  notes={program.notes}
-                  index={index}
-                  page={page}
-                  scrollX={scrollX}
-                  BG_1={BG_1}
-                  BG_2={BG_2}
-                  TEXT_1={TEXT_1}
-                  TEXT_2={TEXT_2}
-                />
-              ) : (
-                <Session
-                  onDayChange={handleDayChange}
-                  onWeekChange={handleWeekChange}
-                  program={program}
-                  index={index}
-                  week={session.week}
-                  complete={session.complete}
-                  day={session.day}
-                  notes={session.notes}
-                  lifts={session.lifts}
-                  page={page}
-                  scrollX={scrollX}
-                  BG_1={BG_1}
-                  BG_2={BG_2}
-                  TEXT_1={TEXT_1}
-                  TEXT_2={TEXT_2}
-                  handleComplete={() => handleComplete(index)}
-                  weekOptions={weekOptions}
-                  dayOptions={dayOptions}
-                  collapsed={collapsed}
-                  handleCollapsedChange={handleCollapsedChange}
-                />
-              );
-            }}
-          />
-        </SafeAreaView>
-      </Drawer>
-    </View>
+        <View style={styles.headerContainer}>
+          <Feather name={'menu'} size={24} color={TEXT_1} onPress={openPanel} />
+        </View>
+        <Animated.FlatList
+          keyExtractor={item => `${item.week} + ${item.day}`}
+          ref={flatListRef}
+          windowSize={program.sessions.length + 1}
+          initialScrollIndex={page}
+          showsHorizontalScrollIndicator={false}
+          scrollEventThrottle={16}
+          horizontal
+          pagingEnabled
+          onScroll={onScroll}
+          onMomentumScrollEnd={onScrollEnd}
+          getItemLayout={(_, index) => ({
+            length: width,
+            offset: width * index,
+            index,
+          })}
+          data={[{}, ...program.sessions]}
+          extraData={[program, page]}
+          renderItem={({ item: session, index }) => {
+            return index === 0 ? (
+              <Intro
+                name={program.name}
+                notes={program.notes}
+                index={index}
+                page={page}
+                scrollX={scrollX}
+                BG_1={BG_1}
+                BG_2={BG_2}
+                TEXT_1={TEXT_1}
+                TEXT_2={TEXT_2}
+              />
+            ) : (
+              <Session
+                onDayChange={handleDayChange}
+                onWeekChange={handleWeekChange}
+                program={program}
+                index={index}
+                week={session.week}
+                complete={session.complete}
+                day={session.day}
+                notes={session.notes}
+                lifts={session.lifts}
+                page={page}
+                scrollX={scrollX}
+                BG_1={BG_1}
+                BG_2={BG_2}
+                TEXT_1={TEXT_1}
+                TEXT_2={TEXT_2}
+                handleComplete={() => handleComplete(index)}
+                weekOptions={weekOptions}
+                dayOptions={dayOptions}
+                showNotes={showNotes}
+                onshowNotesChange={handleshowNotesChange}
+                showDayName={showDayName}
+              />
+            );
+          }}
+        />
+      </SafeAreaView>
+    </Drawer>
   );
 }
 
