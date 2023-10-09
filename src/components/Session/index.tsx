@@ -160,30 +160,32 @@ export default function Session({
                 >
                   <TextBlock text={name} style={[styles.liftName, slowStyle]} />
                   <View style={[styles.rxContainer]}>
-                    {rxs.map(({ sets, reps, perc, test }, rxIndex) => {
-                      const max: number = maxes[name.toUpperCase()];
-                      const setsText =
-                        (typeof sets === 'number' && sets > 1) ||
-                        typeof sets === 'string'
-                          ? 'sets'
-                          : 'set';
-                      const repsText =
-                        reps === 'AMRAP' ? '' : reps == 1 ? 'rep' : 'reps';
-                      const rounded = findIncrement(name);
-                      let rxText =
-                        max && perc
-                          ? `${sets} ${setsText} x ${reps} ${repsText} @ ${roundTo(
-                              max * perc,
-                              rounded
-                            )} lbs`
-                          : perc
-                          ? `${sets} ${setsText} x ${reps} ${repsText} @ ${
-                              perc * 100
-                            }%`
-                          : `${sets} ${setsText} x ${reps} ${repsText}`;
+                    {rxs.map(({ sets, reps, perc, other }, rxIndex) => {
+                      let rxText = '';
 
-                      if (test) {
-                        rxText = 'Work up to a new 1-rep max';
+                      if (other) {
+                        rxText = other;
+                      } else {
+                        const max: number = maxes[name.toUpperCase()];
+                        const setsText =
+                          (typeof sets === 'number' && sets > 1) ||
+                          typeof sets === 'string'
+                            ? 'sets'
+                            : 'set';
+                        const repsText =
+                          reps === 'AMRAP' ? '' : reps == 1 ? 'rep' : 'reps';
+                        const rounded = findIncrement(name);
+                        rxText =
+                          max && perc
+                            ? `${sets} ${setsText} x ${reps} ${repsText} @ ${roundTo(
+                                max * perc,
+                                rounded
+                              )} lbs`
+                            : perc
+                            ? `${sets} ${setsText} x ${reps} ${repsText} @ ${
+                                perc * 100
+                              }%`
+                            : `${sets} ${setsText} x ${reps} ${repsText}`;
                       }
 
                       return (

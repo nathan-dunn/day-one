@@ -2690,7 +2690,7 @@ const program: Program = {
           name: SQUAT,
           rxs: [
             {
-              test: true,
+              other: 'Work up to a new 1-rep max',
             },
           ],
           notes: [
@@ -2702,7 +2702,7 @@ const program: Program = {
           name: BENCH,
           rxs: [
             {
-              test: true,
+              other: 'Work up to a new 1-rep max',
             },
           ],
           notes: [
@@ -2747,7 +2747,7 @@ const program: Program = {
           name: PRESS,
           rxs: [
             {
-              test: true,
+              other: 'Work up to a new 1-rep max',
             },
             {
               sets: 1,
@@ -2765,7 +2765,7 @@ const program: Program = {
           name: DEADLIFT,
           rxs: [
             {
-              test: true,
+              other: 'Work up to a new 1-rep max',
             },
             {
               sets: 1,
