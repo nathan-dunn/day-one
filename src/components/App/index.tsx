@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
-import { cloneDeep, set } from 'lodash';
+import { cloneDeep } from 'lodash';
 import Session from '../Session';
 import Intro from '../Intro';
 import Panel from '../Panel';
@@ -33,6 +33,7 @@ const DEFAULT_PROGRAM = programs[1];
 const DEFAULT_SHOW_NOTES = true;
 const DEFAULT_SHOW_ANIMATION = true;
 const DEFAULT_SHOW_DAY_NAME = true;
+const LOADING_DELAY = 1500;
 
 export default function App() {
   // REFS
@@ -49,21 +50,18 @@ export default function App() {
   const [showDayName, setShowDayName] = useState<boolean>(
     DEFAULT_SHOW_DAY_NAME
   );
-
-  // PAGES
   const [pageLoaded, setPageLoaded] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
 
+  // PAGES
   const weekOptions: number[] = program.sessions
     .filter(session => session.day === 1)
     .map(session => session.week);
-
   const dayOptions: number[] = [1, 2, 3];
 
   // COLORS
-  const BG_1 = '#182A37';
-  const BG_2 = '#516f7f';
-
+  const BG_1 = Colors.DARK_BLUE;
+  const BG_2 = Colors.BLUE_GRAY;
   const TEXT_1 = Colors.WHITE;
   const TEXT_2 = Colors.MED_GRAY;
 
@@ -72,7 +70,6 @@ export default function App() {
     const contentOffset = e.nativeEvent.contentOffset;
     const viewSize = e.nativeEvent.layoutMeasurement;
     const pageNum = Math.floor(contentOffset.x / viewSize.width);
-
     setPage(pageNum);
   };
 
@@ -82,15 +79,11 @@ export default function App() {
   );
 
   const openPanel = () => {
-    if (drawerRef.current) {
-      drawerRef.current.open();
-    }
+    if (drawerRef.current) drawerRef.current.open();
   };
 
   const closePanel = () => {
-    if (drawerRef.current) {
-      drawerRef.current.close();
-    }
+    if (drawerRef.current) drawerRef.current.close();
   };
 
   const handlePageNav = (index: number) => {
@@ -99,9 +92,7 @@ export default function App() {
       animated: true,
     });
     setPage(index);
-    if (!pageLoaded) {
-      setPageLoaded(true);
-    }
+    if (!pageLoaded) setPageLoaded(true);
   };
 
   const handleReset = async () => {
@@ -167,7 +158,6 @@ export default function App() {
       `@day_one_program_${program.name}`,
       JSON.stringify(updated)
     );
-
     setProgram(updated);
   };
 
@@ -189,7 +179,6 @@ export default function App() {
       setProgram(parsedProgram);
       const lastCompleted = findLastCompleted(parsedProgram);
       handlePageNav(lastCompleted + 1);
-      setPageLoaded(true);
     } else {
       const _program = cloneDeep(selectedProgram);
       _program.sessions = _program.sessions.map(session => ({
@@ -202,7 +191,6 @@ export default function App() {
         JSON.stringify(_program)
       );
       setProgram(_program);
-      setPageLoaded(true);
     }
 
     // Load showNotes
@@ -244,6 +232,10 @@ export default function App() {
         DEFAULT_SHOW_DAY_NAME.toString()
       );
     }
+
+    setTimeout(() => {
+      setPageLoaded(true);
+    }, LOADING_DELAY);
   };
 
   // EFFECTS
@@ -303,12 +295,14 @@ export default function App() {
         <Animated.FlatList
           keyExtractor={item => `${item.week} + ${item.day}`}
           ref={flatListRef}
-          windowSize={program.sessions.length + 1}
           initialScrollIndex={page}
           showsHorizontalScrollIndicator={false}
           scrollEventThrottle={16}
           horizontal
           pagingEnabled
+          removeClippedSubviews={true}
+          initialNumToRender={program.sessions.length + 1}
+          windowSize={program.sessions.length + 1}
           onScroll={onScroll}
           onMomentumScrollEnd={onScrollEnd}
           getItemLayout={(_, index) => ({
@@ -319,23 +313,25 @@ export default function App() {
           data={[{}, ...program.sessions]}
           extraData={[program, page]}
           renderItem={({ item: session, index }) => {
-            return index === 0 ? (
-              <Intro
-                name={program.name}
-                notes={program.notes}
-                index={index}
-                page={page}
-                scrollX={scrollX}
-                BG_1={BG_1}
-                BG_2={BG_2}
-                TEXT_1={TEXT_1}
-                TEXT_2={TEXT_2}
-              />
-            ) : (
+            if (index === 0) {
+              return (
+                <Intro
+                  name={program.name}
+                  notes={program.notes}
+                  index={index}
+                  page={page}
+                  scrollX={scrollX}
+                  BG_1={BG_1}
+                  BG_2={BG_2}
+                  TEXT_1={TEXT_1}
+                  TEXT_2={TEXT_2}
+                />
+              );
+            }
+
+            return (
               <Session
-                onDayChange={handleDayChange}
-                onWeekChange={handleWeekChange}
-                program={program}
+                maxes={program.maxes}
                 index={index}
                 week={session.week}
                 complete={session.complete}
@@ -348,12 +344,14 @@ export default function App() {
                 BG_2={BG_2}
                 TEXT_1={TEXT_1}
                 TEXT_2={TEXT_2}
-                handleComplete={() => handleComplete(index)}
                 weekOptions={weekOptions}
                 dayOptions={dayOptions}
                 showNotes={showNotes}
-                onshowNotesChange={handleshowNotesChange}
                 showDayName={showDayName}
+                onDayChange={handleDayChange}
+                onWeekChange={handleWeekChange}
+                onshowNotesChange={handleshowNotesChange}
+                onComplete={handleComplete}
               />
             );
           }}

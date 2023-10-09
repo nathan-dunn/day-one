@@ -27,10 +27,7 @@ export default function Intro({
   name,
   notes,
   scrollX,
-  BG_1,
-  BG_2,
   TEXT_1,
-  TEXT_2,
 }: IntroProps) {
   const inputRange = [
     (sessionIndex - 1) * width,
@@ -120,7 +117,7 @@ const styles = StyleSheet.create({
   notesContainer: {},
   note: {
     fontWeight: '300',
-    textAlign: 'justify',
+    // textAlign: 'justify',
     marginRight: 10,
     fontSize: 16,
     lineHeight: 16 * 1.5,

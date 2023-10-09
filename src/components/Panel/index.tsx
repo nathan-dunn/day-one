@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
+  Animated,
   Dimensions,
+  Easing,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -11,7 +13,7 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import programs from '../../programs';
-import { Maxes, Program } from '../../types';
+import { Maxes, Program, Colors } from '../../types';
 import { findIncrement, makeRange } from '../../utils';
 
 const { width } = Dimensions.get('window');
@@ -51,6 +53,8 @@ export default function Panel({
   TEXT_1,
   TEXT_2,
 }: PanelProps) {
+  const spinValue = useRef(new Animated.Value(0)).current;
+
   const _width = width * 0.85;
   const maxes: Maxes = program.maxes;
 
@@ -58,29 +62,49 @@ export default function Panel({
   const [showMaxPicker, setShowMaxPicker] = useState(false);
   const [selectedLift, setSelectedLift] = useState<string>('');
 
+  const startSpin = () => {
+    spinValue.setValue(0);
+    Animated.timing(spinValue, {
+      toValue: 0.25,
+      duration: 250,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start();
+
+    setTimeout(() => {
+      setSelectedLift('');
+      setShowProgramPicker(false);
+      setShowMaxPicker(false);
+      onClose();
+    }, 300);
+  };
+
+  const spin = spinValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['360deg', '0deg'],
+  });
+
   return (
     <SafeAreaView
       style={[
         styles.container,
-        { width: _width, backgroundColor: BG_1, borderRightWidth: 0 },
+        {
+          width: _width,
+          backgroundColor: BG_1,
+          borderRightColor: BG_2,
+          borderRightWidth: 3,
+        },
       ]}
     >
       {/* HEADER */}
       <View style={[styles.headerContainer]}>
-        <Feather
-          name={'x'}
-          size={24}
-          color={TEXT_1}
-          alignSelf="flex-end"
-          padding={20}
-          onPress={() => {
-            setSelectedLift('');
-            setShowProgramPicker(false);
-            setShowMaxPicker(false);
-            onClose();
-          }}
-          onLongPress={handleReset}
-        />
+        <TouchableOpacity onPress={startSpin} onLongPress={handleReset}>
+          <Animated.View
+            style={[styles.icon, { transform: [{ rotate: spin }] }]}
+          >
+            <Feather name={'x'} size={24} color={TEXT_1} />
+          </Animated.View>
+        </TouchableOpacity>
       </View>
 
       {/* PROGRAM */}
@@ -172,10 +196,7 @@ export default function Panel({
                   style={[
                     styles.rowValue,
                     styles.input,
-                    {
-                      color: TEXT_COLOR,
-                      borderColor: TEXT_COLOR,
-                    },
+                    { color: TEXT_COLOR, borderColor: TEXT_COLOR },
                   ]}
                 >
                   {max}
@@ -299,6 +320,14 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     width: '100%',
     paddingTop: 0,
+  },
+  icon: {
+    top: 20,
+    left: 20,
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   sectionContainer: {
     paddingHorizontal: 20,
