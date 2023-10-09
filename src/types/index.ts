@@ -35,6 +35,8 @@ export enum Colors {
   DARK_SPACE = '#313854',
   MED_SPACE = '#394473',
   LIGHT_SPACE = '#5666A3',
+  DARK_BLUE = '#182A37',
+  BLUE_GRAY = '#516F7F',
 }
 
 export enum Mode {

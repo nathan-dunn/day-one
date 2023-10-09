@@ -33,6 +33,7 @@ const DEFAULT_PROGRAM = programs[1];
 const DEFAULT_SHOW_NOTES = true;
 const DEFAULT_SHOW_ANIMATION = true;
 const DEFAULT_SHOW_DAY_NAME = true;
+const LOADING_DELAY = 2000;
 
 export default function App() {
   // REFS
@@ -49,21 +50,18 @@ export default function App() {
   const [showDayName, setShowDayName] = useState<boolean>(
     DEFAULT_SHOW_DAY_NAME
   );
-
-  // PAGES
   const [pageLoaded, setPageLoaded] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
 
+  // PAGES
   const weekOptions: number[] = program.sessions
     .filter(session => session.day === 1)
     .map(session => session.week);
-
   const dayOptions: number[] = [1, 2, 3];
 
   // COLORS
-  const BG_1 = '#182A37';
-  const BG_2 = '#516f7f';
-
+  const BG_1 = Colors.DARK_BLUE;
+  const BG_2 = Colors.BLUE_GRAY;
   const TEXT_1 = Colors.WHITE;
   const TEXT_2 = Colors.MED_GRAY;
 
@@ -81,15 +79,11 @@ export default function App() {
   );
 
   const openPanel = () => {
-    if (drawerRef.current) {
-      drawerRef.current.open();
-    }
+    if (drawerRef.current) drawerRef.current.open();
   };
 
   const closePanel = () => {
-    if (drawerRef.current) {
-      drawerRef.current.close();
-    }
+    if (drawerRef.current) drawerRef.current.close();
   };
 
   const handlePageNav = (index: number) => {
@@ -98,9 +92,7 @@ export default function App() {
       animated: true,
     });
     setPage(index);
-    if (!pageLoaded) {
-      setPageLoaded(true);
-    }
+    if (!pageLoaded) setPageLoaded(true);
   };
 
   const handleReset = async () => {
@@ -166,7 +158,6 @@ export default function App() {
       `@day_one_program_${program.name}`,
       JSON.stringify(updated)
     );
-
     setProgram(updated);
   };
 
@@ -188,7 +179,6 @@ export default function App() {
       setProgram(parsedProgram);
       const lastCompleted = findLastCompleted(parsedProgram);
       handlePageNav(lastCompleted + 1);
-      setPageLoaded(true);
     } else {
       const _program = cloneDeep(selectedProgram);
       _program.sessions = _program.sessions.map(session => ({
@@ -201,7 +191,6 @@ export default function App() {
         JSON.stringify(_program)
       );
       setProgram(_program);
-      setPageLoaded(true);
     }
 
     // Load showNotes
@@ -243,6 +232,10 @@ export default function App() {
         DEFAULT_SHOW_DAY_NAME.toString()
       );
     }
+
+    setTimeout(() => {
+      setPageLoaded(true);
+    }, LOADING_DELAY);
   };
 
   // EFFECTS
