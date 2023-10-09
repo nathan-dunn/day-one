@@ -214,25 +214,6 @@ export const makeRange = (
   return result;
 };
 
-// export const makeNotes = (
-//   rawNotes: string,
-//   print: boolean = false
-// ): string[] => {
-//   const splitNotes = rawNotes.split(/●|\./);
-
-//   const result = splitNotes
-//     .map(note => note.replace(/[^a-zA-Z0-9\s-]+/g, '').trim())
-//     .filter(note => note);
-
-//   if (print) {
-//     console.log();
-//     console.log(JSON.stringify(result));
-//     console.log();
-//   }
-
-//   return result;
-// };
-
 export const makeNotes = (
   rawNotes: string,
   print: boolean = false
