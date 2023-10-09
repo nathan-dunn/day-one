@@ -43,7 +43,7 @@ export default function AnimationBackground({
       if (on) {
         fadeOut({ duration: 6000 });
         setOn(!on);
-      } else if (page > 0) {
+      } else if (showAnimation && page > 0) {
         fadeIn({ duration: 3000 });
         setOn(!on);
       }

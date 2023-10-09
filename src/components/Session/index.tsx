@@ -16,61 +16,55 @@ import { roundTo, findIncrement } from '../../utils';
 import SessionHeader from '../SessionHeader';
 
 const { width } = Dimensions.get('window');
+const _width = width * 0.85;
 
 type SessionProps = {
+  BG_1: string;
+  BG_2: string;
   complete: boolean;
   day: number;
   dayOptions: number[];
-  onComplete: (index: number) => void;
-  BG_1: string;
-  BG_2: string;
-  TEXT_1: string;
-  TEXT_2: string;
   index: number;
   lifts: Lift[];
+  maxes: Maxes;
   notes: string[];
+  onComplete: (index: number) => void;
   onDayChange: (day: number) => void;
+  onshowNotesChange: (showNotes: boolean) => void;
   onWeekChange: (week: number) => void;
   page: number;
-  maxes: Maxes;
   scrollX: Animated.Value;
+  showDayName: boolean;
+  showNotes: boolean;
+  TEXT_1: string;
+  TEXT_2: string;
   week: number;
   weekOptions: number[];
-  showNotes: boolean;
-  onshowNotesChange: (showNotes: boolean) => void;
-  showDayName: boolean;
 };
 
 function Session({
+  BG_1,
+  BG_2,
   complete,
   day,
   dayOptions,
-  onComplete,
-  BG_1,
-  BG_2,
-  TEXT_1,
-  TEXT_2,
   index,
   lifts,
+  maxes,
   notes,
+  onComplete,
   onDayChange,
+  onshowNotesChange,
   onWeekChange,
   page,
-  maxes,
   scrollX,
+  showDayName,
+  showNotes,
+  TEXT_1,
+  TEXT_2,
   week,
   weekOptions,
-  showNotes,
-  onshowNotesChange,
-  showDayName,
 }: SessionProps) {
-  // console.log('SESSION:', { page, index });
-
-  if (![page - 1, page, page + 1].includes(index)) {
-    return <View style={{ width }} />;
-  }
-
-  const _width = width * 0.85;
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [scrollPosition, setScrollPosition] = useState<number>(0);
 
@@ -98,6 +92,18 @@ function Session({
       inputRange,
       outputRange: [width, 0, -width],
     });
+
+  const fastStyle = {
+    color: TEXT_1,
+    opacity,
+    transform: [{ translateX: translateFast }],
+  };
+
+  const slowStyle = {
+    color: TEXT_1,
+    opacity,
+    transform: [{ translateX: translateSlow }],
+  };
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const scrollPosition = event.nativeEvent.contentOffset.y;
@@ -152,17 +158,7 @@ function Session({
                   style={[styles.liftContainer, { backgroundColor: BG_2 }]}
                   key={liftIndex}
                 >
-                  <TextBlock
-                    text={name}
-                    style={[
-                      styles.liftName,
-                      {
-                        color: TEXT_1,
-                        transform: [{ translateX: translateSlow }],
-                        opacity,
-                      },
-                    ]}
-                  />
+                  <TextBlock text={name} style={[styles.liftName, slowStyle]} />
                   <View style={[styles.rxContainer]}>
                     {rxs.map(({ sets, reps, perc, test }, rxIndex) => {
                       const max: number = maxes[name];
@@ -194,85 +190,60 @@ function Session({
                         <TextBlock
                           key={rxIndex}
                           text={rxText}
-                          style={[
-                            styles.rx,
-                            {
-                              color: TEXT_1,
-                              opacity,
-                              transform: [{ translateX: translateFast }],
-                            },
-                          ]}
+                          style={[styles.rx, fastStyle]}
                         />
                       );
                     })}
                   </View>
 
                   {showNotes &&
-                    liftNotes
-                      .filter(note => note)
-                      .map((note, noteIndex) => {
-                        return (
-                          <View
-                            key={noteIndex}
-                            style={[styles.liftNoteContainer]}
-                          >
-                            <TextBlock
-                              text={'•'}
-                              style={[
-                                styles.bullet,
-                                {
-                                  color: TEXT_1,
-                                  opacity,
-                                  transform: [{ translateX: translateFast }],
-                                },
-                              ]}
-                            />
+                    liftNotes.map((note, noteIndex) => {
+                      return (
+                        <View
+                          key={noteIndex}
+                          style={[styles.liftNoteContainer]}
+                        >
+                          <TextBlock
+                            text={'•'}
+                            style={[styles.bullet, fastStyle]}
+                          />
 
-                            <TextBlock
-                              text={note.replace(/\.$/, '').trim()}
-                              style={[
-                                styles.liftNote,
-                                {
-                                  color: TEXT_1,
-                                  opacity,
-                                  transform: [{ translateX: translateFast }],
-                                },
-                              ]}
-                            />
-                          </View>
-                        );
-                      })}
+                          <TextBlock
+                            text={note.replace(/\.$/, '').trim()}
+                            style={[styles.liftNote, fastStyle]}
+                          />
+                        </View>
+                      );
+                    })}
                 </View>
               );
             })}
           </View>
 
-          {showNotes && !!notes.filter(note => note).length && (
+          {showNotes && !!notes.length && (
             <View
               style={[styles.sessionNotesContainer, { backgroundColor: BG_2 }]}
             >
               <Text style={[styles.sessionNoteHeader, { color: TEXT_1 }]}>
                 Session Notes
               </Text>
-              {notes
-                .filter(note => note)
-                .map((note, noteIndex) => {
-                  return (
-                    <View key={noteIndex} style={[styles.sessionNoteContainer]}>
-                      <TextBlock
-                        text={note.trim()}
-                        style={[
-                          styles.sessionNote,
-                          {
-                            color: TEXT_1,
-                            opacity,
-                            transform: [{ translateX: translateFast }],
-                          },
-                        ]}
-                      />
-                    </View>
-                  );
-                })}
+              {notes.map((note, noteIndex) => {
+                return (
+                  <View key={noteIndex} style={[styles.sessionNoteContainer]}>
+                    <TextBlock
+                      text={note.trim()}
+                      style={[
+                        styles.sessionNote,
+                        {
+                          color: TEXT_1,
+                          opacity,
+                          transform: [{ translateX: translateFast }],
+                        },
+                      ]}
+                    />
+                  </View>
+                );
+              })}
             </View>
           )}
         </View>
