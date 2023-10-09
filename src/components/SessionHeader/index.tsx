@@ -30,7 +30,7 @@ type SessionHeaderProps = {
   showDayName: boolean;
 };
 
-function SessionHeader({
+export default function SessionHeader({
   index,
   complete,
   day,
@@ -173,8 +173,6 @@ function SessionHeader({
     </View>
   );
 }
-
-export default React.memo(SessionHeader);
 
 const styles = StyleSheet.create({
   container: {

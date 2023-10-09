@@ -42,7 +42,7 @@ type SessionProps = {
   weekOptions: number[];
 };
 
-function Session({
+export default function Session({
   BG_1,
   BG_2,
   complete,
@@ -251,8 +251,6 @@ function Session({
     </ScrollView>
   );
 }
-
-export default React.memo(Session);
 
 const styles = StyleSheet.create({
   container: {
