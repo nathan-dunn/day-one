@@ -161,7 +161,7 @@ export default function Session({
                   <TextBlock text={name} style={[styles.liftName, slowStyle]} />
                   <View style={[styles.rxContainer]}>
                     {rxs.map(({ sets, reps, perc, test }, rxIndex) => {
-                      const max: number = maxes[name];
+                      const max: number = maxes[name.toUpperCase()];
                       const setsText =
                         (typeof sets === 'number' && sets > 1) ||
                         typeof sets === 'string'

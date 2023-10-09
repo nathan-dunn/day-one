@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Animated,
   Dimensions,
@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Drawer from 'react-native-drawer';
-import { cloneDeep, set } from 'lodash';
+import { cloneDeep } from 'lodash';
 import Session from '../Session';
 import Intro from '../Intro';
 import Panel from '../Panel';
@@ -33,7 +33,7 @@ const DEFAULT_PROGRAM = programs[1];
 const DEFAULT_SHOW_NOTES = true;
 const DEFAULT_SHOW_ANIMATION = true;
 const DEFAULT_SHOW_DAY_NAME = true;
-const LOADING_DELAY = 2000;
+const LOADING_DELAY = 1500;
 
 export default function App() {
   // REFS
