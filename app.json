@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#242424"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.tru36rit.dayone",
@@ -38,8 +40,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "7a800df0-4bc0-4c63-8115-ed20b9a4fc60"
+        "projectId": "0929dfca-d146-4bff-9c18-4779cb63516a"
       }
-    }
+    },
+    "owner": "tru36rit"
   }
 }
