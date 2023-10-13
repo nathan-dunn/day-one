@@ -13,7 +13,7 @@ const {
 } = Exercises;
 
 const program: Program = {
-  name: 'Garage Gym Warrior II',
+  name: 'Garage Gym Workout II',
   shortName: 'GGW II',
   notes: [
     'This basic barbell program has a total duration of 15 weeks. The 15th week is a testing week where lifters can choose to test their 1-rep maxes if they so choose. If not, then after week 14, the lifter might conservatively “assume” an increase in 1-rep max strength of approximately 5% and restart the program based off of a new assumed maximum for each lift.',
